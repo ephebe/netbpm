@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <name>Hello world 4</name>
+  <description>This is the simples process.</description>
+
+  <start-state name="start">
+    <transition to="first activity state" />
+  </start-state>
+
+  <end-state name="end" />
+  
+  <attribute name="evaluation result" serializer="NetBpm.Workflow.Delegation.Impl.Serializer.EvaluationSerializer, NetBpm" />
+  <attribute name="the text attrib" type="text" initial-value=":-)" />
+
+  <activity-state name="first activity state">
+    <description>this is the first state</description>
+    <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+      <parameter name="expression">processInitiator</parameter>
+    </assignment>
+    <transition to="the looping decision">
+      <action event="transition" handler="NetBpm.Example.Delegate.HelloWorldAction, NetBpm.Example" />
+    </transition>
+  </activity-state>
+
+  <decision name="the looping decision" handler="NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision, NetBpm">
+    <parameter name="attribute">evaluation result</parameter>
+    <transition name="disapprove" to="first activity state" />
+    <transition name="approve"    to="end" />
+  </decision>
+
+</process-definition>

@@ -1,0 +1,24 @@
+<table border=0 cellspacing=15 cellpadding=0>
+	<!-- see developerHome.jsp-->
+    <tr>
+    <td valign=top>
+	<!-- deploy box-->
+    <table class=box border=0 cellspacing=1>
+		<tr>
+			<th class=box width=100%>Upload a process archive</th>
+		</tr>
+		<tr>
+			<td class=box>
+
+				For more information on how to build process archives, see the <a href="http://www.netbpm.org/docs/npdl.html">NetBpm website, section nPdl</a>.
+				<form name="netbpmForm" method="POST" action="deployProcess.rails" enctype="multipart/form-data">
+				Load up your process definition : <input type="file" name="processArchive" value=""><br><br>
+				<center><input type="submit" value="Submit"></center>
+				</form>
+			</td>
+		</tr>
+	</table>
+
+    </td>
+    </tr>
+</table>

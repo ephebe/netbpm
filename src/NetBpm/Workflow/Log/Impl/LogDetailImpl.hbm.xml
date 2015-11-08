@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Log.Impl.LogDetailImpl, NetBpm"
+        table="NBPM_LOGDETAIL"
+        dynamic-update="false"
+        dynamic-insert="false"
+        discriminator-value="LogDetail"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <discriminator
+            column="subclass"
+            type="string"
+        />
+
+        <many-to-one
+            name="Log"
+            class="NetBpm.Workflow.Log.Impl.LogImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="log_"
+        />
+
+        <subclass
+            name="NetBpm.Workflow.Log.Impl.AttributeUpdateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="AttributeUpdate"
+        >
+
+        <many-to-one
+            name="Attribute"
+            class="NetBpm.Workflow.Definition.Impl.AttributeImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="attribute"
+        />
+
+        <property
+            name="ValueText"
+            type="string"
+            update="true"
+            insert="true"
+            column="text_"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Log.Impl.DelegateCallImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="DelegateCall"
+        >
+
+        <many-to-one
+            name="Delegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="delegation"
+        />
+
+        <property
+            name="InterfaceClassName"
+            type="string"
+            update="true"
+            insert="true"
+            column="className"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Log.Impl.ExceptionReportImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ExceptionReport"
+        >
+        <property
+            name="ExceptionClassName"
+            type="string"
+            update="true"
+            insert="true"
+            column="className"
+        />
+
+        <property
+            name="ExceptionMessage"
+            type="string"
+            update="true"
+            insert="true"
+            column="exceptionMessage"
+        />
+
+        <property
+            name="StackTrace"
+            type="string"
+            update="true"
+            insert="true"
+            column="text_"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Log.Impl.MessageImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="Message"
+        >
+        <property
+            name="MessageText"
+            type="string"
+            update="true"
+            insert="true"
+            column="text_"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Log.Impl.ObjectReferenceImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ObjectReference"
+        >
+
+        <property
+            name="ReferenceId"
+            type="long"
+            update="true"
+            insert="true"
+            column="long_"
+        />
+
+        <property
+            name="ClassName"
+            type="string"
+            update="true"
+            insert="true"
+            column="className"
+        />
+
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>

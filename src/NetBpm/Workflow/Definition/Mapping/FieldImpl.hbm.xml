@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Definition.Impl.FieldImpl, NetBpm"
+        table="NBPM_FIELD"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="Name"
+            type="string"
+            update="true"
+            insert="true"
+            column="name"
+        />
+
+        <property
+            name="Description"
+            type="string"
+            update="true"
+            insert="true"
+            column="description"
+        />
+
+        <property
+            name="Index"
+            type="integer"
+            update="true"
+            insert="true"
+            column="index_"
+        />
+
+        <many-to-one
+            name="Attribute"
+            class="NetBpm.Workflow.Definition.Impl.AttributeImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="attribute"
+        />
+
+        <many-to-one
+            name="State"
+            class="NetBpm.Workflow.Definition.Impl.StateImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="state"
+        />
+
+        <property
+            name="Access"
+            type="NetBpm.Workflow.Definition.FieldAccess, NetBpm"
+            update="true"
+            insert="true"
+            column="access_"
+        />
+
+        <many-to-one
+            name="HtmlFormatterDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="htmlFormatterDelegation"
+            lazy="false"
+        />
+    </class>
+
+</hibernate-mapping>

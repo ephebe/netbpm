@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Scheduler.Impl.JobImpl, NetBpm"
+        table="NBPM_JOB"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <many-to-one
+            name="ProcessDefinition"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processDefinition"
+        />
+
+        <many-to-one
+            name="Context"
+            class="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="context"
+        />
+
+        <property
+            name="Date"
+            type="DateTime"
+            update="true"
+            insert="true"
+            column="date_"
+        />
+
+        <property
+            name="UserId"
+            type="string"
+            update="true"
+            insert="true"
+            column="userId"
+        />
+
+        <property
+            name="Pwd"
+            type="string"
+            update="true"
+            insert="true"
+            column="pwd"
+        />
+
+        <property
+            name="Reference"
+            type="string"
+            update="true"
+            insert="true"
+            column="reference"
+        />
+
+        <many-to-one
+            name="ActionDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="actionDelegation"
+        />
+    </class>
+
+</hibernate-mapping>

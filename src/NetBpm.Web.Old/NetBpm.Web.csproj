@@ -1,0 +1,451 @@
+<VisualStudioProject>
+    <CSHARP
+        ProjectType = "Web"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
+        ProjectGuid = "{9896C301-0A50-4973-9BCC-C99B5CEB2F1E}"
+    >
+        <Build>
+            <Settings
+                ApplicationIcon = ""
+                AssemblyKeyContainerName = ""
+                AssemblyName = "NetBpm.Web"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                DelaySign = "false"
+                OutputType = "Library"
+                PreBuildEvent = ""
+                PostBuildEvent = ""
+                RootNamespace = "NetBpm.Web"
+                RunPostBuildEvent = "OnBuildSuccess"
+                StartupObject = ""
+            >
+                <Config
+                    Name = "Debug"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "Release"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "false"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "true"
+                    OutputPath = "bin\Release\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Name = "Castle.Windsor"
+                    AssemblyName = "Castle.Windsor"
+                    HintPath = "..\..\lib\Castle\Castle.Windsor.dll"
+                />
+                <Reference
+                    Name = "Castle.DynamicProxy"
+                    AssemblyName = "Castle.DynamicProxy"
+                    HintPath = "..\..\lib\Castle\Castle.DynamicProxy.dll"
+                />
+                <Reference
+                    Name = "Castle.Facilities.AutomaticTransactionManagement"
+                    AssemblyName = "Castle.Facilities.AutomaticTransactionManagement"
+                    HintPath = "..\..\lib\Castle\Castle.Facilities.AutomaticTransactionManagement.dll"
+                />
+                <Reference
+                    Name = "Castle.Facilities.NHibernateIntegration"
+                    AssemblyName = "Castle.Facilities.NHibernateIntegration"
+                    HintPath = "..\..\lib\Castle\Castle.Facilities.NHibernateIntegration.dll"
+                />
+                <Reference
+                    Name = "Castle.MicroKernel"
+                    AssemblyName = "Castle.MicroKernel"
+                    HintPath = "..\..\lib\Castle\Castle.MicroKernel.dll"
+                />
+                <Reference
+                    Name = "Castle.Model"
+                    AssemblyName = "Castle.Model"
+                    HintPath = "..\..\lib\Castle\Castle.Model.dll"
+                />
+                <Reference
+                    Name = "Castle.MonoRail.Framework"
+                    AssemblyName = "Castle.MonoRail.Framework"
+                    HintPath = "..\..\lib\Castle\Castle.MonoRail.Framework.dll"
+                />
+                <Reference
+                    Name = "Castle.MonoRail.Framework.Views.NVelocity"
+                    AssemblyName = "Castle.MonoRail.Framework.Views.NVelocity"
+                    HintPath = "..\..\lib\Castle\Castle.MonoRail.Framework.Views.NVelocity.dll"
+                />
+                <Reference
+                    Name = "Castle.MonoRail.WindsorExtension"
+                    AssemblyName = "Castle.MonoRail.WindsorExtension"
+                    HintPath = "..\..\lib\Castle\Castle.MonoRail.WindsorExtension.dll"
+                />
+                <Reference
+                    Name = "Castle.Services.Transaction"
+                    AssemblyName = "Castle.Services.Transaction"
+                    HintPath = "..\..\lib\Castle\Castle.Services.Transaction.dll"
+                />
+                <Reference
+                    Name = "HashCodeProvider"
+                    AssemblyName = "HashCodeProvider"
+                    HintPath = "..\..\lib\HashCodeProvider.dll"
+                />
+                <Reference
+                    Name = "ICSharpCode.SharpZipLib"
+                    AssemblyName = "ICSharpCode.SharpZipLib"
+                    HintPath = "..\..\lib\ICSharpCode.SharpZipLib.dll"
+                />
+                <Reference
+                    Name = "Iesi.Collections"
+                    AssemblyName = "Iesi.Collections"
+                    HintPath = "..\..\lib\Iesi.Collections.dll"
+                />
+                <Reference
+                    Name = "log4net"
+                    AssemblyName = "log4net"
+                    HintPath = "..\..\lib\log4net.dll"
+                />
+                <Reference
+                    Name = "MySql.Data"
+                    AssemblyName = "MySql.Data"
+                    HintPath = "..\..\lib\MySql.Data.dll"
+                />
+                <Reference
+                    Name = "NHibernate"
+                    AssemblyName = "NHibernate"
+                    HintPath = "..\..\lib\NHibernate.dll"
+                />
+                <Reference
+                    Name = "NVelocity"
+                    AssemblyName = "NVelocity"
+                    HintPath = "..\..\lib\NVelocity.dll"
+                />
+                <Reference
+                    Name = "System.Web"
+                    AssemblyName = "System.Web"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Web.dll"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
+                />
+                <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
+                />
+                <Reference
+                    Name = "NetBpm"
+                    AssemblyName = "NetBpm"
+                    HintPath = "..\NetBpm\bin\Debug\NetBpm.dll"
+                />
+                <Reference
+                    Name = "NetBpm.Example"
+                    Project = "{489D941E-858F-4E30-94DF-31CD425666A4}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "Castle.Components.Common.EmailSender.SmtpEmailSender"
+                    AssemblyName = "Castle.Components.Common.EmailSender.SmtpEmailSender"
+                    HintPath = "..\..\lib\Castle\Castle.Components.Common.EmailSender.SmtpEmailSender.dll"
+                />
+                <Reference
+                    Name = "Castle.Components.Common.EmailSender"
+                    AssemblyName = "Castle.Components.Common.EmailSender"
+                    HintPath = "..\..\lib\Castle\Castle.Components.Common.EmailSender.dll"
+                />
+                <Reference
+                    Name = "Castle.Services.Logging.Log4netIntegration"
+                    AssemblyName = "Castle.Services.Logging.Log4netIntegration"
+                    HintPath = "..\..\lib\Castle\Castle.Services.Logging.Log4netIntegration.dll"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "app_config.xml"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "AssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "global.asax"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "index.html"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "NetBpmHttpApplication.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "NetBpmWebContainer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "web.config"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\netbpm.css"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "css\CVS\Entries"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\Entries.Extra"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\Entries.Extra.Old"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\Entries.Old"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\Repository"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\Root"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "css\CVS\TortoiseCVS.Status"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\netbpm.gif"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\required.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "images\CVS\Entries"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\Entries.Extra"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\Entries.Extra.Old"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\Entries.Old"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\Repository"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\Root"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "images\CVS\TortoiseCVS.Status"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\NetBpm.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Web.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Adapters\Adapters.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Presentation\Presentation.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Presentation\Controllers\Controllers.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Presentation\Filters\Filters.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Presentation\Helper\Helper.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "ModelSupport\NetBpm\Web\Presentation\Model\Model.txvpck"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\AbstractController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\AbstractSecureController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\AbstractUserAddController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\AdminController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\DeveloperController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\FormController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\ImageController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\InfoController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\IntroController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Controllers\UserController.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Filter\AuthenticationCheckFilter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Filter\UserAddFilter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Helper\AdminHelper.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Helper\InfoHelper.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Presentation\Model\FormRow.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Views\admin\showHome.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\admin\showprocessinstance.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\developer\showHome.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\form\activityForm.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\info\showHome.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\intro\index.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\layouts\default.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\template\processActivityInfo.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\template\processOverview.vm"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Views\user\showHome.vm"
+                    BuildAction = "None"
+                />
+            </Include>
+        </Files>
+    </CSHARP>
+</VisualStudioProject>
+

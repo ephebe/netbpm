@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+    
+<!-- ================== -->
+<!-- == introduction == -->
+<!-- ================== -->
+<!-- This is a test for Group Assignment. Below is the hierarchy structure   -->
+<!-- of the groups involved:                                                 -->
+<!--                 +=========+                                             -->
+<!--                 | Group A |                                             -->
+<!--                 +=========+                                             -->
+<!--                      |                                                  -->
+<!--          ==========================                                     -->
+<!--          |                         |                                    -->
+<!--     +=========+                +=========+                              -->
+<!--     | Group B |                | Group C |                              -->
+<!--     +=========+                +=========+                              -->
+<!--                                    |                                    -->
+<!--                                +=========+                              -->
+<!--                                | Group D |                              -->
+<!--                                +=========+                              -->
+
+<!-- Below are users id & name for the above group:                          -->
+<!-- 1]  uaoga ==> user A of group A                                         -->
+<!-- 2]  uboga ==> user B of group A                                         -->
+<!-- 3]  ucoga ==> user C of group A                                         -->
+<!-- 4]  uaogb ==> user A of group B                                         -->
+<!-- 5]  ubogb ==> user B of group B                                         -->
+<!-- 6]  ucogb ==> user C of group B                                         -->
+<!-- 7]  uaogc ==> user A of group C                                         -->
+<!-- 8]  ubogc ==> user B of group C                                         -->
+<!-- 9]  ucogc ==> user C of group C                                         -->
+<!-- 10] uaogd ==> user A of group D                                         -->
+<!-- 11] ubogd ==> user B of group D                                         -->
+<!-- 12] ucogd ==> user C of group D                                         -->
+
+<!-- The sementics are as follows:                                           -->
+<!-- 1] when activity is assigned to group A, all members of group A, B, C, D-->
+<!-- will be able to take the activity                                       -->
+<!-- 2] when activity is assigned to group B, all members of group B only    -->
+<!-- will be able to take the activity                                       -->
+<!-- 3] when activity is assigned to group C, all members of group C, D only -->
+<!-- will be able to take the activity                                       -->
+<!-- 4] when activity is assigned to group D, all members of group D only    -->
+<!-- will be able to take the activity                                       -->
+
+<process-definition>
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>group assignment</name>
+  <description>group assignment test</description>
+  <responsible>ae</responsible>
+  
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="start group assignment test">
+    <description>start group assignment test request</description>
+    <role>requester</role>
+    <field attribute="field A" access="read-write" />
+    <field attribute="field B" access="read-write" />
+    <transition to="group assignment activity A" />
+  </start-state>
+  
+  <end-state name="end group assignment test" />
+  
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="requester" type="actor" />
+  <attribute name="assigned group A" type="actor" />
+  <attribute name="assigned group B" type="actor" />
+  <attribute name="assigned group C" type="actor" />
+  <attribute name="assigned group D" type="actor" />
+  <attribute name="field A" type="text" initial-value="field A value" />
+  <attribute name="field B" type="text" initial-value="field B value" />
+  
+  <!-- =========== -->
+  <!-- == NODES == -->
+  <!-- =========== -->
+  <activity-state name="group assignment activity A">
+    <description>In this activity, this activity will be assigned to all users in Group A</description>
+    <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example" >
+        <parameter name="actor">group A</parameter>
+    </assignment>
+    <role>assigned group A</role>
+    <field attribute="field A" access="read-write" />
+    <field attribute="field B" access="read-write" />
+    <transition to="group assignment activity B" />
+  </activity-state>
+  
+  <activity-state name="group assignment activity B">
+    <description>In this activity, this activity will be assigned to all users in Group B</description>
+    <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example">
+        <parameter name="actor">group B</parameter>
+    </assignment>
+    <role>assigned group B</role>
+    <field attribute="field A" access="read-write" />
+    <field attribute="field B" access="read-write" />
+    <transition to="group assignment activity C" />
+  </activity-state>
+  
+  <activity-state name="group assignment activity C">
+    <description>In this activity, this activity will be assigned to all users in Group C</description>
+    <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example" >
+        <parameter name="actor">group C</parameter>
+    </assignment>
+    <role>assigned group C</role>
+    <field attribute="field A" access="read-write" />
+    <field attribute="field B" access="read-write" />
+    <transition to="group assignment activity D" />
+  </activity-state>
+  
+  <activity-state name="group assignment activity D">
+    <description>In this activity, this activity will be assigned to all users in Group D</description>
+    <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example" >
+        <parameter name="actor">group D</parameter>
+    </assignment>
+    <role>assigned group D</role>
+    <field attribute="field A" access="read-write" />
+    <field attribute="field B" access="read-write" />
+    <transition to="end group assignment test" />
+  </activity-state>
+  
+</process-definition>
+    

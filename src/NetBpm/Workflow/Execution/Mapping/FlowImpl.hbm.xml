@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+        table="NBPM_FLOW"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="Name"
+            type="string"
+            update="true"
+            insert="true"
+            column="name"
+        />
+
+        <property
+            name="ActorId"
+            type="string"
+            update="true"
+            insert="true"
+            column="actorId"
+        />
+
+        <property
+            name="StartNullable"
+            type="System.Nullable`1[[System.DateTime, mscorlib]], mscorlib"
+            update="true"
+            insert="true"
+            column="start_"
+        />
+
+        <property
+            name="EndNullable"
+            type="System.Nullable`1[[System.DateTime, mscorlib]], mscorlib"
+            update="true"
+            insert="true"
+            column="end_"
+        />
+
+        <property
+            name="ParentReactivation"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="parentReactivation"
+        />
+
+        <many-to-one
+            name="Node"
+            class="NetBpm.Workflow.Definition.Impl.NodeImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="node"
+            lazy ="false"
+        />
+
+        <many-to-one
+            name="ProcessInstance"
+            class="NetBpm.Workflow.Execution.Impl.ProcessInstanceImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processInstance"
+            lazy ="false"
+        />
+
+        <set
+            name="AttributeInstances"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="scope"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Execution.Impl.AttributeInstanceImpl, NetBpm"
+              />
+        </set>
+
+        <set
+            name="SubProcessInstances"
+            lazy="true"
+            inverse="false"
+            cascade="none"
+            sort="unsorted"
+        >
+
+              <key
+                  column="superProcessFlow"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Execution.Impl.ProcessInstanceImpl, NetBpm"
+              />
+        </set>
+
+        <many-to-one
+            name="Parent"
+            class="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="parent"
+        />
+
+        <set
+            name="Children"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="parent"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+              />
+        </set>
+
+        <set
+            name="Logs"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            order-by="DATE_ asc"
+        >
+
+              <key
+                  column="flow"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Log.Impl.LogImpl, NetBpm"
+              />
+        </set>
+
+    </class>
+
+</hibernate-mapping>

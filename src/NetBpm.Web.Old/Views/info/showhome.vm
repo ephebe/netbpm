@@ -1,0 +1,90 @@
+<table border=0 cellspacing=15 cellpadding=0>
+    <tr>
+        <td valign=top>
+        <table border=0 cellspacing=0 cellpadding=0>
+			<tr>
+				<td valign=top>
+				<!-- Mem info Box-->
+				<table class=box border=0 cellspacing=1 width=100%>
+					<tr>
+						<th class=box width=100%>Garbage Collector</th>
+					</tr>
+					<tr>
+						<td class=box>
+
+						<table border=0 cellspacing=0 cellpadding=0>
+						  <tr>
+							<td align=right>Maximum Generations in kb: </td>
+							<td>$maxGeneration</td>
+						  </tr>
+						  <tr>
+							<td align=right>Total Memory in kb: </td>
+							<td>$totalMemory</td>
+						  </tr>
+					   </table>
+					</tr>
+				</table>
+				<td>
+			<tr>
+
+			<tr>
+				<td style="padding-top:15px;" valign=top>
+				<!-- General info Box-->
+				<table class=box border=0 cellspacing=1 width=100%>
+					<tr>
+						<th class=box width=100%>General Info</th>
+					</tr>
+					<tr>
+						<td class=box>
+
+						<table border=0 cellspacing=0 cellpadding=0>
+						  <tr>
+							<td align=right>BaseDirectory: </td>
+							<td>$baseDirectory</td>
+						  </tr>
+						  <tr>
+							<td align=right>DynamicDirectory: </td>
+							<td>$dynamicDirectory</td>
+						  </tr>
+						  <tr>
+							<td align=right>OS Version: </td>
+							<td>$InfoHelper.GetOSVersion()</td>
+						  </tr>
+						  <tr>
+							<td align=right>.Net Version: </td>
+							<td>$InfoHelper.GetDotNetVersion()</td>
+						  </tr>
+						  <tr>
+							<td align=right>Machine Name: </td>
+							<td>$InfoHelper.GetMachineName()</td>
+						  </tr>
+					   </table>
+					</tr>
+				</table>
+				<td>
+			<tr>
+
+			<tr>
+				<td style="padding-top:15px;" valign=top>
+				<!-- General info Box-->
+				<table class=box border=0 cellspacing=1 width=100%>
+					<tr>
+						<th class=box width=100%>Castle Facilities</th>
+					</tr>
+					<tr>
+						<td class=box>
+
+						<table border=0 cellspacing=0 cellpadding=0>
+#foreach ($facility in $facilities)
+							$InfoHelper.BuildFacilityInfo( ${facility} )
+#end
+					   </table>
+					   </td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+		</table>
+		</td>
+	<tr>
+</table>

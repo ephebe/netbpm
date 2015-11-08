@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Execution.Impl.AttributeInstanceImpl, NetBpm"
+        table="NBPM_ATTRIBUTEINSTANCE"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="ValueText"
+            type="string"
+            update="true"
+            insert="true"
+            column="valueText"
+        />
+
+        <many-to-one
+            name="Attribute"
+            class="NetBpm.Workflow.Definition.Impl.AttributeImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="attribute"
+        />
+
+        <many-to-one
+            name="Scope"
+            class="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="scope"
+        />
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+	<class name="NetBpm.Test.BaseService.Model.Blog, NetBpm.Test" table="TEST_BLOG">
+	
+		<id name="Id" type="Int32" column="BLOG_ID">
+			<generator class="native" />
+		</id>
+		<property name="Name" column="NAME" not-null="true" unique="true" />
+	</class>
+</hibernate-mapping>
+

@@ -1,0 +1,65 @@
+<form name="netbpmForm" method="POST" action="../form/submitActivityForm.rails">
+	<table border=0 cellspacing=15 cellpadding=0>
+		<tr>
+		<td valign=top>
+			<table class=box border=0 cellspacing=1>
+				<tr>
+					<th class=box width=100%>Activity form</th>
+				</tr>
+				<tr>
+					<td class=box>
+							
+						<!-- START OF TABLE -->
+						<table  class="table" border="0" cellspacing="1" cellpadding="2">
+							<tr class="tableHeaderRow">
+								<th nowrap class="tableHeaderCell">Field</td>
+
+								<th nowrap class="tableHeaderCell">Input</td>
+								<th nowrap class="tableHeaderCell">Required</td>
+								<th nowrap class="tableHeaderCell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							</tr>
+#foreach( $formRow in $formRows )
+							<tr class="tableRowEven">
+								<td class="tableCell" nowrap>$formRow.Field.Name</td>
+								<td class="tableCell">$formRow.GeneratedHtml</td>
+
+								<td class="tableCell" align="center">
+	#if ( $formRow.IsRequired )
+									<img border=1 src="../images/required.jpg" width=18 height=18>
+	#end
+								</td>
+								<td class="tableCell">
+	#if ( $formRow.Field.Description )
+								$formRow.Field.Description
+	#end
+								</td>
+							</tr>
+#end
+						</table>
+						<!-- END OF TABLE -->				
+						<br>
+						<center><input type="submit" value="Submit activity form"></center>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td valign=top>
+			<table class=box border=0 cellspacing=1>
+				<tr>
+					<th class=box width=100%>Activity context</th>
+					</tr>
+				<tr>
+					<td class=box>
+#parse( 'template/processActivityInfo.vm' )
+					</td>
+				</tr>
+			</table>		
+#set ( $imageHeight = $processDefinition.ImageHeight )
+#set ( $imageWidth = $processDefinition.ImageWidth )
+#if ($preview=='activity' && $imageWidth != 0 && $imageHeight != 0)
+	#parse( 'template/processOverview.vm' )
+#end
+		</td>
+		</tr>
+	</table>
+</form>

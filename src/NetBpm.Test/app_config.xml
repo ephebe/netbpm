@@ -1,0 +1,62 @@
+<configuration>
+	<components>
+
+		<component id="ClassLoader" 
+			service="NetBpm.Workflow.Delegation.ClassLoader.IClassLoader, NetBpm" 
+			type="NetBpm.Workflow.Delegation.ClassLoader.Impl.DBClassLoader, NetBpm" />
+
+		<component id="OrganisationSession" 
+			service="NetBpm.Workflow.Organisation.EComp.IOrganisationService, NetBpm" 
+			type="NetBpm.Workflow.Organisation.EComp.Impl.OrganisationService, NetBpm" />
+
+		<component id="SchedulerSession" 
+			service="NetBpm.Workflow.Scheduler.EComp.ISchedulerSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerEComp, NetBpm" />
+
+		<component id="DefinitionSession" 
+			service="NetBpm.Workflow.Definition.EComp.IDefinitionSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Definition.EComp.Impl.ProcessDefinitionService, NetBpm" />
+
+		<component id="ExecutionSession" 
+			service="NetBpm.Workflow.Execution.EComp.IExecutionSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Execution.EComp.Impl.ExecutionEComp, NetBpm" />
+
+		<component id="LogSession" 
+			service="NetBpm.Workflow.Log.EComp.ILogSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Log.EComp.Impl.LogEComp, NetBpm" />
+
+		<component id="SchedulerThread" 
+			service="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerThread, NetBpm" 
+			type="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerThread, NetBpm" />
+
+	</components>
+
+	<facilities>
+		<facility 
+			id="transactions" 
+			type="Castle.Facilities.AutoTx.TransactionFacility, Castle.Facilities.AutoTx"/>
+
+		<facility id="nhibernate"
+			type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration">
+			<factory id="nhibernate.factory">
+				<settings>
+          <item key="connection.provider">NHibernate.Connection.DriverConnectionProvider</item>
+          <item key="connection.driver_class">NHibernate.Driver.SqlClientDriver</item>
+          <item key="connection.connection_string">Data Source=HUGO-PC\SQLEXPRESS;Initial Catalog=NetBPM;Integrated Security=SSPI</item>
+          <item key="dialect">NHibernate.Dialect.MsSql2005Dialect</item>
+          <item key="proxyfactory.factory_class">NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle</item>
+				</settings>
+	 			<assemblies>
+	 	 				<assembly>NetBpm</assembly>
+	 			</assemblies>
+			</factory>
+		</facility>
+
+    <facility
+      id="logging"
+      type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
+      loggingApi="log4net"
+      configFile="log4net.xml" />
+  </facilities>
+
+</configuration>

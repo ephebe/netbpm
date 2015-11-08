@@ -1,0 +1,230 @@
+<?xml version="1.0" ?>
+
+<project 
+	name="NetBpmSolution" 
+	default="build"
+	xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd"
+>
+	<!-- 
+		These are used to set the correct Attributes in AssemblyInfo.cs.  
+	-->
+	<property name="project.name" value="netbpm" />
+	<property name="project.company" value="NetBpm.org" />
+	<property name="project.version.major" value="0" overwrite="false" />
+	<property name="project.version.minor" value="8" overwrite="false" />
+	<property name="project.version.build" value="3" overwrite="false" />
+	<property name="project.version.revision" value="1" overwrite="false" />
+	<property name="project.version" value="${project.version.major}.${project.version.minor}.${project.version.build}.${project.version.revision}" />
+
+	<property name="build.dir" value="${nant.project.basedir}/build/${project.name}-${project.version}" />
+
+	<property name="current.build.defines" value="NET,NET_1_1" /> 
+	<property name="current.runtime.description" value="Microsoft .NET Framework 1.1" /> 
+<!--
+	<property name="current.build.defines" value="MONO,MONO_1_0" />
+	<property name="current.runtime.description" value="Mono 1.0" />
+-->
+	<property name="build.debug" value="true" />
+
+	<target name="clean" description="Deletes current build">
+		<delete dir="${build.dir}" failonerror="false" />
+	</target>
+	
+	<target name="clean-bin" description="Deletes the current bin folder">
+		<delete dir="${build.dir}/bin" failonerror="false" />
+	</target>
+	
+	<target name="cleanall" description="Deletes every build configuration">
+		<echo message="Deleting all builds from all configurations" />
+		<delete dir="build" failonerror="false" />
+	</target>
+
+	<target name="build" depends="clean" description="Builds current configuration">
+		<echo message="Current Directory is ${nant.project.basedir}" />
+		
+		<echo message="Build Directory is ${build.dir}" />
+		
+		<!-- prepare build directory -->
+		<mkdir dir="${build.dir}/bin" />
+
+		<!-- copy libraries -->
+		<copy todir="${build.dir}/bin" flatten="true">
+			<fileset basedir=".">
+				<include name="lib/*.dll" />
+				<include name="lib/Castle/*.dll" />
+				<include name="lib/Boo/*.dll" />
+				<include name="src/NetBpm.Test/*.dll.config" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}">
+			<fileset basedir=".">
+				<include name="*License.txt" />
+			</fileset>
+		</copy>
+
+		<!-- copy web -->
+		<copy todir="${build.dir}">
+			<fileset basedir="src/NetBpm.Web">
+				<include name="Views/**" />
+				<include name="images/**" />
+				<include name="css/**" />
+				<include name="*.config" />
+				<include name="app_config.xml" />
+				<include name="cassini*" />
+				<include name="cassini.bat" />
+				<include name="global.asax" />
+				<exclude name="**/CVS" />
+			</fileset>
+		</copy>
+		<!-- copy sql scripts-->
+		<copy todir="${build.dir}">
+	 		<fileset basedir="data">
+	        <include name="sql/**" />
+	    </fileset>
+		</copy>
+
+		<!-- copy Example -->
+		<copy todir="${build.dir}/example">
+	 		<fileset basedir="src/NetBpm.Example">
+		    <include name="process/**/*" />
+	      <include name="*.par" />
+		    <exclude name="process/versiontest/**/*" />
+	    </fileset>
+		</copy>
+
+		<nant target="build" buildfile="src/NetBpm/NetBpm.build" />
+		<nant target="build" buildfile="src/NetBpm.Web/NetBpm.Web.build" />
+		<nant target="build" buildfile="src/NetBpm.Test/NetBpm.Test.build" />
+		<nant target="build" buildfile="src/NetBpm.Ext/NetBpm.Ext.build" />
+		<nant target="build" buildfile="src/NetBpm.Ext.Test/NetBpm.Ext.Test.build" />
+		<nant target="build" buildfile="src/NetBpm.Example/process/versiontest/NetBpmVersionTest.build" />
+		<nant target="build" buildfile="src/NetBpm.Example/NetBpm.Example.build" />
+	</target>
+
+	<target name="deploy">
+		<nant target="deploy" buildfile="src/NetBpm.Example/NetBpm.Example.build" />
+	</target>
+
+	<target name="release" depends="build">
+		<copy todir="${build.dir}">
+	 		<fileset basedir="../www/build/site/docs">
+	        <include name="install.pdf" />
+	    </fileset>
+		</copy>
+	
+		<zip zipfile="${project.name}-${project.version}.zip">
+		    <fileset basedir="${build.dir}/..">
+		        <include name="netbpm*/**/*" />
+		        <exclude name="netbpm*/**/pme.par" />
+		        <exclude name="netbpm*/**/pme/**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="doc" description="Generates the API documentation">
+		<ndoc>
+			<assemblies basedir="${build.dir}/bin">
+				<include name="NetBpm.dll" />
+			</assemblies>
+			<documenters>
+				<documenter name="MSDN">
+					<property name="OutputDirectory" value="${build.dir}/doc/temp" />
+					<property name="HtmlHelpName" value="NetBpm.Reference" />
+					<property name="IncludeFavorites" value="False" />
+					<property name="Title" value="NetBpm Class Library - v.${project.version}" />
+					<property name="SplitTOCs" value="False" />
+					<property name="DefaulTOC" value="" />
+					<property name="IncludeHierarchy" value="False" />
+					<property name="ShowVisualBasic" value="False" />
+					<property name="RootPageContainsNamespaces" value="False" />
+					<property name="SortTOCByNamespace" value="True" />
+					<property name="OutputTarget" value="HtmlHelp" />
+					<property name="HeaderHtml" value="" />
+					<property name="FooterHtml" value="" />
+					<property name="FilesToInclude" value="" />
+					<property name="LinkToSdkDocVersion" value="SDK_v1_1" />
+					<property name="ShowMissingSummaries" value="${build.debug}" />
+					<property name="ShowMissingRemarks" value="${build.debug}" />
+					<property name="ShowMissingParams" value="${build.debug}" />
+					<property name="ShowMissingReturns" value="${build.debug}" />
+					<property name="ShowMissingValues" value="${build.debug}" />
+					<property name="DocumentInternals" value="False" />
+					<property name="DocumentProtected" value="True" />
+					<property name="DocumentPrivates" value="False" />
+					<property name="DocumentProtectedInternalAsProtected" value="False" />
+					<property name="DocumentEmptyNamespaces" value="False" />
+					<property name="IncludeAssemblyVersion" value="False" />
+					<property name="CopyrightText" value="NetBpm is licensed under Apache License, Version 2.0." />
+					<property name="CopyrightHref" value="http://www.NetBpm.org/" />
+					<property name="FeedbackEmailAddress" value="netbpm-development@lists.sourceforge.net" />
+					<property name="ReferencesPath" value="" />
+					<property name="SkipNamespacesWithoutSummaries" value="False" />
+					<property name="UseNamespaceDocSummaries" value="False" />
+					<property name="AutoPropertyBackerSummaries" value="False" />
+					<property name="AutoDocumentConstructors" value="True" />
+					<property name="DocumentAttributes" value="True" />
+					<property name="ShowTypeIdInAttributes" value="False" />
+					<property name="DocumentedAttributes" value="" />
+					<property name="GetExternalSummaries" value="True" />
+					<property name="EditorBrowsableFilter" value="Off" />
+					<property name="UseNDocXmlFile" value="" />
+				</documenter>
+			</documenters> 
+		</ndoc>
+		<copy todir="${build.dir}/doc">
+			<fileset basedir="${build.dir}/doc/temp">
+				<include name="*.chm" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="test" depends="build">
+		<copy todir="${build.dir}/bin" flatten="true">
+			<fileset basedir=".">
+				<include name="app/*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}/testconf">
+			<fileset basedir="src/NetBpm.Test/testconf">
+		      <include name="*.xml" />
+		  </fileset>
+		</copy>
+
+<!--		<copy todir="${build.dir}/process">
+			<fileset basedir="src/NetBpm.Example/process">
+		    <include name="**/*" />
+				<exclude name="**/CVS" />
+		  </fileset>
+		</copy>
+-->
+
+   <exec failonerror="false" 
+    basedir="${build.dir}/bin"
+		workingdir="${build.dir}/bin" 
+		program="nunit-console.exe" 
+    useruntimeengine="true"
+		commandline="NetBpm.Test.dll" />
+
+		<nunit2report out="${build.dir}/NetBpmReport.html">
+		  <fileset basedir="${build.dir}/bin">
+		    <include name="TestResult.xml" />
+		  </fileset>
+		</nunit2report>
+	</target>
+
+	<target name="ppmexport" description="Generates the API documentation">
+		<copy todir="${build.dir}">
+			<fileset basedir="src/NetBpm.Ext.Test">
+				<include name="testconf/*config.xml" />
+			</fileset>
+		</copy>
+    <!-- Dynamically load the tasks in the Task assembly. -->
+    <loadtasks assembly="${build.dir}/bin/NetBpm.dll" />
+    <loadtasks assembly="${build.dir}/bin/NetBpm.Ext.dll" />
+		<mkdir dir="${build.dir}/ppmdata" />
+    <ppmexport configfile="${build.dir}/testconf/ppm_app_config.xml" exportpath="${build.dir}/ppmdata" user="ae"/>
+	</target>
+
+</project>

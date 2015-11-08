@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>Pregnancy</name>
+  <description>This process manages the all employer-related aspects of a pregnancy.</description>
+  <responsible>ae</responsible>
+
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="declare pregnancy">
+    <description>declare the pregnancy</description>
+    <role>requester</role>
+    <transition to="expecting" />
+  </start-state>
+
+  <end-state name="end" />
+
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="requester" type="actor" />
+  <attribute name="expected birthdate" type="date" />
+  <attribute name="birthdate" type="date" />
+  <attribute name="holiday start" type="date" />
+  <attribute name="holiday end" type="date" />
+  <attribute name="holiday approval" type="evaluation" />
+
+  <!-- =========== -->
+  <!-- == NODES == -->
+  <!-- =========== -->
+  <activity-state name="expecting">
+    <description>expecting</description>
+    <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+      <parameter name="expression">processInitiator</parameter>
+    </assignment>
+    <transition to="plan holiday" />
+  </activity-state>
+  
+  <process-state name="plan holiday" process="Holiday request">
+    <description>In this state, the official holiday is requested with the holiday-process</description>
+    <actor-expression>processInitiator</actor-expression>
+    <process-invocation handler="NetBpm.Example.Delegate.HolidayProcessInvoker, NetBpm.Example" />       
+    <transition to="end" />
+  </process-state>
+
+</process-definition>

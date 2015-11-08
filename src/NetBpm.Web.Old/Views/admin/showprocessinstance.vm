@@ -1,0 +1,111 @@
+
+<table border=0 cellspacing=15 cellpadding=0>
+    <tr>
+    <td height="100%">
+
+		<!-- Current State Box-->
+		<table class=box border=0 cellspacing=1 width=100% height=100%>
+			<tr>
+				<th class=box width=100%>Current State</th>
+			</tr>
+			<tr height="100%">
+				<td class=box height=100% valign=top>
+				<!-- START OF TABLE-->
+				<table  class="table" width="100%" border="0" cellspacing="1" cellpadding="2">
+					<tr class="tableHeaderRow">
+						<th nowrap class="tableHeaderCell">Instance</td>
+						<th nowrap class="tableHeaderCell">Process</td>
+						<th nowrap class="tableHeaderCell">Flow</td>
+						<th nowrap class="tableHeaderCell">Parent</td>
+						<th nowrap class="tableHeaderCell">Start</td>
+						<th nowrap class="tableHeaderCell">End</td>
+						<th nowrap class="tableHeaderCell">State</td>
+						<th nowrap class="tableHeaderCell">Actor</td>
+					</tr>
+					<tr class="tableRowEven">
+						<td class="tableCell">$processInstance.Id</td>
+						<td class="tableCell">$processInstance.ProcessDefinition.Name</td>
+						<td class="tableCell">$processInstance.RootFlow.Id</td>
+						<td class="tableCell">
+#if ($processInstance.Parent)
+						$processInstance.Parent.Id
+#else
+						---
+#end
+						</td>
+						<td class="tableCell">$processInstance.Start</td>
+						<td class="tableCell">
+#if ($processInstance.EndHasValue)
+						$processInstance.End
+#else
+						---
+#end
+						</td>
+						<td class="tableCell">
+#if ($processInstance.EndHasValue)
+						finished
+#else
+						activity '$processInstance.RootFlow.Node.Name'
+#end
+						</td>
+						<td class="tableCell">
+#if ($processInstance.RootFlow.GetActor())
+						$processInstance.RootFlow.GetActor().Name
+#end
+						</td>
+					</tr>
+				</table>						
+				<!-- END OF TABLE-->
+				</td>
+			</tr>
+		</table>
+
+    </td>
+    <td height="100%">
+
+		<!-- Current Attribute Values Box-->
+		<table class=box border=0 cellspacing=1 width=100%>
+			<tr>
+				<th class=box width=100%>Current Attribute Values</th>
+			</tr>
+			<tr>
+				<td class=box>
+				<!-- START OF TABLE-->
+				<table  class="table" width="100%"border="0" cellspacing="1" cellpadding="2">
+					<tr class="tableHeaderRow">
+						<th nowrap class="tableHeaderCell">Attribute</th>
+						<th nowrap class="tableHeaderCell">Value</th>
+					</tr>
+#if ($attributeRows)
+	#foreach( $attributeRow in $attributeRows )
+					<tr class="tableHeaderRow">
+						<td class="tableCell" nowrap>$attributeRow.get_Item("name")</td>
+						<td class="tableCell" nowrap>
+		#if ($attributeRow.get_Item("value"))
+						$attributeRow.get_Item("value")
+		#else
+						---
+		#end
+						</td>
+					</tr>
+	#end
+#else
+					<tr class="tableRowEven">
+						<td class="tableCell" colspan="2" align="center">--- no Attribute ---</td>
+					</tr>
+#end
+
+				</table>						
+				<!-- END OF TABLE-->
+				</td>
+			</tr>
+		</table>
+
+    </td>
+    </tr>
+    <tr>
+    <td valign=top colspan=2 width="100%">
+		$AdminHelper.CreateLogDetail( ${processInstance.RootFlow.Id} )
+    </td>
+    </tr>
+</table>

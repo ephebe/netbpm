@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>ActionHandlerVersionTest</name>
+  <description>
+	  This test tests the versioning of Assemblies. 
+	  The version 1 Actionhandler always approves and version 2 always disapproves.
+  </description>
+  <responsible>ae</responsible>
+
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="start process">
+    <role>requester</role>
+    <field attribute="product"    access="write-only" />
+    <transition to="evaluation">
+      <action event="transition" handler="NetBpm.VersionTest.VersionTestAction, NetBpm.VersionTest" on-exception="log"/>
+    </transition>
+  </start-state>
+
+  <end-state name="end" />
+
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="available" type="evaluation" />
+  <attribute name="product" type="text" />
+  <attribute name="requester" type="actor" />
+  
+  <decision name="evaluation" handler="NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision, NetBpm">
+		<parameter name="attribute">available</parameter>
+		<transition name="approve"    to="isAvailable" />
+		<transition name="disapprove" to="notAvailable" />
+  </decision>
+
+  <activity-state name="notAvailable">
+    <description> </description>
+    <role>requester</role>
+    <transition to="end" />
+  </activity-state>
+
+  <activity-state name="isAvailable">
+    <description> </description>
+    <role>requester</role>
+    <transition to="end" />
+  </activity-state>
+
+</process-definition>

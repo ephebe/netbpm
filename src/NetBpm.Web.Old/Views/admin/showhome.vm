@@ -1,0 +1,121 @@
+<table border=0 cellspacing=15 cellpadding=0>
+	<!-- see adminHome.jsp-->
+	<tr>
+	<td valign=top>
+		<table class=box border=0 cellspacing=1 width=100%>
+			<tr>
+			<th class=box width=100%>Search flows by specifying criteria</th>
+			</tr>
+			<tr>
+			<td class=box>
+			<table border=0 cellspacing=0 cellpadding=0>
+				<form name="netbpmForm" method="POST" action="../admin/showHome.rails">
+				<tr>
+				<td align=right>Process definition :&nbsp;</td>
+				<td>
+					<select name="processDefinitionId"><option value=""></option>
+#if ($allProcessDefinitions)
+	#foreach( $processDefinition in $allProcessDefinitions )
+					<option value="$processDefinition.Id"
+		#if ($processDefinitionId==$processDefinition.Id)
+			selected
+		#end
+					>$processDefinition.Name ($processDefinition.Version) </option>
+	#end
+#end
+				</td>
+				</tr>
+				<tr>
+				<td align=right>Start after (dd/mm/yyyy [hh:mm]) :&nbsp;</td>
+				<td><input type="text" name="startAfter" value="#if($startAfter)$startAfter#end"></td>
+				</tr>
+				<tr>
+				<td align=right>Start before (dd/mm/yyyy [hh:mm]) :&nbsp;</td>
+				<td><input type="text" name="startBefore" value="#if($startBefore)$startBefore#end"></td>
+				</tr>
+				<tr>
+				<td align=right>Initiator :&nbsp;</td>
+				<td><input type="text" name="initiator" value="#if($initiator)$initiator#end"></td>
+				</tr>
+				<tr>
+				<td align=right>Current actor :&nbsp;</td>
+				<td><input type="text" name="actor" value="#if($actor)$actor#end"></td>
+				</tr>
+				<tr>
+				<td colspan=2><hr></td>
+				</tr>
+				<tr>
+				<td align=right colspan=2><input type="submit" value="Search"></td>
+				</tr>
+				</form>
+			</table>
+
+			<h1>Search results</h1>
+
+			<!-- START OF TABLE -->
+			<table  class="table" width="100%"border="0" cellspacing="1" cellpadding="2">
+				<tr class="tableHeaderRow">
+					<th nowrap class="tableHeaderCell">Id</td>
+
+					<th nowrap class="tableHeaderCell">Process</td>
+					<th nowrap class="tableHeaderCell">Started</td>
+					<th nowrap class="tableHeaderCell">Ended</td>
+					<th nowrap class="tableHeaderCell">Initiator</td>
+					<th nowrap class="tableHeaderCell">Actor</td>
+					<th nowrap class="tableHeaderCell">Show</td>
+				</tr>
+
+				<tr class="tableRowEven">
+#if ($allProcessInstances)
+	#foreach( $processInstance in $allProcessInstances )
+				<tr class="tableRowEven">
+					<td class="tableCell">$processInstance.Id</td>
+					<td class="tableCell">$processInstance.ProcessDefinition.Name</td>
+					<td class="tableCell">$processInstance.Start</td>
+			#if ($processInstance.EndHasValue)
+					<td class="tableCell">$processInstance.End</td>
+			#else
+					<td class="tableCell"></td>
+			#end
+					<td class="tableCell">$processInstance.GetInitiator().Name</td>
+					<td class="tableCell">
+		#if ($processInstance.RootFlow.GetActor())
+					$processInstance.RootFlow.GetActor().Name
+		#end
+					</td>
+					<td class="tableCell"><input type=button value="Show" onclick="location='showProcessInstance.rails?processInstanceId=$processInstance.Id';"></td>
+				</tr>
+	#end
+#else
+					<td class="tableCell" colspan="7" align="center">--- table is empty ---</td>
+#end
+				</tr>
+			</table>
+			<!-- END OF TABLE -->
+
+			</td>
+			</tr>
+		</table>
+	</td>
+	<td valign=top>
+		<table class=box border=0 cellspacing=1 width=100%>
+			<tr>
+				<th class=box width=100%>Scheduler</th>
+				</tr>
+			<tr>
+				<td class=box>
+#if ($serviceLocator.Scheduler.Runing == true)
+					<form name="netbpmForm" method="POST" action="../admin/stopScheduler.rails">
+						<input type="submit" value="stop Scheduler">
+					</form>
+#else
+					<form name="netbpmForm" method="POST" action="../admin/startScheduler.rails">
+						<input type="submit" value="start Scheduler">
+					</form>
+#end
+				</td>
+			</tr>
+		</table>
+	</td>
+	</tr>
+</table>

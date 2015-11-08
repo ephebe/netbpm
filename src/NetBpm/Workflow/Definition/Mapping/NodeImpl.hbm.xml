@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Definition.Impl.NodeImpl, NetBpm"
+        table="NBPM_NODE"
+        dynamic-update="false"
+        dynamic-insert="false"
+        discriminator-value="Node"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <discriminator
+            column="subclass"
+            type="string"
+        />
+
+        <many-to-one
+            name="ProcessBlock"
+            class="NetBpm.Workflow.Definition.Impl.ProcessBlockImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processBlock"
+        />
+
+        <set
+            name="ArrivingTransitions"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="to_"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.TransitionImpl, NetBpm"
+              />
+        </set>
+
+        <set
+            name="LeavingTransitions"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="from_"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.TransitionImpl, NetBpm"
+              />
+        </set>
+
+        <property
+            name="Name"
+            type="string"
+            update="true"
+            insert="true"
+            column="name"
+        />
+
+        <property
+            name="Description"
+            type="string"
+            update="true"
+            insert="true"
+            column="description"
+        />
+
+        <many-to-one
+            name="ProcessDefinition"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processDefinition"
+        />
+
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.StateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="State"
+        >
+
+        <set
+            name="Fields"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="state"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.FieldImpl, NetBpm"
+              />
+        </set>
+
+        <property
+            name="CoordinateX1"
+            type="integer"
+            update="true"
+            insert="true"
+            column="coordinateX1"
+        />
+
+        <property
+            name="CoordinateY1"
+            type="integer"
+            update="true"
+            insert="true"
+            column="coordinateY1"
+        />
+
+        <property
+            name="CoordinateX2"
+            type="integer"
+            update="true"
+            insert="true"
+            column="coordinateX2"
+        />
+
+        <property
+            name="CoordinateY2"
+            type="integer"
+            update="true"
+            insert="true"
+            column="coordinateY2"
+        />
+
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.ActivityStateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ActivityState"
+        >
+
+        <many-to-one
+            name="AssignmentDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="assignmentDelegation"
+        />
+
+        <property
+            name="ActorRoleName"
+            type="string"
+            update="true"
+            insert="true"
+            column="actorRoleName"
+        />
+
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.StartStateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="StartState"
+        >
+
+        </subclass>
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.EndStateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="EndState"
+        >
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.ProcessStateImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ProcessState"
+        >
+
+        <many-to-one
+            name="SubProcess"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="subProcess"
+        />
+
+        <many-to-one
+            name="ProcessInvokerDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processInvokerDelegation"
+        />
+
+        <property
+            name="ActorExpression"
+            type="string"
+            update="true"
+            insert="true"
+            column="actorExpression"
+        />
+
+        </subclass>
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.DecisionImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="Decision"
+        >
+
+        <many-to-one
+            name="DecisionDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="decisionDelegation"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.ForkImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="Fork"
+        >
+
+        <many-to-one
+            name="ForkDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="forkDelegation"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.JoinImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="Join"
+        >
+
+        <many-to-one
+            name="JoinDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="joinDelegation"
+        />
+
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<process-definition>
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>Scheduling sample 1</name>
+  <description>This process shows a simple example how to obtain information about process execution context from scheduled task. This also show one of several possibilities of the use of those information.</description>
+  <responsible>cg</responsible>
+  <authorization handler="NetBpm.Example.Delegate.SchedulingSample1AuthorizationHandler, NetBpm.Example"/>
+
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="start sample 1">
+    <description>start sample 1</description>
+    <role>director</role>
+    <transition to="do bloody thing">
+      <action event="transition" handler="NetBpm.Example.Delegate.ScheduleOvertakingAction, NetBpm.Example" on-exception="log"/>
+    </transition>
+  </start-state>
+
+  <end-state name="end" />
+  
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="director" type="actor" />
+  <attribute name="executor" type="actor" />
+  
+  <!-- =========== -->
+  <!-- == NODES == -->
+  <!-- =========== -->
+  <activity-state name="do bloody thing">
+    <description>In this activity, you do the thing asked by your boss</description>
+    <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example">
+	  	<parameter name="actor" >in</parameter>    
+    </assignment>
+    <role>executor</role>
+    <transition to="do clean thing" />
+  </activity-state> 
+  
+  <activity-state name="do clean thing">
+    <role>director</role>
+    <transition to="end" />
+  </activity-state>   
+</process-definition>

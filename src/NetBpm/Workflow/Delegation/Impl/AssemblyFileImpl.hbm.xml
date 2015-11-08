@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Delegation.Impl.AssemblyFileImpl, NetBpm"
+        table="NBPM_ASSEMBLYFILE"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="FileName"
+            type="string"
+            update="true"
+            insert="true"
+            column="fileName"
+        />
+
+        <property
+            name="Bytes"
+            type="binary"
+            update="true"
+            insert="true"
+            column="bytes"
+        />
+
+        <property
+            name="AssemblyVersion"
+            type="string"
+            update="true"
+            insert="true"
+            column="assemblyVersion"
+        />
+
+        <property
+            name="AssemblyName"
+            type="string"
+            update="true"
+            insert="true"
+            column="assemblyName"
+        />
+
+        <many-to-one
+            name="ProcessDefinition"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processDefinition"
+        />
+
+    </class>
+
+</hibernate-mapping>

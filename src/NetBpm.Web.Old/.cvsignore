@@ -1,0 +1,14 @@
+*.log*
+obj
+_*
+build
+LibrarySupport
+ModelSupport
+bin
+*.tgs
+*.tgw
+*.log
+*.jpr
+*.jpr.local
+*.tpr
+*.tws

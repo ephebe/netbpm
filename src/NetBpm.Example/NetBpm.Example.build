@@ -1,0 +1,198 @@
+<?xml version="1.0" ?>
+<project 
+	name="NetBpm.Example" 
+	default="build"
+	xmlns="http://nant.sf.net/release/0.85-rc3/nant.xsd"
+>
+
+	<target name="holidayexample" >
+		<zip zipfile="holiday.par">
+		    <fileset basedir="process\holiday">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="helloworld1" >
+		<zip zipfile="helloworld1.par">
+		    <fileset basedir="process\helloworld1">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="helloworld2" >
+		<zip zipfile="helloworld2.par">
+		    <fileset basedir="process\helloworld2">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="helloworld3" >
+		<zip zipfile="helloworld3.par">
+		    <fileset basedir="process\helloworld3">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="helloworld4" >
+		<zip zipfile="helloworld4.par">
+		    <fileset basedir="process\helloworld4">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="scheduler" >
+		<zip zipfile="scheduler.par">
+		    <fileset basedir="process\scheduling">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="groupassignment" >
+		<zip zipfile="groupassignment.par">
+		    <fileset basedir="process\groupassignment">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="booaction" >
+		<zip zipfile="booaction.par">
+		    <fileset basedir="process\booaction">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="attributetest" >
+		<zip zipfile="attributetest.par">
+		    <fileset basedir="process\attributetest">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="pregnancy" >
+		<zip zipfile="pregnancy.par">
+		    <fileset basedir="process\pregnancy">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="pme" >
+		<zip zipfile="pme.par">
+		    <fileset basedir="process\pme">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="versiontest" >
+		<zip zipfile="versiontestV1.par">
+		    <fileset basedir="process\versiontest\v1">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+		<zip zipfile="versiontestV2.par">
+		    <fileset basedir="process\versiontest\v2">
+		        <include name="**/*" />
+		    </fileset>
+		</zip>
+	</target>
+
+	<target name="allProcesses" depends="holidayexample, helloworld1, helloworld2, helloworld3, helloworld4, scheduler, groupassignment, booaction, attributetest, pregnancy">
+	</target>
+
+	<target name="build" description="Builds all examples">
+					
+		<!-- ensure the AssemblyInfo is writable -->
+		<attrib file="AssemblyInfo.cs" readonly="false" />
+		
+		<asminfo output="AssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+				<import namespace="System.Runtime.CompilerServices" />
+				<import namespace="System.Runtime.InteropServices" />
+			</imports>
+			<attributes>
+				<attribute type="CLSCompliantAttribute" value="false" />
+				<attribute type="ComVisibleAttribute" value="false" />
+				<attribute type="AssemblyTitleAttribute" value="${nant.project.name} for ${current.runtime.description}" />
+				<attribute type="AssemblyDescriptionAttribute" value="The NetBpm Examples." />
+				<attribute type="AssemblyCompanyAttribute" value="${project.company}" />
+				<attribute type="AssemblyProductAttribute" value="${nant.project.name}" />
+				<attribute type="AssemblyCopyrightAttribute" value="Licensed under Apache License, Version 2.0." />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version.major}.${project.version.minor}" />
+				<attribute type="AssemblyFileVersionAttribute" value="${project.version}" />
+<!--				<attribute type="AssemblyKeyFileAttribute" value="${keyFile}" if="${sign}"/>-->
+			</attributes>
+		</asminfo>
+
+		<csc 
+			target="library" 
+			define="${current.build.defines}" 
+			debug="${build.debug}" 
+			output="${build.dir}/bin/${nant.project.name}.dll" 
+			doc="${build.dir}/bin/${nant.project.name}.xml"
+		>
+			<nowarn>
+				<warning number="1573" />
+				<warning number="1591" />
+			</nowarn>
+			<!--
+				Documentation related warnings.  Basically it's not going to output a warning when there
+				is no attempt at documentation.  If the code has documentation but there is a problem with
+				it then lets warn the developer during the build.
+				
+				CS1571: XML comment on 'construct' has a duplicate param tag for 'parameter'
+				CS1572: XML comment on 'construct' has a param tag for 'parameter', but there is no parameter by that name
+				CS1573: Parameter 'parameter' has no matching param tag in XML comment (but other parameters do)
+				CS1574: XML comment on 'construct' has cref attribute 'item' that could not be found
+				CS1580: Invalid type for parameter 'parameter number' in XML comment cref attribute
+				CS1581: Invalid return type in XML comment cref attribute
+				CS1584: XML comment on 'member' has syntactically incorrect cref attribute 'invalid_syntax'
+				CS1587: XML comment is not placed on a valid language element
+				CS1589: Unable to include XML fragment 'fragment' of file 'file' - reason
+				CS1590: Invalid XML include element - Missing file attribute
+				CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
+				CS1592: Badly formed XML in included comments file - 'reason'
+			-->
+			
+			<sources failonempty="true">
+				<include name="**/*.cs" />
+				<!-- exclude VersionTest-->
+				<exclude name="**/v1/**/*.cs" />
+				<exclude name="**/v2/**/*.cs" />
+			</sources>
+			
+			<resources prefix="NHibernate" dynamicprefix="true">
+				<include name="**/*.hbm.xml" />
+				<include name="**/*.xml" />
+				<exclude name="bin/**/*.xml" />
+			</resources>
+			
+			<references basedir="${build.dir}/bin">
+				<include name="${nant.settings.currentframework.frameworkassemblydirectory}/System.dll" />
+				<include name="${nant.settings.currentframework.frameworkassemblydirectory}/System.XML.dll" />
+				<include name="${nant.settings.currentframework.frameworkassemblydirectory}/System.Data.dll" />
+				<include name="**/*.dll" />
+			</references>
+	
+		</csc>
+	</target>
+
+	<target name="deploy">
+    <!-- Dynamically load the tasks in the Task assembly. -->
+    <loadtasks assembly="${build.dir}/bin/NetBpm.dll" />
+    <deploypar configfile="${build.dir}/app_config.xml" parfile="${build.dir}/example/holiday.par" user="ae"/>
+	</target>
+
+</project>

@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>Holiday request</name>
+  <description>This process manages a planned absence of an employee.</description>
+  <responsible>ae</responsible>
+
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="start holiday request">
+    <description>start a request for a holiday</description>
+    <role>requester</role>
+    <field attribute="start date" access="write-only-required" />
+    <field attribute="end date"   access="write-only-required" />
+    <field attribute="comment"    access="write-only" />
+    <transition to="evaluating">
+      <!-- The next action sends an email message to the requester.  -->
+      <!-- Since normally you won't have an email server running on your localhost, this is intended to show a nice error in the admin logs :-) -->
+      <action event="transition" handler="NetBpm.Workflow.Delegation.Impl.Action.EmailAction, NetBpm" on-exception="log">
+        <parameter name="to">previousActor</parameter>
+        <parameter name="subject">you requested a holiday</parameter>
+        <parameter name="message">you requested a holiday from ${start date} to ${end date} with comment ${comment}</parameter>
+      </action>
+    </transition>
+  </start-state>
+
+  <end-state name="end" />
+
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="requester" type="actor" />
+  <attribute name="boss" type="actor" />
+  <attribute name="hr-responsible" type="actor" />
+  <attribute name="start date" type="date" />
+  <attribute name="end date" type="date" />
+  <attribute name="comment" type="text" initial-value="Put your comments here." />
+  <attribute name="evaluation result" type="evaluation" />
+
+  <!-- =========== -->
+  <!-- == NODES == -->
+  <!-- =========== -->
+  <activity-state name="evaluating">
+    <description>In this activity, You have to evaluate the holiday-request of your employee.</description>
+    <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+      <parameter name="expression" >previousActor->group(hierarchy)->role(boss)</parameter>
+    </assignment>
+    <role>boss</role>
+    <!-- fields are optional. they limit the access to attributes in an activity -->
+    <field attribute="requester"         access="read-only" />
+    <field attribute="start date"        access="read-only" />
+    <field attribute="end date"          access="read-only" />
+    <field attribute="evaluation result" access="write-only" />
+    <transition to="evaluation" />
+  </activity-state>
+
+  <decision name="evaluation" handler="NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision, NetBpm">
+    <parameter name="attribute">evaluation result</parameter>
+    <transition name="approve"    to="approved holiday fork" />
+    <transition name="disapprove" to="disapproval notification" />
+  </decision>
+  
+  <activity-state name="disapproval notification">
+    <description>This is a notification of the refusal of your holiday request. By submitting this form you declare to have taken notice of the refusal.</description>
+    <role>requester</role>
+    <transition to="end" />
+  </activity-state>
+  
+  <!-- ====================== -->
+  <!-- == CONCURRENT BLOCK == -->
+  <!-- ====================== -->
+  <concurrent-block>
+    <fork name="approved holiday fork">
+      <transition name="hr"        to="HR notification" />
+      <transition name="requester" to="approval notification" />
+    </fork>
+    
+    <join name="join before finish">
+      <transition to="end" />
+    </join>
+
+    <activity-state name="HR notification">
+      <description>In this activity, You have to register that an employee is taking holiday.</description>
+      <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+        <parameter name="expression" >role(boss)->group(hierarchy)->role(hr-responsible)</parameter>
+      </assignment>
+      <role>hr-responsible</role>
+      <transition to="join before finish" />
+    </activity-state>
+
+    <activity-state name="approval notification">
+      <description>You get notified that your holiday request has been approved.</description>
+      <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+        <parameter name="expression" >role(requester)</parameter>
+      </assignment>
+      <transition to="join before finish" />
+    </activity-state>
+  </concurrent-block>
+  
+</process-definition>

@@ -1,0 +1,712 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{217B1A85-1CB7-475E-889D-C0AA74175FE2}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>NetBpm</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NetBpm</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.AutoTx, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Facilities.AutoTx.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.NHibernateIntegration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Facilities.NHibernateIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Transaction, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Services.Transaction.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\Castle\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="HashCodeProvider">
+      <Name>HashCodeProvider</Name>
+      <HintPath>..\..\lib\HashCodeProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <Name>ICSharpCode.SharpZipLib</Name>
+      <HintPath>..\..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\NHibernate\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NAnt.Core, Version=0.91.4312.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\NAnt.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ShareDlls\NHibernate\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web">
+      <Name>System.Web</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NetBpmContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Client\Relations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Client\ServiceLocator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\DbException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\DbSession.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\DbType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\NotUniqueException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\ObjectNotFoundException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Db\PersistentObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\EComp\NHSessionOpener.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\NAnt\DeployPar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Net\ArrayUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Xml\XmlElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Xml\XmlParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Util\Zip\ZipUtility.cs" />
+    <Compile Include="Workflow\Definition\Attribute\Evaluation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Impl\IProcessDefinitionBuilder.cs" />
+    <Compile Include="Workflow\Definition\Impl\ReferencableObject.cs" />
+    <Compile Include="Workflow\Definition\Interface\IProcessDefinitionService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ProcessDefinitionService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\EventTypeHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\FieldAccessHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IActivityState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IConcurrentBlock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IDecision.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IDefinitionObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IEndState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IFork.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IJoin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ActionImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ActivityStateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\AttributeImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ConcurrentBlockImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Impl\ProcessDefinitionBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\DecisionImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ProcessDefinitionRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\DefinitionObjectImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\EndStateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\FieldImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ForkImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\JoinImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\NodeImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ProcessBlockImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ProcessDefinitionImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\ProcessStateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\StartStateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\StateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\TransitionImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Impl\UnresolvedReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Impl\ValidationContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\INode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IProcessBlock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IProcessDefinition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IProcessState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IStartState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\IState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\Interface\ITransition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Definition\NpdlException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\AbstractConfigurable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ClassLoader\IClassLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ClassLoader\Impl\DBClassLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ClassLoader\Impl\DefaultClassLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ExceptionHandlingTypeHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IActionContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IActionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IAssignmentContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IAssignmentHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IAuthorizationHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IConfigurable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IDecisionContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IDecisionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IDelegation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IForkContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IForkHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IHandlerContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IHtmlFormatter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IJoinContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IJoinHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Action\EmailAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\ActorExpressionResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\AssemblyFileImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Assignment\AssignmentExpressionResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\AttributeExpressionResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\AuthorizationHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Decision\EvaluationDecision.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\DelegationHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Impl\DelegationImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Fork\AndFork.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\DateInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\DateLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\EvaluationInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\PersonLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\TextAreaInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Htmlformatter\TextInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Join\AndJoin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\ActorSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\DateSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\EvaluationSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\FloatSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\IntegerSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\LongSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Serializer\TextSerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IProcessInvocationContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\Interface\IProcessInvocationHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ISerializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Delegation\ITaskContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\AuthorizationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\EComp\IExecutionSessionLocal.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\EComp\Impl\ExecutionEComp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ExecutionComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ExecutionException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\IActivityForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\IAttributeInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\IFlow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ActivityFormImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\AttributeInstanceImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ExecutionComponentImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ExecutionContextImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ExecutionEngineImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\FlowImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ForkedFlow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\ProcessInstanceImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\IProcessInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Execution\RequiredFieldException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\EComp\ILogSessionLocal.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\EComp\Impl\LogEComp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\IAttributeUpdate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\IDelegateCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\IExceptionReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\ILog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\ILogDetail.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\IMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\AttributeUpdateImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\DelegateCallImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\ExceptionReportImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\LogComponentImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\LogDetailImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\LogImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\MessageImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\Impl\ObjectReferenceImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\IObjectReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Log\LogComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\OrganisationService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\IOrganisationService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\IActor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\IGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\IMembership.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\ActorImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\GroupImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\MembershipImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\OrganisationRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\Domain\UserImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\IUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\OrganisationRuntimeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\OrganisationUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Organisation\PrincipalUserAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\EComp\Impl\JobThread.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\EComp\Impl\SchedulerEComp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\EComp\Impl\SchedulerThread.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\EComp\ISchedulerSessionLocal.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\Impl\JobImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\Impl\SchedulerComponentImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\Impl\SchedulerMain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workflow\Scheduler\Job.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Workflow\Definition\Mapping\ActionImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Definition\Mapping\AttributeImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Definition\Mapping\FieldImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Definition\Mapping\NodeImpl.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Workflow\Definition\Mapping\ProcessBlockImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Definition\Mapping\TransitionImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Delegation\Impl\AssemblyFileImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Delegation\Impl\DelegationImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Execution\Mapping\AttributeInstanceImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Execution\Mapping\FlowImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Execution\Mapping\ProcessInstanceImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Log\Impl\LogDetailImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Log\Impl\LogImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Organisation\Mapping\ActorImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Organisation\Mapping\MembershipImpl.hbm.xml" />
+    <EmbeddedResource Include="Workflow\Scheduler\Impl\JobImpl.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Workflow\Definition\EComp\" />
+    <Folder Include="Workflow\Organisation\EComp\Impl\" />
+    <Folder Include="Workflow\Organisation\Impl\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

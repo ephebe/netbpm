@@ -1,0 +1,173 @@
+﻿@using System.Collections
+@using NetBpm.Workflow.Execution
+@using NetBpm.Workflow.Definition
+
+@{
+    ViewBag.Title = "ShowHome";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ShowHome</h2>
+
+@using(Html.BeginForm("ShowHome","User"))
+{
+	<!-- see userHome.jsp-->
+    <table border="0" cellspacing="15" cellpadding="0">
+    <tr>
+        <td valign="top">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="top">
+				        <table class="box" border="0" cellspacing="1" width="100%">
+					        <tr>
+						        <th class="box" width="100%">Personal Tasklist</th>
+					        </tr>
+					        <tr>
+						        <td class="box">
+						        <!-- START OF TABLE TaskList-->
+						            <table  class="table" width="100%" border="0" cellspacing="1" cellpadding="2">
+							            <tr class="tableHeaderRow">
+								            <td nowrap class="tableHeaderCell">Process name</td>
+								            <td nowrap class="tableHeaderCell">Activity name</td>
+								            <td nowrap class="tableHeaderCell">Perform activity</td>
+								            <td nowrap class="tableHeaderCell">Preview</td>
+							            </tr>
+                                @if (ViewData["taskList"] != null)
+                                {
+                                    foreach (IFlow flow in (IList)ViewData["taskList"])
+                                    {
+							            <tr class="tableRowEven">
+								            <td class="tableCell" nowrap>@flow.ProcessInstance.ProcessDefinition.Name</td>
+								            <td class="tableCell" nowrap>@flow.Node.Name</td>
+								            <td class="tableCell" align="center">
+                                                @Html.ActionLink("Perform Activity", "ActivityForm", "Form", new RouteValueDictionary { { "flowId", flow.Id }},new Dictionary<string,object>())
+									            
+								            </td>
+								            <td class="tableCell" align="center">
+									            <input type="button" value="Preview" onclick="location='../user/showHome.rails?preview=activity&flowId=$flow.Id';">
+								            </td>
+							            </tr>
+	                                }
+                                }
+                                else
+                                {
+							            <tr class="tableRowEven">
+								            <td class="tableCell" colspan="4" align="center">--- table is empty ---</td>
+							            </tr>
+                                }
+						            </table>						
+						        </td>
+					        </tr>
+				        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:15px;" valign="top">
+				<!-- Process Box-->
+				        <table class="box" border="0" cellspacing="1" width="100%">
+					        <tr>
+						        <th class="box" width="100%">Start A Process</th>
+					        </tr>
+					        <tr>
+						        <td class=box>
+						            <table  class="table" width="100%" border="0" cellspacing="1" cellpadding="2">
+							            <tr class="tableHeaderRow">
+								            <td nowrap class="tableHeaderCell">Process name</td>
+								            <td nowrap class="tableHeaderCell">Start a process</td>
+								            <td nowrap class="tableHeaderCell">Preview</td>
+							            </tr>
+                                @if (ViewData["processDefinitions"] != null)
+                                {    
+	                                foreach(IProcessDefinition definition in (IList)ViewData["processDefinitions"])
+                                    {
+							            <tr class="tableRowEven">
+								            <td class="tableCell" nowrap>@definition.Name</td>
+								            <td class="tableCell" align="center">
+									            <input type=button value="Start" onclick="location='../form/startProcessInstance.rails?processDefinitionId=$definition.ProcessDefinition.Id';">
+								            </td>
+								            <td class="tableCell" align="center">
+									            <input type=button value="Preview" onclick="location='../user/showHome.rails?preview=process&processDefinitionId=$definition.ProcessDefinition.Id';">
+								            </td>
+							            </tr>
+	                                }
+                                }
+                                else
+                                {
+							            <tr class="tableRowEven">
+								            <td class="tableCell" colspan="3" align="center">--- table is empty ---</td>
+							            </tr>
+                                }
+						            </table>						
+						        </td>
+					        </tr>
+				    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top:15px;" valign="top">
+				    <table class="box" border="0" cellspacing="1" width="100%">
+					    <tr>
+						    <th class="box" width="100%">Group Tasklist</th>
+					    </tr>
+					    <tr>
+						    <td class="box">
+						    <!-- START OF TABLE GroupTasklist-->
+						        <table  class="table" width="100%"border="0" cellspacing="1" cellpadding="2">
+							        <tr class="tableHeaderRow">
+								        <td nowrap class="tableHeaderCell">Group name</td>
+								        <td nowrap class="tableHeaderCell">Process name</td>
+								        <td nowrap class="tableHeaderCell">Activity name</td>
+								        <td nowrap class="tableHeaderCell">Take</td>
+								        <td nowrap class="tableHeaderCell">Preview</td>
+							        </tr>
+							        <tr class="tableRowEven">
+								        <td class="tableCell" nowrap></td>
+								        <td class="tableCell" nowrap></td>
+								        <td class="tableCell" nowrap></td>
+								        <td class="tableCell" align="center"></td>
+								        <td class="tableCell" align="center"></td>
+							        </tr>
+						        </table>						
+						    <!-- END OF TABLE GroupTasklist-->
+						    </td>
+					    </tr>
+				    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+    <td valign="top">
+@if (ViewData["preview"] =="process" || ViewData["preview"]=="activity")
+{
+	    <table border="0" cellspacing="0" cellpadding="0">
+		    <tr>
+		        <td valign="top">
+			        <table class="box" border="0" cellspacing="1">
+				        <tr>
+					        <th class="box" width="100%">Preview of a process</th>
+				        </tr>
+				        <tr>
+				            <td class="box">
+	                            <!-- #parse( 'template/processActivityInfo.vm' )-->
+	                            @TempData["imageHeight"] = processDefinition.ImageHeight 
+	                            @TempData["imageWidth"] = processDefinition.ImageWidth
+	                            @if (ViewData["preview"] =="activity" && ViewData["imageWidth"] != "0" && ViewData["imageHeight"] != "0")
+                                {
+		                            <!-- #parse( 'template/processOverview.vm' ) -->
+                                }    
+	                            else
+                                {
+					                <img border="0" src="../image/processImage.rails?processDefinitionId=$processDefinition.Id" alt="nothing"/>
+	                            }
+				            </td>
+				        </tr>
+			        </table>
+		        </td>
+		    </tr>
+	    </table>
+}
+    </td>
+  </tr>
+</table>
+}
+

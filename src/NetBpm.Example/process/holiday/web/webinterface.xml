@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+
+<web-interface>
+
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <image name="web/holiday.gif" mime-type="image/gif" width="411" height="436" />
+
+  <!-- ================ -->
+  <!-- == ACTIVITIES == -->
+  <!-- ================ -->
+  <activity-state name="start holiday request">
+    <image-coordinates>
+      <x1>182</x1>
+      <y1>86</y1>
+      <x2>207</x2>
+      <y2>111</y2>
+    </image-coordinates>
+    <field attribute="start date">
+      <name>Startdate</name>
+      <description>Put here the start date of the holiday you want to request (the start-day is included in the holiday-period)</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.DateInput, NetBpm" >
+        <parameter name="dateFormat">dd/MM/yyyy</parameter>
+      </htmlformatter>
+    </field>
+    <field attribute="end date">
+      <name>Enddate</name>
+      <description>Put here the start date of the holiday you want to request (the end-day is included in the holiday-period)</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.DateInput, NetBpm" >
+        <parameter name="dateFormat">dd/MM/yyyy</parameter>
+      </htmlformatter>
+    </field>
+    <field attribute="comment">
+      <name>Comment</name>
+      <description>Free format comments</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.TextAreaInput, NetBpm">
+        <parameter name="rows">5</parameter>
+        <parameter name="cols">20</parameter>
+      </htmlformatter>
+    </field>
+  </activity-state>
+
+  <activity-state name="evaluating">
+    <image-coordinates>
+      <x1>152</x1>
+      <y1>133</y1>
+      <x2>242</x2>
+      <y2>161</y2>
+    </image-coordinates>
+    <field attribute="requester">
+      <name>Requester</name>
+      <description>This is the person requesting the holiday</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.PersonLabel, NetBpm" />
+    </field>
+    <field attribute="start date">
+      <name>Startdate</name>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.DateLabel, NetBpm" >
+        <parameter name="dateFormat">dd/MM/yyyy</parameter>
+      </htmlformatter>
+    </field>
+    <field attribute="end date">
+      <name>Enddate</name>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.DateLabel, NetBpm" >
+        <parameter name="dateFormat">dd/MM/yyyy</parameter>
+      </htmlformatter>
+    </field>
+    <field attribute="evaluation result">
+      <name>Evaluation result</name>
+      <description>Please, decide on the holiday-request of your employee.</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.EvaluationInput" />
+    </field>
+  </activity-state>
+  
+  <activity-state name="HR notification">
+    <image-coordinates>
+      <x1>90</x1>
+      <y1>291</y1>
+      <x2>188</x2>
+      <y2>319</y2>
+    </image-coordinates>
+  </activity-state>
+  
+  <activity-state name="approval notification">
+    <image-coordinates>
+      <x1>203</x1>
+      <y1>291</y1>
+      <x2>327</x2>
+      <y2>319</y2>
+    </image-coordinates>
+  </activity-state>
+  
+  <activity-state name="disapproval notification">
+    <image-coordinates>
+      <x1>272</x1>
+      <y1>230</y1>
+      <x2>308</x2>
+      <y2>257</y2>
+    </image-coordinates>
+  </activity-state>
+  
+</web-interface>

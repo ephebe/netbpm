@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Organisation.Impl.MembershipImpl, NetBpm"
+        table="NBPM_MEMBERSHIP"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="Role"
+            type="string"
+            update="true"
+            insert="true"
+            column="role"
+        />
+
+        <property
+            name="Type"
+            type="string"
+            update="true"
+            insert="true"
+            column="type_"
+        />
+
+        <many-to-one
+            name="Group"
+            class="NetBpm.Workflow.Organisation.Impl.GroupImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="group_"
+        />
+
+        <many-to-one
+            name="User"
+            class="NetBpm.Workflow.Organisation.Impl.UserImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="user_"
+        />
+    </class>
+
+</hibernate-mapping>

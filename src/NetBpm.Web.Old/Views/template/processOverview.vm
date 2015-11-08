@@ -1,0 +1,20 @@
+#set ($borderWidth = 3 )
+#set ($tabWidth = $x1 - $borderWidth )
+#set ($tabHeight = $y1 - $borderWidth )
+#set ($boxWidth = ($x2 - $x1) )
+#set ($boxHeight = ($y2 - $y1 + (2 * $borderWidth)) )
+<table border=0 cellspacing=0 cellpadding=0 width=$imageWidth height=$imageHeight>
+	<tr>
+		<td width=$imageWidth height=$imageHeight style="background-image:url(../image/processImage.rails?processDefinitionId=$processDefinition.Id)" valign=top>
+			<table border=0 cellspacing=0 cellpadding=0>
+				<tr>
+					<td width=$tabWidth height=$tabHeight style="background-color:transparent;"></td>
+				</tr>
+				<tr>
+					<td style="background-color:transparent;"></td>
+					<td style="border-color:red; border-width:$borderWidthpx; border-style:groove; background-color:transparent;" width=$boxWidth height=$boxHeight>&nbsp;</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRunConfiguration name="本機測試回合" id="73c4e541-ec06-4fcf-a317-eb1646204795" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <Description>這是本機測試回合的預設測試回合組態。</Description>
+  <TestTypeSpecific />
+</TestRunConfiguration>

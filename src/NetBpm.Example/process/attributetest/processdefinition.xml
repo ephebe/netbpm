@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition>
+    <name>attribute test</name>
+    <description>attribute test</description>
+    <responsible>ae</responsible>
+    
+    <start-state name="start attribute test">
+        <description>start attribute test</description>
+        <role>starter</role>
+        <field attribute="field not accessible"      access="not-accessible" />
+        <field attribute="field read only"           access="read-only" />
+        <field attribute="field write only"          access="write-only" />
+        <field attribute="field write only required" access="write-only-required" />
+        <field attribute="field read write"          access="read-write" />
+        <field attribute="field read write required" access="read-write-required" />
+        <transition to="attribute test activity" />
+    </start-state>
+    
+    <end-state name="end attribute test" />
+    
+    <attribute name="starter"                   type="actor" />
+    <attribute name="activity performer"        type="actor" />
+    <attribute name="concurrentAResponsible"    type="actor" />
+    <attribute name="concurrentBResponsible"    type="actor" />
+    <attribute name="field not accessible"      type="text"  initial-value="field not accessible value" />
+    <attribute name="field read only"           type="text"  initial-value="field read only value" />
+    <attribute name="field write only"          type="text"  initial-value="field write only value" />
+    <attribute name="field write only required" type="text"  initial-value="field write only required value" />
+    <attribute name="field read write"          type="text"  initial-value="field read write value" />
+    <attribute name="field read write required" type="text"  initial-value="field read write required value" />
+    
+    
+    <activity-state name="attribute test activity">
+        <description>attribute test activity</description>
+        <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example">
+            <parameter name="actor">ae</parameter>
+        </assignment>
+        <role>activity performer</role>
+        <field attribute="field not accessible"       access="not-accessible" />
+        <field attribute="field read only"            access="read-only" />
+        <field attribute="field write only"           access="write-only" />
+        <field attribute="field write only required"  access="write-only" />
+        <field attribute="field read write"           access="read-write" />
+        <field attribute="field read write required"  access="read-write-required" />
+        <transition name="attribute test activity transition" to="attribute test fork" />
+    </activity-state>
+    
+    <concurrent-block>
+
+        <fork name="attribute test fork">
+            <transition name="attribute test fork transition A" to="attribute test concurrent A" />
+            <transition name="attribute test fork transition B" to="attribute test concurrent B" />
+        </fork>
+
+        <join name="attribute test join">
+            <transition name="attribute test join transition A" to="end attribute test" />
+        </join>
+
+        <activity-state name="attribute test concurrent A">
+            <description>attribute test concurrent A</description>
+            <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example">
+                <parameter name="actor">ae</parameter>
+            </assignment>
+            <role>concurrentAResponsible</role>
+            <field attribute="field not accessible"           access="not-accessible" />
+            <field attribute="field read only"                access="read-only" />
+            <field attribute="field write only"               access="write-only" />
+            <field attribute="field write only required"      access="write-only-required" />
+            <field attribute="field read write"               access="read-write" />
+            <field attribute="field read write required"      access="read-write-required" />
+            <transition name="attribute test concurrent A transition" to="attribute test join" />
+        </activity-state>   
+
+        <activity-state name="attribute test concurrent B">
+            <description>attribute test concurrent B</description>
+            <assignment handler="NetBpm.Example.Delegate.TrivialAssignmentHandler, NetBpm.Example">
+                <parameter name="actor">ae</parameter>
+            </assignment>
+            <role>concurrentBResponsible</role>
+            <field attribute="field not accessible"       access="not-accessible" />
+            <field attribute="field read only"            access="read-only" />
+            <field attribute="field write only"           access="write-only" />
+            <field attribute="field write only required"  access="write-only-required" />
+            <field attribute="field read write"           access="read-write" />
+            <field attribute="field read write required"  access="read-write-required" />
+            <transition name="attribute test concurrent B transition" to="attribute test join" />
+        </activity-state>
+
+    </concurrent-block>
+    
+</process-definition>

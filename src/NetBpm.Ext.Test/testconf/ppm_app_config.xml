@@ -1,0 +1,73 @@
+<configuration>
+	<components>
+
+		<component id="ClassLoader" 
+			service="NetBpm.Workflow.Delegation.ClassLoader.IClassLoader, NetBpm" 
+			type="NetBpm.Workflow.Delegation.ClassLoader.Impl.DefaultClassLoader, NetBpm" />
+
+		<component id="PPMSession" 
+			service="NetBpm.Ext.NAnt.EComp.IPPMSessionLocal, NetBpm.Ext" 
+			type="NetBpm.Ext.NAnt.EComp.Impl.PPMEComp, NetBpm.Ext" />
+
+		<component id="OrganisationSession" 
+			service="NetBpm.Workflow.Organisation.EComp.IOrganisationSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Organisation.EComp.Impl.OrganisationEComp, NetBpm" />
+
+		<component id="SchedulerSession" 
+			service="NetBpm.Workflow.Scheduler.EComp.ISchedulerSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerEComp, NetBpm" />
+
+		<component id="DefinitionSession" 
+			service="NetBpm.Workflow.Definition.EComp.IDefinitionSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Definition.EComp.Impl.DefinitionEComp, NetBpm" />
+
+		<component id="ExecutionSession" 
+			service="NetBpm.Workflow.Execution.EComp.IExecutionSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Execution.EComp.Impl.ExecutionEComp, NetBpm" />
+
+		<component id="LogSession" 
+			service="NetBpm.Workflow.Log.EComp.ILogSessionLocal, NetBpm" 
+			type="NetBpm.Workflow.Log.EComp.Impl.LogEComp, NetBpm" />
+
+		<component id="SchedulerThread" 
+			service="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerThread, NetBpm" 
+			type="NetBpm.Workflow.Scheduler.EComp.Impl.SchedulerThread, NetBpm" />
+
+	</components>
+
+	<facilities>
+		<facility 
+			id="transactions" 
+			type="Castle.Facilities.AutomaticTransactionManagement.TransactionFacility, Castle.Facilities.AutomaticTransactionManagement"/>
+
+		<facility id="nhibernate"
+			type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration">
+			<factory id="nhibernate.factory">
+				<!-- MYSQL Config -->
+				<settings>
+					<item key="hibernate.connection.provider">NHibernate.Connection.DriverConnectionProvider</item>
+					<item key="hibernate.connection.driver_class">NHibernate.Driver.MySqlDataDriver</item>
+					<item key="hibernate.connection.connection_string">Database=nbpm;Data Source=localhost;User Id=nbpm;Password=nbpm</item>
+					<item key="hibernate.dialect">NHibernate.Dialect.MySQLDialect</item>
+				</settings>
+				<!-- MSSql Config-->
+<!--
+				<settings>
+					<item key="hibernate.connection.driver_class">NHibernate.Driver.SqlClientDriver</item>
+					<item key="hibernate.dialect">NHibernate.Dialect.MsSql2000Dialect</item>
+					<item key="hibernate.connection.provider">NHibernate.Connection.DriverConnectionProvider</item>
+					<item key="hibernate.connection.connection_string">Data Source=.;Initial Catalog=nbpm;Integrated Security=SSPI</item>
+				</settings>
+-->
+
+	 			<assemblies>
+	 	 				<assembly>NetBpm</assembly>
+	 			</assemblies>
+			</factory>
+		</facility>
+		<facility 
+			id="transactions" 
+			type="Castle.Facilities.AutomaticTransactionManagement.TransactionFacility, Castle.Facilities.AutomaticTransactionManagement"/>
+	</facilities>
+
+</configuration>

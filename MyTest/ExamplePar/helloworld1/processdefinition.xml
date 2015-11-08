@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <name>Hello world 1</name>
+  <description>This is the simples process.</description>
+
+  <start-state name="start">
+    <transition to="first activity state" />
+  </start-state>
+
+  <end-state name="end" />
+
+  <activity-state name="first activity state">
+    <description>this is the first state</description>
+    <assignment handler="NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm">
+      <parameter name="expression">processInitiator</parameter>
+    </assignment>
+    <transition to="end" />
+  </activity-state>
+
+</process-definition>

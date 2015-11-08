@@ -1,0 +1,22 @@
+				<table border=0 cellspacing=8 cellpadding=0>
+					<tr>
+						<td valign=top align=right nowrap>Process name :</td>
+						<td valign=top><b>$processDefinition.Name</b></td>
+					</tr>
+					<tr>
+						<td valign=top align=right nowrap>Process description :</td>
+						<td valign=top><b>$processDefinition.Description</b></td>
+					</tr>
+#if ($preview == 'activity')
+					<tr>
+						<td valign=top align=right nowrap>Activity name :</td>
+						<td valign=top><b>$activity.Name</b></td>
+					</tr>
+	#if ($activity.Description)
+					<tr>
+						<td valign=top align=right nowrap>Activity description :</td>
+						<td valign=top><b>$activity.Description</b></td>
+					</tr>
+	#end
+#end
+				</table>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Definition.Impl.ProcessBlockImpl, NetBpm"
+        table="NBPM_PROCESSBLOCK"
+        dynamic-update="false"
+        dynamic-insert="false"
+        discriminator-value="ProcessBlock">
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <discriminator
+            column="subclass"
+            type="string"
+        />
+
+        <set
+            name="Nodes"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="processBlock"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.NodeImpl, NetBpm"
+              />
+        </set>
+
+        <set
+            name="Attributes"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="scope"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.AttributeImpl, NetBpm"
+              />
+        </set>
+
+        <many-to-one
+            name="ParentBlock"
+            class="NetBpm.Workflow.Definition.Impl.ProcessBlockImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="parentBlock"
+        />
+
+        <set
+            name="ChildBlocks"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="parentBlock"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Definition.Impl.ProcessBlockImpl, NetBpm"
+              />
+        </set>
+
+        <property
+            name="Name"
+            type="string"
+            update="true"
+            insert="true"
+            column="name"
+        />
+
+        <property
+            name="Description"
+            type="string"
+            update="true"
+            insert="true"
+            column="description"
+        />
+
+        <many-to-one
+            name="ProcessDefinition"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processDefinition"
+        />
+
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.ConcurrentBlockImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ConcurrentBlock"
+        >
+
+        <many-to-one
+            name="Fork"
+            class="NetBpm.Workflow.Definition.Impl.ForkImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="fork"
+        />
+
+        <many-to-one
+            name="Join"
+            class="NetBpm.Workflow.Definition.Impl.JoinImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="join_"
+        />
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="ProcessDefinition"
+        >
+
+        <property
+            name="ResponsibleUserName"
+            type="string"
+            update="true"
+            insert="true"
+            column="responsibleUserName"
+        />
+
+        <property
+            name="Version"
+            type="integer"
+            update="true"
+            insert="true"
+            column="version_"
+        />
+
+        <many-to-one
+            name="StartState"
+            class="NetBpm.Workflow.Definition.Impl.StartStateImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="startState"
+        />
+
+        <many-to-one
+            name="EndState"
+            class="NetBpm.Workflow.Definition.Impl.EndStateImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="endState"
+        />
+
+        <property
+            name="Image"
+            type="binary"
+            update="true"
+            insert="true"
+            column="image"
+        />
+
+        <property
+            name="ImageMimeType"
+            type="string"
+            update="true"
+            insert="true"
+            column="imageMimeType"
+        />
+
+        <property
+            name="ImageHeight"
+            type="integer"
+            update="true"
+            insert="true"
+            column="imageHeight"
+        />
+
+        <property
+            name="ImageWidth"
+            type="integer"
+            update="true"
+            insert="true"
+            column="imageWidth"
+        />
+
+        <many-to-one
+            name="AuthorizationDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="authorizationDelegation"
+        />
+
+        <set
+            name="ClassFiles"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="processDefinition"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Delegation.Impl.AssemblyFileImpl, NetBpm"
+              />
+        </set>
+
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>

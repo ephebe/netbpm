@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<process-definition>
+
+  <!-- =================================== -->
+  <!-- == PROCESS DEFINITION PROPERTIES == -->
+  <!-- =================================== -->
+  <name>Boo Example</name>
+  <description>Boo Example</description>
+  <responsible>ae</responsible>
+
+  <!-- ====================== -->
+  <!-- == START & ENDSTATE == -->
+  <!-- ====================== -->
+  <start-state name="start boo">
+    <role>requester</role>
+    <field attribute="product"    access="write-only" />
+    <transition to="evaluation">
+      <action event="transition" handler="NetBpm.Ext.Boo.BooAction, NetBpm.Ext" on-exception="log">
+        <parameter name="script">available=available.APPROVE</parameter>
+        <parameter name="available">InOut</parameter>
+      </action>
+    </transition>
+  </start-state>
+
+  <end-state name="end" />
+
+  <!-- ================ -->
+  <!-- == ATTRIBUTES == -->
+  <!-- ================ -->
+  <attribute name="available" type="evaluation" initial-value="DISAPPROVE" />
+  <attribute name="product" type="text" />
+  <attribute name="requester" type="actor" />
+  
+  <decision name="evaluation" handler="NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision, NetBpm">
+		<parameter name="attribute">available</parameter>
+		<transition name="approve"    to="isAvailable" />
+		<transition name="disapprove" to="notAvailable" />
+  </decision>
+
+  <activity-state name="notAvailable">
+    <description> </description>
+    <role>requester</role>
+    <transition to="end" />
+  </activity-state>
+
+  <activity-state name="isAvailable">
+    <description> </description>
+    <role>requester</role>
+    <transition to="end" />
+  </activity-state>
+
+</process-definition>

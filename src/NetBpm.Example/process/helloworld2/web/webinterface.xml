@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<web-interface>
+
+  <image name="web/helloworld1.gif" mime-type="image/gif" width="104" height="155" />
+
+  <!-- ================ -->
+  <!-- == ACTIVITIES == -->
+  <!-- ================ -->
+  <activity-state name="start">
+    <image-coordinates>
+      <x1>43</x1>
+      <y1>0</y1>
+      <x2>65</x2>
+      <y2>21</y2>
+    </image-coordinates>
+  </activity-state>
+
+  <activity-state name="first activity state">
+    <image-coordinates>
+      <x1>0</x1>
+      <y1>51</y1>
+      <x2>101</x2>
+      <y2>78</y2>
+    </image-coordinates>
+  </activity-state>
+  
+</web-interface>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+        table="NBPM_DELEGATION"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <many-to-one
+            name="ProcessDefinition"
+            class="NetBpm.Workflow.Definition.Impl.ProcessDefinitionImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="processDefinition"
+        />
+
+        <property
+            name="ClassName"
+            type="string"
+            update="true"
+            insert="true"
+            column="className"
+        />
+
+        <property
+            name="Configuration"
+            type="string"
+            update="true"
+            insert="true"
+            column="configuration"
+        />
+
+        <property
+            name="ExceptionHandlingType"
+            type="NetBpm.Workflow.Delegation.ExceptionHandlingType, NetBpm"
+            update="true"
+            insert="true"
+            column="exceptionHandler"
+        />
+
+    </class>
+
+</hibernate-mapping>

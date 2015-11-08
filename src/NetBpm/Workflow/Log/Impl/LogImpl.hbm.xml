@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Log.Impl.LogImpl, NetBpm"
+        table="NBPM_LOG"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="ActorId"
+            type="string"
+            update="true"
+            insert="true"
+            column="actorId"
+        />
+
+        <many-to-one
+            name="Flow"
+            class="NetBpm.Workflow.Execution.Impl.FlowImpl, NetBpm"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="flow"
+        />
+
+        <property
+            name="Date"
+            type="DateTime"
+            update="true"
+            insert="true"
+            column="date_"
+        />
+
+        <property
+            name="EventType"
+            type="NetBpm.Workflow.Definition.EventType, NetBpm"
+            update="true"
+            insert="true"
+            column="type_"
+        />
+
+        <set
+            name="Details"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="log_"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Log.Impl.LogDetailImpl, NetBpm"
+              />
+        </set>
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Organisation.Impl.ActorImpl, NetBpm"
+        table="NBPM_ACTOR"
+        dynamic-update="false"
+        dynamic-insert="false"
+        discriminator-value="Actor"	
+    >
+        <id
+            name="Id"
+            column="id"
+            type="string"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <discriminator
+            column="subclass"
+            type="string"
+        />
+        <subclass
+            name="NetBpm.Workflow.Organisation.Impl.GroupImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="Group"
+        >
+        <property
+            name="Name"
+            type="string"
+            update="true"
+            insert="true"
+            column="name"
+        />
+
+        <property
+            name="Type"
+            type="string"
+            update="true"
+            insert="true"
+            column="type_"
+        />
+
+        <set
+            name="Memberships"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="group_"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Organisation.Impl.MembershipImpl, NetBpm"
+              />
+        </set>
+
+        <many-to-one
+            name="Parent"
+            class="NetBpm.Workflow.Organisation.Impl.GroupImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="parent"
+        />
+
+        <set
+            name="Children"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="parent"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Organisation.Impl.GroupImpl, NetBpm"
+              />
+        </set>
+
+        </subclass>
+        <subclass
+            name="NetBpm.Workflow.Organisation.Impl.UserImpl, NetBpm"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="User"
+        >
+        <property
+            name="FirstName"
+            type="string"
+            update="true"
+            insert="true"
+            column="firstName"
+        />
+
+        <property
+            name="LastName"
+            type="string"
+            update="true"
+            insert="true"
+            column="lastName"
+        />
+
+        <property
+            name="Email"
+            type="string"
+            update="true"
+            insert="true"
+            column="email"
+        />
+
+        <set
+            name="Memberships"
+            lazy="true"
+            inverse="false"
+            cascade="all"
+            sort="unsorted"
+        >
+
+              <key
+                  column="user_"
+              />
+
+              <one-to-many
+                  class="NetBpm.Workflow.Organisation.Impl.MembershipImpl, NetBpm"
+              />
+        </set>
+
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>

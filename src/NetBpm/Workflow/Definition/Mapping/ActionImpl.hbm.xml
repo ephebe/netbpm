@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<hibernate-mapping auto-import="true"
+										default-lazy="true"
+										xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+										xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+										namespace="Rhino.Security.Model"
+										assembly="Rhino.Security"
+										xmlns="urn:nhibernate-mapping-2.2">
+    <class
+        name="NetBpm.Workflow.Definition.Impl.ActionImpl, NetBpm"
+        table="NBPM_ACTION"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="Id"
+            column="id"
+            type="long"
+            unsaved-value="0"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="DefinitionObjectId"
+            type="long"
+            update="true"
+            insert="true"
+            column="definitionObject"
+            not-null="true"
+        />
+
+        <property
+            name="EventType"
+            type="NetBpm.Workflow.Definition.EventType, NetBpm"
+            update="true"
+            insert="true"
+            column="eventType"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="ActionDelegation"
+            class="NetBpm.Workflow.Delegation.Impl.DelegationImpl, NetBpm"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="actionDelegation"
+        />
+    </class>
+
+</hibernate-mapping>

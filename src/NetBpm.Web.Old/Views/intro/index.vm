@@ -1,0 +1,92 @@
+<script type="text/javascript">
+    function updatePwd() {
+    var userField = document.all[ 'username' ];
+    var pwdField = document.all[ 'password' ];
+    pwdField.selectedIndex = userField.selectedIndex;
+    }
+</script>
+
+<table cellspacing=0 cellpadding=0 width=100% height=100%>
+    <tr>
+    <td valign=middle align=center width=100% height=100%>
+        <table cellspacing=0 cellpadding=0>
+        <tr>
+            <td align=center width="100%">
+
+			    <table class=box border=0 cellspacing=1 width=100%>
+				<tr>
+					<th class=box width=100%>Log on as ...</th>
+				</tr>
+				<tr>
+					<td class=box>
+						<center>
+						<form method=post action="./performLogin.rails"> 
+						<table border=0 cellspacing=10 cellpadding=0>
+							<tr>
+							<td align=right>user :</td>
+							<td>
+								<select name=username onchange="updatePwd()">
+								<option value="ae">Albert Einstein</option>              
+								<option value="cg">Carl Gauss</option>
+								<option value="pf">Pierre De Fermat</option>
+								<option value="ed">Edsger Dijkstra</option>
+								<option value="uaoga">user A of group A</option>
+								<option value="uboga">user B of group A</option>
+								<option value="ucoga">user C of group A</option>
+								<option value="uaogb">user A of group B</option>
+								<option value="ubogb">user B of group B</option>
+								<option value="ucogb">user C of group B</option>
+								<option value="uaogc">user A of group C</option>
+								<option value="ubogc">user B of group C</option>
+								<option value="ucogc">user C of group C</option>
+								<option value="uaogd">user A of group D</option>
+								<option value="ubogd">user B of group D</option>
+								<option value="ucogd">user C of group D</option>
+								</select>
+							</td>
+							</tr>
+							<tr>               
+							<td align=right>password :</td>
+							<td>
+								<select name=password>
+								<option value="ae">pwd of Albert Einstein</option>              
+								<option value="cg">pwd of Carl Gauss</option>
+								<option value="pf">pwd of Pierre De Fermat</option>
+								<option value="ed">pwd of Edsger Dijkstra</option>
+								<option value="uaoga">pwd of user A of group A</option>
+								<option value="uboga">pwd of user B of group A</option>
+								<option value="ucoga">pwd of user C of group A</option>
+								<option value="uaogb">pwd of user A of group B</option>
+								<option value="ubogb">pwd of user B of group B</option>
+								<option value="ucogb">pwd of user C of group B</option>
+								<option value="uaogc">pwd of user A of group C</option>
+								<option value="ubogc">pwd of user B of group C</option>
+								<option value="ucogc">pwd of user C of group C</option>
+								<option value="uaogd">pwd of user A of group D</option>
+								<option value="ubogd">pwd of user B of group D</option>
+								<option value="ucogd">pwd of user C of group D</option>
+								</select>
+							</td>
+							</tr>
+							<tr>
+							<td align=center colspan=2>
+								<input type=submit value="Log In">
+							</td>
+							</tr>
+						</table>
+						</form>
+						</center>
+					</tr>
+				<table/>
+            </td>
+        </tr>
+
+        <tr>
+            <td align=center width="100%" style="padding-top:15px;">
+                More information about this demo can be found <a href="http://www.netbpm.org/docs/demo.html">here</a>.
+            </td>
+        </tr>
+        </table>
+    </td>
+    </tr>
+</table>
