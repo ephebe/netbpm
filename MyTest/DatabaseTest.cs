@@ -19,6 +19,8 @@ namespace MyTest
                                                               new string[] { "NetBpm" });
 
             new SchemaExport(cfg).Execute(true, true, false);
+
+            //Insert into NBPM_ACTOR(id,subclass) values('ae','User')
         }
     }
 }

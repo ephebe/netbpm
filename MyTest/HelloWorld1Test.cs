@@ -23,6 +23,26 @@ namespace MyTest
             byte[] b = new byte[parFile.Length];
             fstream.Read(b, 0, (int)parFile.Length);
             processDefinitionService.DeployProcessArchive(b);
+
+            IProcessDefinition pd = processDefinitionService.GetProcessDefinition("Hello world 1");
+            Assert.IsNotNull(pd);
+            //1:first activity state 2:start 3:end
+            Assert.AreEqual(3, pd.Nodes.Count);
+            //也要能取出state
+            //pd.GetStates("first activity state")
+
+            //要能取出Trnsitions
+            //transitions = pd.from("first activity state");
+            //transitions = pd.to("end");
+
+            //要能取得Delegations
+
+            /*select * from [dbo].[NBPM_DELEGATION];
+              select * from [dbo].[NBPM_NODE];
+              select * from [dbo].[NBPM_PROCESSBLOCK];
+              select * from [dbo].[NBPM_TRANSITION];
+              select *from [dbo].[NBPM_DELEGATION]
+            */
         }
 
 
@@ -40,8 +60,18 @@ namespace MyTest
                 IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 1");
 
                 processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
+
                 //這時已經在First State
                 Assert.IsNotNull(processInstance);
+                //會產生基本的Root Flow
+                Assert.IsNotNull(processInstance.RootFlow);
+
+                /*
+                 select *from [dbo].[NBPM_PROCESSINSTANCE]
+                 select *from [dbo].[NBPM_FLOW]
+                 select *from [dbo].[NBPM_LOG]
+                 select *from [dbo].[NBPM_LOGDETAIL]
+                 */
             }
             catch (ExecutionException e)
             {
