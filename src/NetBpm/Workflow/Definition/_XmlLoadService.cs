@@ -10,8 +10,7 @@ namespace NetBpm.Workflow.Definition
     {
         public IProcessDefinition FetchProcessDefinition(XmlDocument xmlDocument) 
         {
-            ProcessDefinitionBuildService buildService = new ProcessDefinitionBuildService(xmlDocument);
-            buildService.Id();
+            throw new NotImplementedException();
 
         }
     }
