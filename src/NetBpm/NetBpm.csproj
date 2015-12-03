@@ -129,11 +129,11 @@
     </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\ShareDlls\NHibernate\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\ShareDlls\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.4\lib\net35-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NAnt.Core, Version=0.91.4312.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
@@ -217,6 +217,8 @@
     <Compile Include="Workflow\Definition\Interface\IProcessDefinitionService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Definition\_ProcessDefinitionApplicationService.cs" />
+    <Compile Include="Workflow\Definition\_ProcessDefinitionBuildService.cs" />
     <Compile Include="Workflow\Definition\ProcessDefinitionService.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -343,6 +345,7 @@
     <Compile Include="Workflow\Definition\NpdlException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Definition\_XmlLoadService.cs" />
     <Compile Include="Workflow\Delegation\AbstractConfigurable.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -681,6 +684,7 @@
     <EmbeddedResource Include="Workflow\Scheduler\Impl\JobImpl.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Infrastructure\" />
     <Folder Include="Workflow\Definition\EComp\" />
     <Folder Include="Workflow\Organisation\EComp\Impl\" />
     <Folder Include="Workflow\Organisation\Impl\" />
@@ -701,6 +705,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
