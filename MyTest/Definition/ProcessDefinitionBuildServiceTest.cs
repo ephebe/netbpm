@@ -84,7 +84,7 @@ namespace MyTest.Definition
         public void Setup() 
         {
             buildService = new ProcessDefinitionBuildService(helloWorld1());
-            processDefinition = buildService.FetchProcessDefinition();
+            processDefinition = buildService.BuildProcessDefinition();
         }
 
         [Test]
@@ -92,6 +92,17 @@ namespace MyTest.Definition
         {
             Assert.AreEqual("Hello world 1", processDefinition.Name);
             Assert.AreEqual("This is the simples process.", processDefinition.Description);
+
+            Assert.AreEqual(2, processDefinition.Nodes.OfType<ActivityStateImpl>().Count());//startState,activityState
+            IEnumerator<ActivityStateImpl> activityState = processDefinition.Nodes.OfType<ActivityStateImpl>().GetEnumerator();
+            while(activityState.MoveNext())
+            {
+                if ((activityState.Current as StartStateImpl) == null) 
+                {
+                    Assert.AreEqual("first activity state", activityState.Current.Name);
+                    Assert.AreEqual("this is the first state", activityState.Current.Description);
+                }
+            }
         }
 
         [Test]

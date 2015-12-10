@@ -105,7 +105,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			executionContext.CreateLog(authenticatedActorId, EventType.PROCESS_INSTANCE_START);
 			executionContext.CheckAccess(attributeValues, startState);
             //看來也找不到AttributeInstance
-			//executionContext.StoreAttributeValues(attributeValues);
+			executionContext.StoreAttributeValues(attributeValues);
 
 			// if this activity has a role-name, save the actor in the corresponding attribute
 			executionContext.StoreRole(authenticatedActorId, startState);

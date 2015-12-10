@@ -166,6 +166,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomException\FileNotFindException.cs" />
     <Compile Include="NetBpmContainer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -193,6 +194,7 @@
     <Compile Include="Util\Db\PersistentObject.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Util\EComp\NHibernateHelper.cs" />
     <Compile Include="Util\EComp\NHSessionOpener.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -208,6 +210,7 @@
     <Compile Include="Util\Xml\XmlParser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Util\Zip\ParFile.cs" />
     <Compile Include="Util\Zip\ZipUtility.cs" />
     <Compile Include="Workflow\Definition\Attribute\Evaluation.cs">
       <SubType>Code</SubType>
@@ -544,6 +547,8 @@
     <Compile Include="Workflow\Execution\RequiredFieldException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
+    <Compile Include="Workflow\Execution\_ProcessExecutionService.cs" />
     <Compile Include="Workflow\Log\EComp\ILogSessionLocal.cs">
       <SubType>Code</SubType>
     </Compile>

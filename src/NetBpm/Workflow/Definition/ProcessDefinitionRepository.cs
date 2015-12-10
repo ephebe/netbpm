@@ -94,20 +94,5 @@ namespace NetBpm.Workflow.Definition.Impl
                 throw new NpdlException("couldn't deploy process archive due to a database exception : " + e.Message, e);
             }
         }
-
-        public void Save2(ProcessDefinitionImpl processDefinition, DbSession dbSession)
-        {
-            try
-            {
-                dbSession.SaveOrUpdate(processDefinition);
-                dbSession.Flush();
-            }
-            catch (DbException e)
-            {
-                throw new NpdlException("couldn't deploy process archive due to a database exception : " + e.Message, e);
-            }
-        }
-
-		
 	}
 }

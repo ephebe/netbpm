@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Definition\ProcessDefinitionApplicationServiceTest.cs" />
     <Compile Include="Definition\ProcessDefinitionBuildServiceTest.cs" />
     <Compile Include="HelloWorld3Test.cs" />
     <Compile Include="ConfigurationFactory.cs" />

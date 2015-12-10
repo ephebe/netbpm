@@ -1,5 +1,10 @@
-﻿using NetBpm.Util.Xml;
+﻿using Castle.Facilities.NHibernateIntegration;
+using NetBpm.Util.DB;
+using NetBpm.Util.EComp;
+using NetBpm.Util.Xml;
 using NetBpm.Util.Zip;
+using NetBpm.Workflow.Definition.Impl;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,16 +13,24 @@ using System.Text;
 
 namespace NetBpm.Workflow.Definition
 {
-    public class ProcessDefinitionApplicationService 
+    public class ProcessDefinitionApplicationService
     {
-        public void DeployProcessArchive(byte[] processArchiveBytes)
+        ProcessDefinitionRepository repository = null;
+        public ProcessDefinitionApplicationService()
         {
-            Stream processArchiveStream = new MemoryStream(processArchiveBytes);
-            IDictionary<string, byte[]> entries = null;
-            entries = ZipUtility.ReadEntries(processArchiveStream);
+            repository = ProcessDefinitionRepository.Instance;
+        }
 
-            XmlElement xmlElement = getXmlElementFromBytes(entries["processdefinition.xml"]);
+        public void DeployProcessArchive(ParFile parfile)
+        {
+            ProcessDefinitionBuildService buildService = new ProcessDefinitionBuildService(parfile.ProcessDefinition);
+            ProcessDefinitionImpl processDefinition =  buildService.BuildProcessDefinition();
 
+            using (ISession session = NHibernateHelper.OpenSession())
+            {
+                DbSession nhSession = new DbSession(session);
+                repository.Save(processDefinition, nhSession);
+            }
 
         }
 
@@ -31,14 +44,6 @@ namespace NetBpm.Workflow.Definition
             throw new NotImplementedException();
         }
 
-        private XmlElement getXmlElementFromBytes(byte[] processDefinitionXml)
-        {
-            XmlElement xmlElement = null;
-
-            Stream processDefinitionInputStream = new MemoryStream(processDefinitionXml);
-            XmlParser xmlParser = new XmlParser(processDefinitionInputStream);
-            xmlElement = xmlParser.Parse();
-            return xmlElement;
-        }
+       
     }
 }

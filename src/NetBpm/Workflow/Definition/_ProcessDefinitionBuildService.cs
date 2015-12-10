@@ -15,15 +15,12 @@ namespace NetBpm.Workflow.Definition
     {
         private XmlElement xmlElement = null;
 
-        string id;
-        string name;
-
         public ProcessDefinitionBuildService(XmlElement xmlElement) 
         {
             this.xmlElement = xmlElement;
         }
 
-        public ProcessDefinitionImpl FetchProcessDefinition() 
+        public ProcessDefinitionImpl BuildProcessDefinition() 
         {
             ProcessDefinitionImpl processDefinition = definition();
             processDefinition.StartState = start();
@@ -66,12 +63,27 @@ namespace NetBpm.Workflow.Definition
             processBlock.Attributes = new ListSet();
             processBlock.ChildBlocks = new ListSet();
 
+            IEnumerator iter = nodeElement.GetChildElements("activity-state").GetEnumerator();
+            while (iter.MoveNext())
+            {
+                ActivityStateImpl activityState = new ActivityStateImpl();
+                this.activityState((XmlElement)iter.Current, activityState);
+                processBlock.Nodes.Add(activityState);
+            }
+
             this.definitionObject(nodeElement, processBlock);
         }
 
         private void activityState(XmlElement nodeElement, ActivityStateImpl activityState)
         {
-            //this.assign(startElement, startState);
+            XmlElement assignmentElement = xmlElement.GetChildElement("assignment");
+            if (assignmentElement != null)
+            {
+                DelegationImpl delegation = new DelegationImpl();
+                activityState.AssignmentDelegation = delegation;
+                this.delegation<ActivityStateImpl>(assignmentElement, delegation);
+            }
+
             this.state(nodeElement,activityState);
         }
 
@@ -99,63 +111,50 @@ namespace NetBpm.Workflow.Definition
             this.definitionObject(nodeElement, node);
         }
 
-        private void assign(XmlElement nodeElement, ActivityStateImpl activityState)
+        private void delegation<T>(XmlElement nodeElement,DelegationImpl delegation) 
         {
-            this.state(nodeElement, activityState);
-            XmlElement assignmentElement = xmlElement.GetChildElement("assignment");
-            if (assignmentElement != null)
+            Type delegatingObjectClass = typeof(T);
+            if (delegatingObjectClass == typeof(AttributeImpl))
             {
-                activityState.AssignmentDelegation = new DelegationImpl();
-                this.delegation(assignmentElement, activityState.AssignmentDelegation);
-
+                String type = xmlElement.GetProperty("type");
+                if ((Object)type != null)
+                {
+                    delegation.ClassName = ((String)DelegationImpl.attributeTypes[type]);
+                    string suportedTypes = "supported types: ";
+                    foreach (Object o in DelegationImpl.attributeTypes.Keys)
+                    {
+                        suportedTypes += o.ToString() + " ,";
+                    }
+                }
+                else
+                {
+                    delegation.ClassName = xmlElement.GetProperty("serializer");
+                }
             }
-            activityState.ActorRoleName = xmlElement.GetProperty("role");
-        }
+            else if (delegatingObjectClass == typeof(FieldImpl))
+            {
+                delegation.ClassName = xmlElement.GetProperty("class");
+            }
+            else
+            {
+                delegation.ClassName = xmlElement.GetProperty("handler");
+            }
 
-        private void delegation(XmlElement nodeElement,DelegationImpl delegation) 
-        {
-            //Type delegatingObjectClass = delegation.GetDelegate().GetType();
-            //if (delegatingObjectClass == typeof(AttributeImpl))
-            //{
-            //    String type = xmlElement.GetProperty("type");
-            //    if ((Object)type != null)
-            //    {
-            //        delegation.ClassName = ((String)attributeTypes[type]);
-            //        string suportedTypes = "supported types: ";
-            //        foreach (Object o in attributeTypes.Keys)
-            //        {
-            //            suportedTypes += o.ToString() + " ,";
-            //        }
-            //    }
-            //    else
-            //    {
-            //        delegation.ClassName = xmlElement.GetProperty("serializer");
-            //    }
-            //}
-            //else if (delegatingObjectClass == typeof(FieldImpl))
-            //{
-            //    delegation.ClassName = xmlElement.GetProperty("class");
-            //}
-            //else
-            //{
-            //    delegation.ClassName = xmlElement.GetProperty("handler");
-            //}
+            // parse the exception handler    
+            String exceptionHandlerText = xmlElement.GetAttribute("on-exception");
+            if ((Object)exceptionHandlerText != null)
+            {
+                delegation.ExceptionHandlingType = ExceptionHandlingTypeHelper.FromText(exceptionHandlerText);
+            }
 
-            //// parse the exception handler    
-            //String exceptionHandlerText = xmlElement.GetAttribute("on-exception");
-            //if ((Object)exceptionHandlerText != null)
-            //{
-            //    delegation.ExceptionHandlingType = ExceptionHandlingTypeHelper.FromText(exceptionHandlerText);
-            //}
-
-            //// create the configuration string
-            //XmlElement configurationXml = new XmlElement("cfg");
-            //IEnumerator iter = xmlElement.GetChildElements("parameter").GetEnumerator();
-            //while (iter.MoveNext())
-            //{
-            //    configurationXml.AddChild((XmlElement)iter.Current);
-            //}
-            //delegation.Configuration = configurationXml.ToString();
+            // create the configuration string
+            XmlElement configurationXml = new XmlElement("cfg");
+            IEnumerator iter = xmlElement.GetChildElements("parameter").GetEnumerator();
+            while (iter.MoveNext())
+            {
+                configurationXml.AddChild((XmlElement)iter.Current);
+            }
+            delegation.Configuration = configurationXml.ToString();
         }
 
         private void transition(XmlElement nodeElement,TransitionImpl transition) 
