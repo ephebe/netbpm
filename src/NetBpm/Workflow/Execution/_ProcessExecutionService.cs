@@ -1,4 +1,5 @@
 ﻿using NetBpm.Util.DB;
+using NetBpm.Workflow.Definition;
 using NetBpm.Workflow.Definition.Impl;
 using NetBpm.Workflow.Delegation.Impl;
 using NetBpm.Workflow.Execution.Impl;
@@ -12,13 +13,6 @@ namespace NetBpm.Workflow.Execution
     public class ProcessExecutionService
     {
         private static readonly DelegationHelper delegationHelper = DelegationHelper.Instance;
-
-        public ProcessInstanceImpl Start(ProcessDefinitionImpl processDefinition, DbSession nhSession)
-        {
-            ProcessInstanceImpl processInstance = new ProcessInstanceImpl("", processDefinition);
-
-            return processInstance;
-        }
 
         public void ProcessTransition(TransitionImpl transition,FlowImpl flow) 
         {
@@ -124,6 +118,22 @@ namespace NetBpm.Workflow.Execution
         public void ProcessEndState(EndStateImpl endState, FlowImpl flow)
         {
            
+        }
+
+        public ProcessInstanceImpl Start(TransitionImpl transition)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        internal ProcessInstanceImpl CreateProcessInstance(long processDefinitionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ProcessTransition(TransitionImpl transition, IFlow flow)
+        {
+            throw new NotImplementedException();
         }
     }
 }

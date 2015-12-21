@@ -1,6 +1,8 @@
 ﻿using NetBpm.Util.Client;
 using NetBpm.Util.DB;
 using NetBpm.Util.EComp;
+using NetBpm.Workflow.Definition;
+using NetBpm.Workflow.Definition.EComp.Impl;
 using NetBpm.Workflow.Definition.Impl;
 using NetBpm.Workflow.Execution.Impl;
 using NHibernate;
@@ -32,15 +34,15 @@ namespace NetBpm.Workflow.Execution
         public virtual IProcessInstance StartProcessInstance(Int64 processDefinitionId, IDictionary attributeValues, String transitionName, Relations relations)
         {
             ProcessDefinitionRepository processDefinitionRepository = ProcessDefinitionRepository.Instance;
+            ProcessDefinitionQueryService processDefinitionQueryService = new ProcessDefinitionQueryService();
             ProcessExecutionService processExecutionService = new ProcessExecutionService();
             
             using (ISession session = NHibernateHelper.OpenSession())
             {
                 DbSession nhSession = new DbSession(session);
-                ProcessDefinitionImpl processDefinition = (ProcessDefinitionImpl)processDefinitionRepository.GetProcessDefinition(processDefinitionId, null, nhSession);
-                ProcessInstanceImpl processInstance = processExecutionService.Start(processDefinition, nhSession);
-                TransitionImpl transition = null;//(TransitionImpl)processDefinition.StartState.ArrivingTransitions[transitionName];
-                processExecutionService.ProcessTransition(transition, (FlowImpl)processInstance.RootFlow);
+                TransitionImpl transition = processDefinitionQueryService.GetTransitionFrom("start");
+                ProcessInstanceImpl processInstance = processExecutionService.CreateProcessInstance(processDefinitionId);
+                processExecutionService.ProcessTransition(transition, processInstance.RootFlow);
             }
 
             return null;

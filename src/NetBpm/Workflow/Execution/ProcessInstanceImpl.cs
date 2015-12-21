@@ -6,7 +6,7 @@ using NetBpm.Workflow.Organisation;
 
 namespace NetBpm.Workflow.Execution.Impl
 {
-	public class ProcessInstanceImpl : PersistentObject, IProcessInstance
+	public partial class ProcessInstanceImpl : PersistentObject, IProcessInstance
 	{
 	    private DateTime? _start = null;
 	    private DateTime? _end = null;
