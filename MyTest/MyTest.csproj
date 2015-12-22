@@ -91,6 +91,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Definition\ProcessDefinitionApplicationServiceTest.cs" />
     <Compile Include="Definition\ProcessDefinitionBuildServiceTest.cs" />
+    <Compile Include="HelloWorld1NewTest.cs" />
     <Compile Include="HelloWorld3Test.cs" />
     <Compile Include="ConfigurationFactory.cs" />
     <Compile Include="DefinitionTest.cs" />
