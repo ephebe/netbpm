@@ -22,6 +22,7 @@ namespace MyTest
             fstream.Read(b, 0, (int)parFile.Length);
 
             ProcessDefinitionApplicationService service = new ProcessDefinitionApplicationService();
+            service.DeployProcessArchive(b);
         }
         
         [Test]
@@ -51,7 +52,7 @@ namespace MyTest
                     {
                         Assert.IsNotNull(activityState.AssignmentDelegation);
                         Assert.AreEqual("NetBpm.Workflow.Delegation.Impl.Assignment.AssignmentExpressionResolver, NetBpm", activityState.AssignmentDelegation.ClassName);
-                        Assert.AreEqual("<parameter name=\"expression\">processInitiator</parameter>", activityState.AssignmentDelegation.Configuration);
+                        Assert.AreEqual("<cfg><parameter name=\"expression\">processInitiator</parameter></cfg>", activityState.AssignmentDelegation.Configuration);
                     }
                 }
             }

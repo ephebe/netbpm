@@ -76,7 +76,7 @@ namespace NetBpm.Workflow.Definition
 
         private void activityState(XmlElement nodeElement, ActivityStateImpl activityState)
         {
-            XmlElement assignmentElement = xmlElement.GetChildElement("assignment");
+            XmlElement assignmentElement = nodeElement.GetChildElement("assignment");
             if (assignmentElement != null)
             {
                 DelegationImpl delegation = new DelegationImpl();
@@ -116,7 +116,7 @@ namespace NetBpm.Workflow.Definition
             Type delegatingObjectClass = typeof(T);
             if (delegatingObjectClass == typeof(AttributeImpl))
             {
-                String type = xmlElement.GetProperty("type");
+                String type = nodeElement.GetProperty("type");
                 if ((Object)type != null)
                 {
                     delegation.ClassName = ((String)DelegationImpl.attributeTypes[type]);
@@ -133,15 +133,15 @@ namespace NetBpm.Workflow.Definition
             }
             else if (delegatingObjectClass == typeof(FieldImpl))
             {
-                delegation.ClassName = xmlElement.GetProperty("class");
+                delegation.ClassName = nodeElement.GetProperty("class");
             }
             else
             {
-                delegation.ClassName = xmlElement.GetProperty("handler");
+                delegation.ClassName = nodeElement.GetProperty("handler");
             }
 
             // parse the exception handler    
-            String exceptionHandlerText = xmlElement.GetAttribute("on-exception");
+            String exceptionHandlerText = nodeElement.GetAttribute("on-exception");
             if ((Object)exceptionHandlerText != null)
             {
                 delegation.ExceptionHandlingType = ExceptionHandlingTypeHelper.FromText(exceptionHandlerText);
@@ -149,7 +149,7 @@ namespace NetBpm.Workflow.Definition
 
             // create the configuration string
             XmlElement configurationXml = new XmlElement("cfg");
-            IEnumerator iter = xmlElement.GetChildElements("parameter").GetEnumerator();
+            IEnumerator iter = nodeElement.GetChildElements("parameter").GetEnumerator();
             while (iter.MoveNext())
             {
                 configurationXml.AddChild((XmlElement)iter.Current);
