@@ -28,17 +28,16 @@ namespace NetBpm.Workflow.Definition
 
         public void DeployProcessArchive(byte[] processArchiveBytes)
         {
+            ParFile parFile = new ParFile(processArchiveBytes);
 
+            ProcessDefinitionBuildService buildService = new ProcessDefinitionBuildService(parFile.ProcessDefinition);
+            ProcessDefinitionImpl processDefinition = buildService.BuildProcessDefinition();
 
-            //ProcessDefinitionBuildService buildService = new ProcessDefinitionBuildService(parfile.ProcessDefinition);
-            //ProcessDefinitionImpl processDefinition =  buildService.BuildProcessDefinition();
-
-            //using (ISession session = NHibernateHelper.OpenSession())
-            //{
-            //    DbSession nhSession = new DbSession(session);
-            //    repository.Save(processDefinition, nhSession);
-            //}
-
+            using (ISession session = NHibernateHelper.OpenSession())
+            {
+                DbSession nhSession = new DbSession(session);
+                repository.Save(processDefinition, nhSession);
+            }
         }
 
         public IList<IProcessDefinition> GetProcessDefinitions()

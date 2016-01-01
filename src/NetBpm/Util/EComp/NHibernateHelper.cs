@@ -18,8 +18,7 @@ namespace NetBpm.Util.EComp
             {
                 if (_sessionFactory == null)
                 {
-                    var configuration = new Configuration();
-                    configuration.Configure();
+                    var configuration = ConfigurationFactory.CreateSQLServer2005("NetBPM", new string[] { "NetBpm"} );
 
                     _sessionFactory = configuration.BuildSessionFactory();
                 }

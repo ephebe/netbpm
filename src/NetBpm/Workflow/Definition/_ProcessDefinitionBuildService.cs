@@ -23,8 +23,8 @@ namespace NetBpm.Workflow.Definition
         public ProcessDefinitionImpl BuildProcessDefinition() 
         {
             ProcessDefinitionImpl processDefinition = definition();
-            processDefinition.StartState = start();
-            processDefinition.EndState = end();
+            processDefinition.StartState = start(processDefinition);
+            processDefinition.EndState = end(processDefinition);
             processDefinition.Nodes.Add(processDefinition.StartState);
             processDefinition.Nodes.Add(processDefinition.EndState);
             return processDefinition;
@@ -33,25 +33,26 @@ namespace NetBpm.Workflow.Definition
         private ProcessDefinitionImpl definition() 
         {
             ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
+            processDefinition.ProcessDefinition = processDefinition;
             this.processBlock(xmlElement, processDefinition);
             return processDefinition;
         }
 
-        private StartStateImpl start() 
+        private StartStateImpl start(ProcessDefinitionImpl processDefinition) 
         {
             XmlElement startElement = xmlElement.GetChildElement("start-state");
             StartStateImpl startState = new StartStateImpl();
-
+            startState.ProcessDefinition = processDefinition;
             this.activityState(startElement, startState);
 
             return startState;
         }
 
-        private EndStateImpl end() 
+        private EndStateImpl end(ProcessDefinitionImpl processDefinition) 
         {
             XmlElement endElement = xmlElement.GetChildElement("end-state");
             EndStateImpl endState = new EndStateImpl();
-
+            endState.ProcessDefinition = processDefinition;
             this.state(endElement, endState);
 
             return endState;
@@ -67,6 +68,7 @@ namespace NetBpm.Workflow.Definition
             while (iter.MoveNext())
             {
                 ActivityStateImpl activityState = new ActivityStateImpl();
+                activityState.ProcessDefinition = processBlock as IProcessDefinition;
                 this.activityState((XmlElement)iter.Current, activityState);
                 processBlock.Nodes.Add(activityState);
             }

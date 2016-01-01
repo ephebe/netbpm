@@ -25,6 +25,11 @@ namespace NetBpm.Util.Zip
             readXml(readFileIntoStream());
         }
 
+        public ParFile(byte[] fileBinary) 
+        {
+            readXml(fileBinary);
+        }
+
         public Xml.XmlElement ProcessDefinition 
         {
             get 
@@ -60,7 +65,6 @@ namespace NetBpm.Util.Zip
         private void readXml(byte[] processArchiveBytes) 
         {
             Stream processArchiveStream = new MemoryStream(processArchiveBytes);
-            IDictionary<string, byte[]> entries = null;
             entries = ZipUtility.ReadEntries(processArchiveStream);
         }
 

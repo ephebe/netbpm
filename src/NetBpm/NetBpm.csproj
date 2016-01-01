@@ -146,6 +146,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -194,6 +195,7 @@
     <Compile Include="Util\Db\PersistentObject.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Util\EComp\ConfigurationFactory.cs" />
     <Compile Include="Util\EComp\NHibernateHelper.cs" />
     <Compile Include="Util\EComp\NHSessionOpener.cs">
       <SubType>Code</SubType>
