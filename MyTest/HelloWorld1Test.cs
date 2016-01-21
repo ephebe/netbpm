@@ -41,7 +41,6 @@ namespace MyTest
               select * from [dbo].[NBPM_NODE];
               select * from [dbo].[NBPM_PROCESSBLOCK];
               select * from [dbo].[NBPM_TRANSITION];
-              select *from [dbo].[NBPM_DELEGATION]
             */
         }
 

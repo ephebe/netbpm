@@ -222,6 +222,7 @@
     <Compile Include="Workflow\Definition\Interface\IProcessDefinitionService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Definition\UnresolveTransition.cs" />
     <Compile Include="Workflow\Definition\_ProcessDefinitionApplicationService.cs" />
     <Compile Include="Workflow\Definition\_ProcessDefinitionBuildService.cs" />
     <Compile Include="Workflow\Definition\ProcessDefinitionService.cs">

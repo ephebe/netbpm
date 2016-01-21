@@ -14,10 +14,12 @@ namespace NetBpm.Workflow.Definition
     public class ProcessDefinitionBuildService
     {
         private XmlElement xmlElement = null;
+        private IList<UnresolveTransition> unresolveTransitions = null;
 
         public ProcessDefinitionBuildService(XmlElement xmlElement) 
         {
             this.xmlElement = xmlElement;
+            unresolveTransitions = new List<UnresolveTransition>();
         }
 
         public ProcessDefinitionImpl BuildProcessDefinition() 
@@ -27,6 +29,21 @@ namespace NetBpm.Workflow.Definition
             processDefinition.EndState = end(processDefinition);
             processDefinition.Nodes.Add(processDefinition.StartState);
             processDefinition.Nodes.Add(processDefinition.EndState);
+
+            foreach(var transition in unresolveTransitions)
+            {
+                var enumer = processDefinition.Nodes.GetEnumerator();
+                while(enumer.MoveNext())
+                {
+                    INode node = (enumer.Current as INode);
+                    if(transition.XmlValue == node.Name)
+                    {
+                        transition.To = node;
+                        break;
+                    }
+                }
+            }
+
             return processDefinition;
         }
 
@@ -43,7 +60,7 @@ namespace NetBpm.Workflow.Definition
             XmlElement startElement = xmlElement.GetChildElement("start-state");
             StartStateImpl startState = new StartStateImpl();
             startState.ProcessDefinition = processDefinition;
-            this.activityState(startElement, startState);
+            this.activityState(startElement, startState, processDefinition);
 
             return startState;
         }
@@ -53,7 +70,7 @@ namespace NetBpm.Workflow.Definition
             XmlElement endElement = xmlElement.GetChildElement("end-state");
             EndStateImpl endState = new EndStateImpl();
             endState.ProcessDefinition = processDefinition;
-            this.state(endElement, endState);
+            this.state(endElement, endState, processDefinition);
 
             return endState;
         }
@@ -69,33 +86,34 @@ namespace NetBpm.Workflow.Definition
             {
                 ActivityStateImpl activityState = new ActivityStateImpl();
                 activityState.ProcessDefinition = processBlock as IProcessDefinition;
-                this.activityState((XmlElement)iter.Current, activityState);
+                this.activityState((XmlElement)iter.Current, activityState, processBlock);
                 processBlock.Nodes.Add(activityState);
             }
 
             this.definitionObject(nodeElement, processBlock);
         }
 
-        private void activityState(XmlElement nodeElement, ActivityStateImpl activityState)
+        private void activityState(XmlElement nodeElement, ActivityStateImpl activityState, ProcessBlockImpl processBlock)
         {
             XmlElement assignmentElement = nodeElement.GetChildElement("assignment");
             if (assignmentElement != null)
             {
                 DelegationImpl delegation = new DelegationImpl();
+                delegation.ProcessDefinition = processBlock as IProcessDefinition;
                 activityState.AssignmentDelegation = delegation;
                 this.delegation<ActivityStateImpl>(assignmentElement, delegation);
             }
 
-            this.state(nodeElement,activityState);
+            this.state(nodeElement, activityState, processBlock);
         }
 
-        private void state(XmlElement nodeElement, StateImpl state)
+        private void state(XmlElement nodeElement, StateImpl state, ProcessBlockImpl processBlock)
         {
             //this.field();
-            this.node(nodeElement,state);
+            this.node(nodeElement, state, processBlock);
         }
 
-        private void node(XmlElement nodeElement, NodeImpl node) 
+        private void node(XmlElement nodeElement, NodeImpl node, ProcessBlockImpl processBlock) 
         {
             node.ArrivingTransitions = new ListSet();
             node.LeavingTransitions = new ListSet();
@@ -104,8 +122,10 @@ namespace NetBpm.Workflow.Definition
             while (iter.MoveNext())
             {
                 XmlElement transitionElement = (XmlElement)iter.Current;
-                TransitionImpl transition = new TransitionImpl();
+                UnresolveTransition transition = new UnresolveTransition();
+                transition.ProcessDefinition = processBlock as IProcessDefinition;
                 transition.From = node;
+                this.unresolveTransitions.Add(transition);
                 this.transition(transitionElement,transition);
                 node.LeavingTransitions.Add(transition);
             }
@@ -159,9 +179,10 @@ namespace NetBpm.Workflow.Definition
             delegation.Configuration = configurationXml.ToString();
         }
 
-        private void transition(XmlElement nodeElement,TransitionImpl transition) 
+        private void transition(XmlElement transitionElement, UnresolveTransition transition) 
         {
-            this.definitionObject(nodeElement,transition);
+            transition.XmlValue = transitionElement.GetProperty("to");
+            this.definitionObject(transitionElement, transition);
         }
 
         private void definitionObject(XmlElement nodeElement, DefinitionObjectImpl definitionObject)
