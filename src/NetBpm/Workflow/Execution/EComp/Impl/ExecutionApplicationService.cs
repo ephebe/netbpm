@@ -15,7 +15,7 @@ namespace NetBpm.Workflow.Execution.EComp.Impl
 	[Transactional]
 	public class ExecutionApplicationService : NHSessionOpener, IExecutionApplicationService
 	{
-		private static readonly ExecutionComponentImpl implementation = ExecutionComponentImpl.Instance;
+		private static readonly ExecutionService implementation = ExecutionService.Instance;
 		private static readonly ILog log = LogManager.GetLogger(typeof (ExecutionApplicationService));
 
 		public ExecutionApplicationService(ISessionManager sessionManager) : base(sessionManager)

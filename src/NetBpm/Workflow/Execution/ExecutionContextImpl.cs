@@ -31,6 +31,9 @@ namespace NetBpm.Workflow.Execution.Impl
 		private IActionContext _invokedProcessContext = null;
 		private ArrayList _assignedFlows = null;
 		private IList _forkedFlows = null;
+        private TransitionRepository transitionRepository = TransitionRepository.Instance;
+        private FlowRepository flowRepository = FlowRepository.Instance;
+        private AttributeRepository attributeRepository = AttributeRepository.Instance;
 		private static readonly ServiceLocator serviceLocator;
 		private static readonly ILog log = LogManager.GetLogger(typeof (ExecutionContextImpl));
 
@@ -209,11 +212,11 @@ namespace NetBpm.Workflow.Execution.Impl
 			}
 		}
 
-		private const String queryFindAttributeInstanceByName = "select ai " +
-			"from ai in class NetBpm.Workflow.Execution.Impl.AttributeInstanceImpl, " +
-			"     f in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
-			"where ai.Scope = f.id " + "  and ai.Attribute.Name = ? " +
-			"  and f.id = ? ";
+        //private const String queryFindAttributeInstanceByName = "select ai " +
+        //    "from ai in class NetBpm.Workflow.Execution.Impl.AttributeInstanceImpl, " +
+        //    "     f in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
+        //    "where ai.Scope = f.id " + "  and ai.Attribute.Name = ? " +
+        //    "  and f.id = ? ";
 
 		private AttributeInstanceImpl FindAttributeInstanceInScope(String attributeName)
 		{
@@ -221,9 +224,8 @@ namespace NetBpm.Workflow.Execution.Impl
 			FlowImpl scope = this._flow;
 			while (attributeInstance == null)
 			{
-				Object[] values = new Object[] {attributeName, scope.Id};
-				IType[] types = new IType[] {DbType.STRING, DbType.LONG};
-				IEnumerator iter = _dbSession.Iterate(queryFindAttributeInstanceByName, values, types).GetEnumerator();
+                IList attributes = attributeRepository.FindAttributeInstanceByName(attributeName, scope.Id, _dbSession);
+                IEnumerator iter = attributes.GetEnumerator();
 				if (iter.MoveNext())
 				{
 					attributeInstance = (AttributeInstanceImpl) iter.Current;
@@ -300,22 +302,20 @@ namespace NetBpm.Workflow.Execution.Impl
 			ForkFlow(transitionName, null);
 		}
 
-		private const String queryFindLeavingTransitionByName = "select t " +
-			"from t in class NetBpm.Workflow.Definition.Impl.TransitionImpl, " +
-			"     n in class NetBpm.Workflow.Definition.Impl.NodeImpl " +
-			"where n.id = ? " +
-			"  and t.From.id = n.id " +
-			"  and t.Name = ? ";
+        //private const String queryFindLeavingTransitionByName = "select t " +
+        //    "from t in class NetBpm.Workflow.Definition.Impl.TransitionImpl, " +
+        //    "     n in class NetBpm.Workflow.Definition.Impl.NodeImpl " +
+        //    "where n.id = ? " +
+        //    "  and t.From.id = n.id " +
+        //    "  and t.Name = ? ";
 
 		public void ForkFlow(String transitionName, IDictionary attributeValues)
 		{
 			// find the transition
 			TransitionImpl transition = null;
-			Object[] values = new Object[] {_node.Id, transitionName};
-			IType[] types = new IType[] {DbType.LONG, DbType.STRING};
 			try
 			{
-				transition = (TransitionImpl) _dbSession.FindOne(queryFindLeavingTransitionByName, values, types);
+                transition = transitionRepository.FindLeavingTransitionByName(_node.Id, transitionName,_dbSession);
 			}
 			catch (NotUniqueException e)
 			{
@@ -431,50 +431,51 @@ namespace NetBpm.Workflow.Execution.Impl
 			}
 		}
 
-		private const String queryFindConcurrentFlows = "select cf " +
-			"from cf in class NetBpm.Workflow.Execution.Impl.FlowImpl," +
-			"     f in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
-			"where f.id = ? " + "  and cf.Parent = f.Parent " +
-			"  and cf.EndNullable is null " + "  and cf.id <> f.id ";
+        //private const String queryFindConcurrentFlows = "select cf " +
+        //    "from cf in class NetBpm.Workflow.Execution.Impl.FlowImpl," +
+        //    "     f in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
+        //    "where f.id = ? " + "  and cf.Parent = f.Parent " +
+        //    "  and cf.EndNullable is null " + "  and cf.id <> f.id ";
 
-		public IList GetOtherActiveConcurrentFlows()
-		{
-			return _dbSession.Find(queryFindConcurrentFlows, _flow.Id, DbType.LONG);
-		}
+        public IList GetOtherActiveConcurrentFlows()
+        {
+            //return _dbSession.Find(queryFindConcurrentFlows, _flow.Id, DbType.LONG);
+            return flowRepository.GetOtherActiveConcurrentFlows( _flow.Id,_dbSession);
+        }
 
-		private const String queryFindTransitionByName = "select t " +
-			"from t in class NetBpm.Workflow.Definition.Impl.TransitionImpl, " +
-			"     s in class NetBpm.Workflow.Definition.Impl.StateImpl " +
-			"where t.From = s.id " +
-			"  and t.Name = ? " +
-			"  and s.id = ? ";
+        //private const String queryFindTransitionByName = "select t " +
+        //    "from t in class NetBpm.Workflow.Definition.Impl.TransitionImpl, " +
+        //    "     s in class NetBpm.Workflow.Definition.Impl.StateImpl " +
+        //    "where t.From = s.id " +
+        //    "  and t.Name = ? " +
+        //    "  and s.id = ? ";
 
-		/* package private */
+        ///* package private */
 
-		internal virtual TransitionImpl GetTransition(String transitionName, StateImpl state, DbSession dbSession)
-		{
-			TransitionImpl transition = null;
-			if ((Object) transitionName != null)
-			{
-				Object[] values = new Object[] {transitionName, state.Id};
-				IType[] types = new IType[] {DbType.STRING, DbType.LONG};
-				transition = (TransitionImpl) dbSession.FindOne(queryFindTransitionByName, values, types);
-			}
-			else
-			{
-				ISet leavingTransitions = state.LeavingTransitions;
-				if (leavingTransitions.Count == 1)
-				{
-					IEnumerator transEnum = leavingTransitions.GetEnumerator();
-					transEnum.MoveNext();
-					transition = (TransitionImpl) transEnum.Current;
-				}
-				else
-				{
-					throw new SystemException("no transitionName was specified : this is only allowed if the state (" + state.Name + ") has exactly 1 leaving transition (" + leavingTransitions.Count + ")");
-				}
-			}
-			return transition;
-		}
+        //internal virtual TransitionImpl GetTransition(String transitionName, StateImpl state, DbSession dbSession)
+        //{
+        //    TransitionImpl transition = null;
+        //    if ((Object) transitionName != null)
+        //    {
+        //        Object[] values = new Object[] {transitionName, state.Id};
+        //        IType[] types = new IType[] {DbType.STRING, DbType.LONG};
+        //        transition = (TransitionImpl) dbSession.FindOne(queryFindTransitionByName, values, types);
+        //    }
+        //    else
+        //    {
+        //        ISet leavingTransitions = state.LeavingTransitions;
+        //        if (leavingTransitions.Count == 1)
+        //        {
+        //            IEnumerator transEnum = leavingTransitions.GetEnumerator();
+        //            transEnum.MoveNext();
+        //            transition = (TransitionImpl) transEnum.Current;
+        //        }
+        //        else
+        //        {
+        //            throw new SystemException("no transitionName was specified : this is only allowed if the state (" + state.Name + ") has exactly 1 leaving transition (" + leavingTransitions.Count + ")");
+        //        }
+        //    }
+        //    return transition;
+        //}
 	}
 }

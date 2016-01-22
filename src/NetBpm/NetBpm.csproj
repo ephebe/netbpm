@@ -366,6 +366,7 @@
     <Compile Include="Workflow\Delegation\ClassLoader\Impl\DefaultClassLoader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Delegation\DelegationService.cs" />
     <Compile Include="Workflow\Delegation\ExceptionHandlingTypeHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -465,6 +466,7 @@
     <Compile Include="Workflow\Delegation\Join\AndJoin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Delegation\MyExecutionContext.cs" />
     <Compile Include="Workflow\Delegation\Serializer\ActorSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -498,21 +500,23 @@
     <Compile Include="Workflow\Delegation\ITaskContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Execution\_ProcessInstanceRepository.cs" />
+    <Compile Include="Workflow\Execution\_FieldRepository.cs" />
+    <Compile Include="Workflow\Execution\_TaskRepository.cs" />
+    <Compile Include="Workflow\Execution\_AttributeRepository.cs" />
     <Compile Include="Workflow\Execution\AuthorizationException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Execution\EComp\IExecutionSessionLocal.cs">
+    <Compile Include="Workflow\Execution\EComp\IExecutionApplicationService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Execution\EComp\Impl\ExecutionEComp.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Workflow\Execution\ExecutionComponent.cs">
+    <Compile Include="Workflow\Execution\EComp\Impl\ExecutionApplicationService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Workflow\Execution\ExecutionException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Execution\_FlowRepository.cs" />
     <Compile Include="Workflow\Execution\IActivityForm.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -528,7 +532,7 @@
     <Compile Include="Workflow\Execution\AttributeInstanceImpl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Execution\ExecutionComponentImpl.cs">
+    <Compile Include="Workflow\Execution\ExecutionService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Workflow\Execution\ExecutionContextImpl.cs">
@@ -552,8 +556,7 @@
     <Compile Include="Workflow\Execution\RequiredFieldException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
-    <Compile Include="Workflow\Execution\_ProcessExecutionService.cs" />
+    <Compile Include="Workflow\Execution\_TransitionRepository.cs" />
     <Compile Include="Workflow\Execution\_ProcessInstanceImpl.cs" />
     <Compile Include="Workflow\Log\EComp\ILogSessionLocal.cs">
       <SubType>Code</SubType>

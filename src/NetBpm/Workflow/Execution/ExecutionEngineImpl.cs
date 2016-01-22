@@ -9,14 +9,17 @@ using NetBpm.Workflow.Delegation.Impl;
 using NetBpm.Workflow.Log.Impl;
 using NetBpm.Workflow.Organisation;
 using NHibernate.Type;
+using NetBpm.Workflow.Delegation;
 
 namespace NetBpm.Workflow.Execution.Impl
 {
 	public class ExecutionEngineImpl
 	{
 		private static readonly DelegationHelper delegationHelper = DelegationHelper.Instance;
+        private static readonly DelegationService delegationService = new DelegationService();
 		private static readonly ExecutionEngineImpl instance = new ExecutionEngineImpl();
 		private static readonly ActorExpressionResolver actorExpressionResolver = ActorExpressionResolver.Instance;
+        private static readonly TransitionRepository transitionRepository = TransitionRepository.Instance;
 		private static readonly ILog log = LogManager.GetLogger(typeof (ExecutionEngineImpl));
 
 		/// <summary> gets the singleton instance.</summary>
@@ -29,38 +32,38 @@ namespace NetBpm.Workflow.Execution.Impl
 		{
 		}
 
-		private const String queryFindActionsByEventType = "select a from a in class NetBpm.Workflow.Definition.Impl.ActionImpl " +
-			"where a.EventType = ? " +
-			"  and a.DefinitionObjectId = ? ";
+        //private const String queryFindActionsByEventType = "select a from a in class NetBpm.Workflow.Definition.Impl.ActionImpl " +
+        //    "where a.EventType = ? " +
+        //    "  and a.DefinitionObjectId = ? ";
 
-		public void RunActionsForEvent(EventType eventType, Int64 definitionObjectId, ExecutionContextImpl executionContext)
-		{
-			log.Debug("processing '" + eventType + "' events for executionContext " + executionContext);
+        //public void RunActionsForEvent(EventType eventType, Int64 definitionObjectId, ExecutionContextImpl executionContext)
+        //{
+        //    log.Debug("processing '" + eventType + "' events for executionContext " + executionContext);
 
-			DbSession dbSession = executionContext.DbSession;
+        //    DbSession dbSession = executionContext.DbSession;
 
-			// find all actions for definitionObject on the given eventType
-			Object[] values = new Object[] {eventType, definitionObjectId};
-			IType[] types = new IType[] {DbType.INTEGER, DbType.LONG};
+        //    // find all actions for definitionObject on the given eventType
+        //    Object[] values = new Object[] {eventType, definitionObjectId};
+        //    IType[] types = new IType[] {DbType.INTEGER, DbType.LONG};
 
-			IList actions = dbSession.Find(queryFindActionsByEventType, values, types);
-			IEnumerator iter = actions.GetEnumerator();
-			log.Debug("list" + actions);
-			while (iter.MoveNext())
-			{
-				ActionImpl action = (ActionImpl) iter.Current;
-				log.Debug("action: " + action);
-				delegationHelper.DelegateAction(action.ActionDelegation, executionContext);
-			}
-			log.Debug("ende runActionsForEvent!");
-		}
+        //    IList actions = dbSession.Find(queryFindActionsByEventType, values, types);
+        //    IEnumerator iter = actions.GetEnumerator();
+        //    log.Debug("list" + actions);
+        //    while (iter.MoveNext())
+        //    {
+        //        ActionImpl action = (ActionImpl) iter.Current;
+        //        log.Debug("action: " + action);
+        //        delegationHelper.DelegateAction(action.ActionDelegation, executionContext);
+        //    }
+        //    log.Debug("ende runActionsForEvent!");
+        //}
 
-		public void ProcessTransition(TransitionImpl transition, ExecutionContextImpl executionContext)
+		public void ProcessTransition(TransitionImpl transition, ExecutionContextImpl executionContext, DbSession dbSession)
 		{
 			log.Debug("processing transition '" + transition + "' for flow '" + executionContext.GetFlow() + "'");
 
 			// trigger all the actions scheduled for this transition
-			RunActionsForEvent(EventType.TRANSITION, transition.Id, executionContext);
+			delegationService.RunActionsForEvent(EventType.TRANSITION, transition.Id, executionContext,dbSession);
 
 			// first set the state of the execution context and the flow
 			// to the node that is going to be processed 
@@ -74,27 +77,27 @@ namespace NetBpm.Workflow.Execution.Impl
             
 			if (destination is ActivityStateImpl)
 			{
-				ProcessActivityState((ActivityStateImpl) destination, executionContext);
+				ProcessActivityState((ActivityStateImpl) destination, executionContext,dbSession);
 			}
 			else if (destination is ProcessStateImpl)
 			{
-				ProcessProcessState((ProcessStateImpl) destination, executionContext);
+				ProcessProcessState((ProcessStateImpl) destination, executionContext,dbSession);
 			}
 			else if (destination is DecisionImpl)
 			{
-				ProcessDecision((DecisionImpl) destination, executionContext);
+                ProcessDecision((DecisionImpl)destination, executionContext, dbSession);
 			}
 			else if (destination is ForkImpl)
 			{
-				ProcessFork((ForkImpl) destination, executionContext);
+                ProcessFork((ForkImpl)destination, executionContext, dbSession);
 			}
 			else if (destination is JoinImpl)
 			{
-				ProcessJoin((JoinImpl) destination, executionContext);
+                ProcessJoin((JoinImpl)destination, executionContext, dbSession);
 			}
 			else if (destination is EndStateImpl)
 			{
-				ProcessEndState((EndStateImpl) destination, executionContext);
+                ProcessEndState((EndStateImpl)destination, executionContext, dbSession);
 			}
 			else
 			{
@@ -102,7 +105,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			}
 		}
 
-		public void ProcessActivityState(ActivityStateImpl activityState, ExecutionContextImpl executionContext)
+		public void ProcessActivityState(ActivityStateImpl activityState, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
 			// first set the flow-state to the activity-state  
 			FlowImpl flow = (FlowImpl) executionContext.GetFlow();
@@ -110,7 +113,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			log.Debug("processing activity-state '" + activityState + "' for flow '" + executionContext.GetFlow() + "'");
 
 			// execute the actions scheduled for this assignment
-			RunActionsForEvent(EventType.BEFORE_ACTIVITYSTATE_ASSIGNMENT, activityState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.BEFORE_ACTIVITYSTATE_ASSIGNMENT, activityState.Id, executionContext,dbSession);
 
 			String actorId = null;
 			String role = activityState.ActorRoleName;
@@ -147,7 +150,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			flow.ActorId = actorId;
 
 			// If necessary, store the actor in the role
-			if (((Object) role != null) && (assignmentDelegation != null))
+			if ((string.IsNullOrEmpty(role) == false) && (assignmentDelegation != null))
 			{
 				executionContext.StoreRole(actorId, activityState);
 			}
@@ -160,16 +163,16 @@ namespace NetBpm.Workflow.Execution.Impl
 			executionContext.AddLogDetail(new ObjectReferenceImpl(activityState));
 
 			// execute the actions scheduled for this assignment
-			RunActionsForEvent(EventType.AFTER_ACTIVITYSTATE_ASSIGNMENT, activityState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.AFTER_ACTIVITYSTATE_ASSIGNMENT, activityState.Id, executionContext,dbSession);
 		}
 
-		public void ProcessProcessState(ProcessStateImpl processState, ExecutionContextImpl executionContext)
+		public void ProcessProcessState(ProcessStateImpl processState, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
 			// TODO : try to group similarities between this method and ExecutionComponentImpl.startProcessInstance and 
 			//        group them in a common method 
 
 			// provide a convenient local var for the database session
-			DbSession dbSession = executionContext.DbSession;
+			//DbSession dbSession = executionContext.DbSession;
 
 			// get the sub-process-definition and its start-state    
 			ProcessDefinitionImpl subProcessDefinition = (ProcessDefinitionImpl) processState.SubProcess;
@@ -211,15 +214,15 @@ namespace NetBpm.Workflow.Execution.Impl
 			subExecutionContext.StoreRole(subProcessStarterId, startState);
 
 			// log event & trigger actions 
-			RunActionsForEvent(EventType.SUB_PROCESS_INSTANCE_START, processState.Id, subExecutionContext);
-			RunActionsForEvent(EventType.PROCESS_INSTANCE_START, subProcessDefinition.Id, subExecutionContext);
+            delegationService.RunActionsForEvent(EventType.SUB_PROCESS_INSTANCE_START, processState.Id, subExecutionContext,dbSession);
+            delegationService.RunActionsForEvent(EventType.PROCESS_INSTANCE_START, subProcessDefinition.Id, subExecutionContext,dbSession);
 
 			// from here on, we consider the actor as being the previous actor
 			subExecutionContext.SetActorAsPrevious();
 
 			// process the start-transition
-			TransitionImpl startTransition = subExecutionContext.GetTransition(transitionName, startState, dbSession);
-			ProcessTransition(startTransition, subExecutionContext);
+            TransitionImpl startTransition = transitionRepository.GetTransition(transitionName, startState, dbSession);
+			ProcessTransition(startTransition, subExecutionContext,dbSession);
 
 			// add the assigned flows of the subContext to the parentContext
 			executionContext.AssignedFlows.AddRange(subExecutionContext.AssignedFlows);
@@ -229,22 +232,22 @@ namespace NetBpm.Workflow.Execution.Impl
 			dbSession.Flush();
 		}
 
-		public void ProcessDecision(DecisionImpl decision, ExecutionContextImpl executionContext)
+		public void ProcessDecision(DecisionImpl decision, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
 			// trigger actions, scheduled before the decision actually is made 
-			RunActionsForEvent(EventType.BEFORE_DECISION, decision.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.BEFORE_DECISION, decision.Id, executionContext,dbSession);
 
 			// delegate the decision 
 			TransitionImpl selectedTransition = delegationHelper.DelegateDecision(decision.DecisionDelegation, executionContext);
 
 			// process the selected transition
-			ProcessTransition(selectedTransition, executionContext);
+			ProcessTransition(selectedTransition, executionContext,dbSession);
 
 			// trigger actions, scheduled after the decision is made 
-			RunActionsForEvent(EventType.AFTER_DECISION, decision.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.AFTER_DECISION, decision.Id, executionContext,dbSession);
 		}
 
-		public void ProcessFork(ForkImpl fork, ExecutionContextImpl executionContext)
+		public void ProcessFork(ForkImpl fork, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
 			log.Debug("forking flow " + executionContext.GetFlow());
 
@@ -294,15 +297,15 @@ namespace NetBpm.Workflow.Execution.Impl
 
 				// trigger actions, scheduled after the creation and setting of the attributeValues
 				// but before the fork is being processed
-				RunActionsForEvent(EventType.FORK, fork.Id, executionContext);
+                delegationService.RunActionsForEvent(EventType.FORK, fork.Id, executionContext,dbSession);
 
 				// then process the forked flow transition
 				executionContext.SetFlow(forkedFlow.Flow);
-				ProcessTransition(forkedFlow.Transition, executionContext);
+				ProcessTransition(forkedFlow.Transition, executionContext,dbSession);
 			}
 		}
 
-		public void ProcessJoin(JoinImpl join, ExecutionContextImpl executionContext)
+		public void ProcessJoin(JoinImpl join, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
 			// First set the state of the flow to finished
 			FlowImpl joiningFlow = (FlowImpl) executionContext.GetFlow();
@@ -361,7 +364,7 @@ namespace NetBpm.Workflow.Execution.Impl
 					if (iter.MoveNext())
 					{
 						TransitionImpl leavingTransition = (TransitionImpl) iter.Current;
-						ProcessTransition(leavingTransition, executionContext);
+						ProcessTransition(leavingTransition, executionContext,dbSession);
 					} else {
 						// no transition throw exception?
 					}
@@ -369,9 +372,9 @@ namespace NetBpm.Workflow.Execution.Impl
 			}
 		}
 
-		public void ProcessEndState(EndStateImpl endState, ExecutionContextImpl executionContext)
+		public void ProcessEndState(EndStateImpl endState, ExecutionContextImpl executionContext,DbSession dbSession)
 		{
-			RunActionsForEvent(EventType.PROCESS_INSTANCE_END, endState.ProcessDefinition.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.PROCESS_INSTANCE_END, endState.ProcessDefinition.Id, executionContext,dbSession);
 			executionContext.CreateLog(EventType.PROCESS_INSTANCE_END);
 
 			FlowImpl rootFlow = (FlowImpl) executionContext.GetFlow();
@@ -396,10 +399,10 @@ namespace NetBpm.Workflow.Execution.Impl
 				Object[] completionData = delegationHelper.DelegateProcessTermination(processState.ProcessInvokerDelegation, superExecutionContext);
 				IDictionary attributeValues = (IDictionary) completionData[0];
 				String transitionName = (String) completionData[1];
-				TransitionImpl transition = superExecutionContext.GetTransition(transitionName, processState, executionContext.DbSession);
+                TransitionImpl transition = transitionRepository.GetTransition(transitionName, processState, executionContext.DbSession);
 
 				// process the super process transition
-				ProcessTransition(transition, superExecutionContext);
+				ProcessTransition(transition, superExecutionContext,dbSession);
 			}
 		}
 	}

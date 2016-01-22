@@ -10,29 +10,35 @@ using NetBpm.Workflow.Log.Impl;
 using NetBpm.Workflow.Organisation;
 using NetBpm.Workflow.Organisation.EComp;
 using NHibernate;
+using NetBpm.Workflow.Delegation;
 
 namespace NetBpm.Workflow.Execution.Impl
 {
-	public class ExecutionComponentImpl
+	public class ExecutionService
 	{
 		private static readonly ExecutionEngineImpl engine = ExecutionEngineImpl.Instance;
+        private static readonly DelegationService delegationService = new DelegationService();
 		private static readonly AuthorizationHelper authorizationHelper = AuthorizationHelper.Instance;
-		private static readonly ExecutionComponentImpl instance = new ExecutionComponentImpl();
-		private static readonly ILog log = LogManager.GetLogger(typeof (ExecutionComponentImpl));
+		private static readonly ExecutionService instance = new ExecutionService();
+        private static readonly ProcessDefinitionRepository definitionRepository = ProcessDefinitionRepository.Instance;
+        private static readonly TaskRepository taskRepository = TaskRepository.Instance;
+        private static readonly TransitionRepository transitionRepository = TransitionRepository.Instance;
+        private static readonly FieldRepository fieldRepository = FieldRepository.Instance;
+		private static readonly ILog log = LogManager.GetLogger(typeof (ExecutionService));
 
 		/// <summary> gets the singleton instance.</summary>
-		public static ExecutionComponentImpl Instance
+		public static ExecutionService Instance
 		{
 			get { return instance; }
 		}
 
-		private ExecutionComponentImpl()
+		private ExecutionService()
 		{
 		}
 
-		private const String queryFindTasks = "select flow " +
-			"from flow in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
-			"where flow.ActorId = ?";
+        //private const String queryFindTasks = "select flow " +
+        //    "from flow in class NetBpm.Workflow.Execution.Impl.FlowImpl " +
+        //    "where flow.ActorId = ?";
 
 		public IList GetTaskList(String authenticatedActorId, String actorId, Relations relations, DbSession dbSession, IOrganisationService organisationComponent)
 		{
@@ -42,7 +48,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			if (actor is IUser)
 			{
 				log.Debug("getting task lists for actor --> User : [" + actor + "]");
-				tasks = GetActorTaskList(actorId, dbSession);
+                tasks = taskRepository.FindTasks(actorId, dbSession);
 			}
 			else if (actor is IGroup)
 			{
@@ -82,28 +88,28 @@ namespace NetBpm.Workflow.Execution.Impl
 			authorizationHelper.CheckStartProcessInstance(authenticatedActorId, processDefinitionId, attributeValues, transitionName, dbSession);
 
 			// get the process-definition and its start-state    
-			ProcessDefinitionImpl processDefinition = (ProcessDefinitionImpl) dbSession.Load(typeof (ProcessDefinitionImpl), processDefinitionId);
+            ProcessDefinitionImpl processDefinition = (ProcessDefinitionImpl)definitionRepository.GetProcessDefinition(processDefinitionId, null, dbSession);
 			StartStateImpl startState = (StartStateImpl) processDefinition.StartState;
 
 			log.Info("actor '" + authenticatedActorId + "' starts an instance of process '" + processDefinition.Name + "'...");
 
-			// create the process-instance
 			processInstance = new ProcessInstanceImpl(authenticatedActorId, processDefinition);
 			FlowImpl rootFlow = (FlowImpl) processInstance.RootFlow;
 
-			// create the execution-context
-			ExecutionContextImpl executionContext = new ExecutionContextImpl(authenticatedActorId, rootFlow, dbSession, organisationComponent);
+            ExecutionContextImpl executionContext = new ExecutionContextImpl(authenticatedActorId, rootFlow, dbSession, organisationComponent);
+            MyExecutionContext myExecutionContext = new MyExecutionContext();
 
 			// save the process instance to allow hibernate queries    
 			dbSession.Save(processInstance);
 			//dbSession.Lock(processInstance,LockMode.Upgrade);
 
-			// run the actions
-			engine.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
 
 			// store the attributes
 			executionContext.CreateLog(authenticatedActorId, EventType.PROCESS_INSTANCE_START);
+            //LogImpl logImpl = rootFlow.CreateLog(authenticatedActorId, EventType.PROCESS_INSTANCE_START);//new add
 			executionContext.CheckAccess(attributeValues, startState);
+            //startState.CheckAccess(attributeValues);
             //看來也找不到AttributeInstance
 			executionContext.StoreAttributeValues(attributeValues);
 
@@ -111,17 +117,17 @@ namespace NetBpm.Workflow.Execution.Impl
 			executionContext.StoreRole(authenticatedActorId, startState);
 
             // run the actions
-			engine.RunActionsForEvent(EventType.PROCESS_INSTANCE_START, processDefinitionId, executionContext);
+            delegationService.RunActionsForEvent(EventType.PROCESS_INSTANCE_START, processDefinitionId, executionContext,dbSession);
 
 			// from here on, we consider the actor as being the previous actor
 			executionContext.SetActorAsPrevious();
 
 			// process the start-transition
-			TransitionImpl startTransition = executionContext.GetTransition(transitionName, startState, dbSession);
-			engine.ProcessTransition(startTransition, executionContext);
+            TransitionImpl startTransition = transitionRepository.GetTransition(transitionName, startState, dbSession);
+            engine.ProcessTransition(startTransition, executionContext, dbSession);
 
             // run the actions
-			engine.RunActionsForEvent(EventType.AFTER_PERFORM_OF_ACTIVITY, startState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.AFTER_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
 
 			// flush the updates to the db
 			dbSession.Update(processInstance);
@@ -136,9 +142,9 @@ namespace NetBpm.Workflow.Execution.Impl
 			return processInstance;
 		}
 
-		private const String queryFieldsByState = "select f from f in class NetBpm.Workflow.Definition.Impl.FieldImpl " +
-			"where f.State.Id = ? " +
-			"order by f.Index";
+        //private const String queryFieldsByState = "select f from f in class NetBpm.Workflow.Definition.Impl.FieldImpl " +
+        //    "where f.State.Id = ? " +
+        //    "order by f.Index";
 
 		public IActivityForm GetStartForm(String authenticatedActorId, Int64 processDefinitionId, DbSession dbSession, IOrganisationService organisationComponent)
 		{
@@ -151,7 +157,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			StartStateImpl startState = (StartStateImpl) processDefinition.StartState;
 
 			// create a convenient map from the attribute-names to the fields
-			IList fields = dbSession.Find(queryFieldsByState, startState.Id, DbType.LONG);
+            IList fields = fieldRepository.FindFieldsByState(startState.Id, dbSession);
 			IDictionary attributeValues = new Hashtable();
 			IEnumerator iter = fields.GetEnumerator();
 			while (iter.MoveNext())
@@ -193,7 +199,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			ExecutionContextImpl executionContext = new ExecutionContextImpl(null, flow, dbSession, organisationComponent);
 
 			// create a convenient map from the attribute-names to the fields
-			IList fields = dbSession.Find(queryFieldsByState, state.Id, DbType.LONG);
+			IList fields = fieldRepository.FindFieldsByState(state.Id,dbSession);
 			IDictionary attributeValues = new Hashtable();
 			IEnumerator iter = fields.GetEnumerator();
 			while (iter.MoveNext())
@@ -261,7 +267,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			// attributeValues = state.addRoleAttributeValue( attributeValues, authenticatedActorId, organisationComponent );
 
 			// log event & trigger actions 
-			engine.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, activityState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, activityState.Id, executionContext,dbSession);
 
 			// store the supplied attribute values
 			executionContext.CreateLog(authenticatedActorId, EventType.PERFORM_OF_ACTIVITY);
@@ -270,17 +276,17 @@ namespace NetBpm.Workflow.Execution.Impl
 			executionContext.StoreAttributeValues(attributeValues);
 
 			// log event & trigger actions 
-			engine.RunActionsForEvent(EventType.PERFORM_OF_ACTIVITY, activityState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.PERFORM_OF_ACTIVITY, activityState.Id, executionContext,dbSession);
 
 			// from here on, we consider the actor as being the previous actor
 			executionContext.SetActorAsPrevious();
 
 			// select and process the transition
-			TransitionImpl startTransition = executionContext.GetTransition(transitionName, activityState, dbSession);
-			engine.ProcessTransition(startTransition, executionContext);
+            TransitionImpl startTransition = transitionRepository.GetTransition(transitionName, activityState, dbSession);
+            engine.ProcessTransition(startTransition, executionContext, dbSession);
 
 			// log event & trigger actions 
-			engine.RunActionsForEvent(EventType.AFTER_PERFORM_OF_ACTIVITY, activityState.Id, executionContext);
+            delegationService.RunActionsForEvent(EventType.AFTER_PERFORM_OF_ACTIVITY, activityState.Id, executionContext,dbSession);
 
 			assignedFlows = executionContext.AssignedFlows;
 
@@ -326,7 +332,7 @@ namespace NetBpm.Workflow.Execution.Impl
 				ExecutionContextImpl executionContext = new ExecutionContextImpl(authenticatedActorId, (FlowImpl) processInstance.RootFlow, dbSession, organisationComponent);
 				executionContext.CreateLog(authenticatedActorId, EventType.PROCESS_INSTANCE_CANCEL);
 				EndStateImpl endState = (EndStateImpl) processInstance.ProcessDefinition.EndState;
-				engine.ProcessEndState(endState, executionContext);
+                engine.ProcessEndState(endState, executionContext, dbSession);
 				processInstance.End = DateTime.Now;
 
 				// flush the updates to the db
@@ -359,7 +365,7 @@ namespace NetBpm.Workflow.Execution.Impl
 					// set the flow in the end-state
 					log.Debug("setting root flow to the end state...");
 					EndStateImpl endState = (EndStateImpl) flow.ProcessInstance.ProcessDefinition.EndState;
-					engine.ProcessEndState(endState, executionContext);
+                    engine.ProcessEndState(endState, executionContext, dbSession);
 				}
 				else
 				{
@@ -367,7 +373,7 @@ namespace NetBpm.Workflow.Execution.Impl
 					ConcurrentBlockImpl concurrentBlock = (ConcurrentBlockImpl) flow.Node.ProcessBlock;
 					JoinImpl join = (JoinImpl) concurrentBlock.Join;
 					log.Debug("setting concurrent flow to join '" + join + "'");
-					engine.ProcessJoin(join, executionContext);
+                    engine.ProcessJoin(join, executionContext, dbSession);
 				}
 
 				// flush the updates to the db
@@ -403,12 +409,6 @@ namespace NetBpm.Workflow.Execution.Impl
 			}
 		}
 
-		private IList GetActorTaskList(String actorId, DbSession dbSession)
-		{
-			IList tasks = (IList) dbSession.Find(queryFindTasks, actorId, DbType.STRING);
-			return tasks;
-		}
-
 		private IList GetGroupTaskList(String authenticatedActorId, ArrayList groupTaskLists, String groupId, DbSession dbSession, IOrganisationService organisationComponent)
 		{
 			if (groupTaskLists == null)
@@ -423,7 +423,7 @@ namespace NetBpm.Workflow.Execution.Impl
 				GetGroupTaskList(authenticatedActorId, groupTaskLists, gParent.Id, dbSession, organisationComponent);
 			}
 			// no more parent
-			IList gTaskLists = GetActorTaskList(g.Id, dbSession);
+            IList gTaskLists = taskRepository.FindTasks(g.Id, dbSession);
 			groupTaskLists.AddRange(gTaskLists);
 			log.Debug("added task lists [" + gTaskLists + "] for group [" + g + "]");
 

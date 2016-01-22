@@ -1,12 +1,15 @@
 ﻿using NetBpm.Util.Xml;
 using NetBpm.Workflow.Definition;
 using NetBpm.Workflow.Definition.Impl;
+using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Organisation;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace MyTest
 {
@@ -14,24 +17,12 @@ namespace MyTest
     public class HelloWorld1NewTest
     {
         [Test]
-        public void DeployTest()
-        {
-            FileInfo parFile = new FileInfo("ExamplePar/helloworld1.par");
-            FileStream fstream = parFile.OpenRead();
-            byte[] b = new byte[parFile.Length];
-            fstream.Read(b, 0, (int)parFile.Length);
-
-            ProcessDefinitionApplicationService service = new ProcessDefinitionApplicationService();
-            service.DeployProcessArchive(b);
-        }
-        
-        [Test]
-        public void BuildProcessDefinitionTest() 
+        public void BuildProcessDefinitionTest()
         {
             ProcessDefinitionBuildService service = new ProcessDefinitionBuildService(helloWorld1());
             ProcessDefinitionImpl processDefinition = service.BuildProcessDefinition();
 
-            Assert.AreEqual("Hello world 1",processDefinition.Name);
+            Assert.AreEqual("Hello world 1", processDefinition.Name);
             Assert.AreEqual("This is the simples process.", processDefinition.Description);
             Assert.AreEqual(3, processDefinition.Nodes.Count);
 
@@ -39,10 +30,10 @@ namespace MyTest
             Assert.AreEqual("start", processDefinition.StartState.Name);
             Assert.AreEqual(1, processDefinition.StartState.LeavingTransitions.Count);
 
-            foreach(var node in processDefinition.Nodes)
+            foreach (var node in processDefinition.Nodes)
             {
                 INode no = node as INode;
-                if (no != null && no.Name == "first activity state") 
+                if (no != null && no.Name == "first activity state")
                 {
                     Assert.AreEqual("this is the first state", no.Description);
                     Assert.AreEqual(1, no.LeavingTransitions.Count);
@@ -56,6 +47,54 @@ namespace MyTest
                     }
                 }
             }
+        }
+
+        [Test]
+        public void DeployTest()
+        {
+            FileInfo parFile = new FileInfo("ExamplePar/helloworld1.par");
+            FileStream fstream = parFile.OpenRead();
+            byte[] b = new byte[parFile.Length];
+            fstream.Read(b, 0, (int)parFile.Length);
+
+            ProcessDefinitionApplicationService service = new ProcessDefinitionApplicationService();
+            service.DeployProcessArchive(b);
+        }
+
+        [Test]
+        public void StartTest()
+        {
+            //IProcessInstance processInstance = null;
+            //Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+
+            //try
+            //{
+            //    IDictionary attributeValues = new Hashtable();
+
+            //    IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 1");
+
+            //    processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
+
+            //    //這時已經在First State
+            //    Assert.IsNotNull(processInstance);
+            //    //會產生基本的Root Flow
+            //    Assert.IsNotNull(processInstance.RootFlow);
+
+            //    /*
+            //     select *from [dbo].[NBPM_PROCESSINSTANCE]
+            //     select *from [dbo].[NBPM_FLOW]
+            //     select *from [dbo].[NBPM_LOG]
+            //     select *from [dbo].[NBPM_LOGDETAIL]
+            //     */
+            //}
+            //catch (ExecutionException e)
+            //{
+            //    Assert.Fail("ExcecutionException while starting a new holiday request: " + e.Message);
+            //}
+            //finally
+            //{
+            //    //      loginUtil.logout();
+            //}
         }
 
         public XmlElement helloWorld1()
