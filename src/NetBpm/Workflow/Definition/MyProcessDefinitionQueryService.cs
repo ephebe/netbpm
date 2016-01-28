@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetBpm.Workflow.Definition
 {
-    public class ProcessDefinitionQueryService
+    public class MyProcessDefinitionQueryService
     {
         internal Impl.TransitionImpl GetTransitionFrom(string p)
         {

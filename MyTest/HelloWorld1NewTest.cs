@@ -19,7 +19,7 @@ namespace MyTest
         [Test]
         public void BuildProcessDefinitionTest()
         {
-            ProcessDefinitionBuildService service = new ProcessDefinitionBuildService(helloWorld1());
+            MyProcessDefinitionBuildService service = new MyProcessDefinitionBuildService(helloWorld1());
             ProcessDefinitionImpl processDefinition = service.BuildProcessDefinition();
 
             Assert.AreEqual("Hello world 1", processDefinition.Name);
@@ -57,7 +57,7 @@ namespace MyTest
             byte[] b = new byte[parFile.Length];
             fstream.Read(b, 0, (int)parFile.Length);
 
-            ProcessDefinitionApplicationService service = new ProcessDefinitionApplicationService();
+            MyProcessDefinitionService service = new MyProcessDefinitionService();
             service.DeployProcessArchive(b);
         }
 

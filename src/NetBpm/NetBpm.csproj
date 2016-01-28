@@ -223,8 +223,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Workflow\Definition\UnresolveTransition.cs" />
-    <Compile Include="Workflow\Definition\_ProcessDefinitionApplicationService.cs" />
-    <Compile Include="Workflow\Definition\_ProcessDefinitionBuildService.cs" />
+    <Compile Include="Workflow\Definition\MyProcessDefinitionService.cs" />
+    <Compile Include="Workflow\Definition\MyProcessDefinitionBuildService.cs" />
     <Compile Include="Workflow\Definition\ProcessDefinitionService.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -351,7 +351,7 @@
     <Compile Include="Workflow\Definition\NpdlException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Definition\_ProcessDefinitionQueryService.cs" />
+    <Compile Include="Workflow\Definition\MyProcessDefinitionQueryService.cs" />
     <Compile Include="Workflow\Definition\_StateInfo.cs" />
     <Compile Include="Workflow\Definition\_XmlLoadService.cs" />
     <Compile Include="Workflow\Delegation\AbstractConfigurable.cs">
@@ -500,6 +500,8 @@
     <Compile Include="Workflow\Delegation\ITaskContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Execution\_IProcessExecutionApplicationService.cs" />
+    <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
     <Compile Include="Workflow\Execution\_ProcessInstanceRepository.cs" />
     <Compile Include="Workflow\Execution\_FieldRepository.cs" />
     <Compile Include="Workflow\Execution\_TaskRepository.cs" />

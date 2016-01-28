@@ -13,10 +13,10 @@ using System.Text;
 
 namespace NetBpm.Workflow.Definition
 {
-    public class ProcessDefinitionApplicationService
+    public class MyProcessDefinitionService
     {
         ProcessDefinitionRepository repository = null;
-        public ProcessDefinitionApplicationService()
+        public MyProcessDefinitionService()
         {
             repository = ProcessDefinitionRepository.Instance;
         }
@@ -30,7 +30,7 @@ namespace NetBpm.Workflow.Definition
         {
             ParFile parFile = new ParFile(processArchiveBytes);
 
-            ProcessDefinitionBuildService buildService = new ProcessDefinitionBuildService(parFile.ProcessDefinition);
+            MyProcessDefinitionBuildService buildService = new MyProcessDefinitionBuildService(parFile.ProcessDefinition);
             ProcessDefinitionImpl processDefinition = buildService.BuildProcessDefinition();
 
             using (ISession session = NHibernateHelper.OpenSession())

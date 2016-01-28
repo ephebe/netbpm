@@ -120,8 +120,16 @@ namespace NetBpm.Workflow.Execution.EComp.Impl
 				organisationComponent = (IOrganisationService) ServiceLocator.Instance.GetService(typeof (IOrganisationService));
 				processInstance = implementation.StartProcessInstance(ActorId, processDefinitionId, attributeValues, transitionName, relations, dbSession, organisationComponent);
 				ServiceLocator.Instance.Release(organisationComponent);
-			}
-			catch (ExecutionException e)
+                //AuthorizeService.CheckStartProcessInstance()
+                //ProcessInstance.Create(processDefinition)
+                //delegateService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
+                //logRepository.Add(new Log(){})
+                //processInstance.StartState().CheckAccess(attributeValues)
+                //delegateService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
+                //TransitionService.GetTransiation(name,processInstance.StartState())
+                //TransitionService.processTransition()
+            }
+            catch (ExecutionException e)
 			{
 				log.Error("Error when starting process instance :", e);
 				throw e;

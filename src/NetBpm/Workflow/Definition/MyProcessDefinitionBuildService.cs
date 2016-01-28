@@ -11,12 +11,12 @@ using System.Text;
 
 namespace NetBpm.Workflow.Definition
 {
-    public class ProcessDefinitionBuildService
+    public class MyProcessDefinitionBuildService
     {
         private XmlElement xmlElement = null;
         private IList<UnresolveTransition> unresolveTransitions = null;
 
-        public ProcessDefinitionBuildService(XmlElement xmlElement) 
+        public MyProcessDefinitionBuildService(XmlElement xmlElement) 
         {
             this.xmlElement = xmlElement;
             unresolveTransitions = new List<UnresolveTransition>();
