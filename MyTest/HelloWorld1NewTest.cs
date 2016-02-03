@@ -5,6 +5,7 @@ using NetBpm.Workflow.Execution;
 using NetBpm.Workflow.Organisation;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Threading;
 namespace MyTest
 {
     [TestFixture]
-    public class HelloWorld1NewTest
+    public class HelloWorld1NewTest : BaseTest
     {
         [Test]
         public void BuildProcessDefinitionTest()
@@ -64,37 +65,41 @@ namespace MyTest
         [Test]
         public void StartTest()
         {
-            //IProcessInstance processInstance = null;
-            //Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+            IProcessInstance processInstance = null;
+            Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
-            //try
-            //{
-            //    IDictionary attributeValues = new Hashtable();
+            MyProcessDefinitionService myProcessDefinitionService = new MyProcessDefinitionService();
+            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
 
-            //    IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 1");
+            try
+            {
+                IDictionary attributeValues = new Hashtable();
 
-            //    processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
+                processInstance = processExecutionApplicationService.StartProcessInstance(1L, attributeValues);
 
-            //    //這時已經在First State
-            //    Assert.IsNotNull(processInstance);
-            //    //會產生基本的Root Flow
-            //    Assert.IsNotNull(processInstance.RootFlow);
-
-            //    /*
-            //     select *from [dbo].[NBPM_PROCESSINSTANCE]
-            //     select *from [dbo].[NBPM_FLOW]
-            //     select *from [dbo].[NBPM_LOG]
-            //     select *from [dbo].[NBPM_LOGDETAIL]
-            //     */
-            //}
-            //catch (ExecutionException e)
-            //{
-            //    Assert.Fail("ExcecutionException while starting a new holiday request: " + e.Message);
-            //}
-            //finally
-            //{
-            //    //      loginUtil.logout();
-            //}
+                //這時已經在First State
+                Assert.IsNotNull(processInstance);
+                //會產生基本的Root Flow
+                Assert.IsNotNull(processInstance.RootFlow);
+                //root flow進入了ActivityState，Id=3
+                Assert.AreEqual(3, processInstance.RootFlow.Node.Id);
+                //root flow的actor是ae
+                Assert.AreEqual("ae", processInstance.RootFlow.GetActor().Id);
+                /*
+                 select *from [dbo].[NBPM_PROCESSINSTANCE]
+                 select *from [dbo].[NBPM_FLOW]
+                 select *from [dbo].[NBPM_LOG]
+                 select *from [dbo].[NBPM_LOGDETAIL]
+                 */
+            }
+            catch (ExecutionException e)
+            {
+                Assert.Fail("ExcecutionException while starting a new holiday request: " + e.Message);
+            }
+            finally
+            {
+                //      loginUtil.logout();
+            }
         }
 
         public XmlElement helloWorld1()

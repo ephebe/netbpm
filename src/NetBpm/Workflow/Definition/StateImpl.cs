@@ -5,6 +5,7 @@ using log4net;
 using NetBpm.Util.DB;
 using NetBpm.Util.Xml;
 using NHibernate.Type;
+using NetBpm.Workflow.Execution;
 
 namespace NetBpm.Workflow.Definition.Impl
 {
@@ -162,5 +163,67 @@ namespace NetBpm.Workflow.Definition.Impl
 		{
 			base.Validate(validationContext);
 		}
+
+        public virtual void CheckAccess(IDictionary attributeValues)
+        {
+            IDictionary fields = new Hashtable();
+
+            // first we check if a value is supplied for all required fields
+            IEnumerator iter = this.Fields.GetEnumerator();
+            log.Debug(iter);
+            while (iter.MoveNext())
+            {
+                FieldImpl field = (FieldImpl)iter.Current;
+                String attributeName = field.Attribute.Name;
+                fields[attributeName] = field;
+
+                // if a field is found required and no attribute value is supplied throw 
+                // RequiredFieldException 
+                log.Debug(field);
+                log.Debug(field.Access);
+                if ((FieldAccessHelper.IsRequired(field.Access)) && (attributeValues == null))
+                {
+                    throw new RequiredFieldException(field);
+                }
+                // OR
+                // if field is found required and attribute value of it is not available
+                // throw RequiredFieldException
+                if ((FieldAccessHelper.IsRequired(field.Access)) && (attributeValues != null) && (!attributeValues.Contains(attributeName)))
+                {
+                    throw new RequiredFieldException(field);
+                }
+            }
+
+            // then we check if the access of all supplied values is writable
+            IList attributeNamesToBeRemoved = new ArrayList(); // store attribute name of attribute to be removed
+            if (attributeValues != null)
+            {
+                iter = attributeValues.GetEnumerator();
+                while (iter.MoveNext())
+                {
+                    DictionaryEntry entry = (DictionaryEntry)iter.Current;
+                    String attributeName = (String)entry.Key;
+
+                    FieldImpl field = (FieldImpl)fields[attributeName];
+                    if ((field != null) && (!FieldAccessHelper.IsWritable(field.Access)))
+                    {
+                        log.Warn("ignoring attributeValue for unwritable attribute '" + attributeName + "'");
+                        // commented out cause will result in ConcurrentModificationException
+                        // instead copy its attribute name and remove later OR do a deep copy of the
+                        // attributeValues so there is one set that gets iterated and another that 
+                        //gets deleted???
+                        //attributeValues.remove( attributeName );
+                        attributeNamesToBeRemoved.Add(attributeName);
+                    }
+                }
+                // now removed collected to be removed attribute
+                IEnumerator itr = attributeNamesToBeRemoved.GetEnumerator();
+                while (itr.MoveNext())
+                {
+                    String an = (String)itr.Current;
+                    attributeValues.Remove(an);
+                }
+            }
+        }
 	}
 }

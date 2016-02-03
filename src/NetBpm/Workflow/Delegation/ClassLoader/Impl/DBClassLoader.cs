@@ -46,7 +46,7 @@ namespace NetBpm.Workflow.Delegation.ClassLoader.Impl
 						IType[] types = new IType[] {DbType.LONG, DbType.STRING};
 						assemblyFile = (AssemblyFileImpl) dbSession.FindOne(queryFindAssemblyFile, args, types);
 					} 
-					catch (ObjectNotFoundException onfe){}
+					catch (ObjectNotFoundException){}
 					finally
 					{
 						if (dbSession!=null)

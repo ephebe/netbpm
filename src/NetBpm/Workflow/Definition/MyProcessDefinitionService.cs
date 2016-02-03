@@ -40,6 +40,13 @@ namespace NetBpm.Workflow.Definition
             }
         }
 
+        public ProcessDefinitionImpl GetProcessDefinition(long processDefinitionId,DbSession dbSession)
+        {
+            ProcessDefinitionImpl processDefinition = null;
+            processDefinition = (ProcessDefinitionImpl)repository.GetProcessDefinition(processDefinitionId, null, dbSession);
+            return processDefinition;
+        }
+
         public IList<IProcessDefinition> GetProcessDefinitions()
         {
             throw new NotImplementedException();

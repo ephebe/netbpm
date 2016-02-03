@@ -11,12 +11,31 @@ using NetBpm.Workflow.Organisation.EComp;
 using NetBpm.Workflow.Definition.EComp;
 using NetBpm.Workflow.Definition.Impl;
 using NetBpm.Workflow.Definition;
+using NetBpm.Workflow.Execution.Impl;
+using NetBpm.Workflow.Delegation;
+using System.Threading;
 
 namespace NetBpm.Workflow.Execution
 {
     public class ProcessExecutionApplicationService : IProcessExecutionApplicationService
     {
-        private MyProcessDefinitionService processDefinitionService = null;
+        private MyProcessDefinitionService myProcessDefinitionService = null;
+        private DelegationService delegateService = null;
+        private TransitionService transitionService = null;
+        private AttributeService attributeService = null;
+        private TransitionRepository transitionRepository = null;
+        private ProcessInstanceRepository processInstanceRepository = null;
+
+        public ProcessExecutionApplicationService() 
+        {
+            myProcessDefinitionService = new MyProcessDefinitionService();
+            delegateService = new DelegationService();
+          
+          
+            transitionRepository = TransitionRepository.Instance;
+            processInstanceRepository = ProcessInstanceRepository.Instance;
+        }
+
         public IProcessInstance StartProcessInstance(long processDefinitionId)
         {
             return StartProcessInstance(processDefinitionId, null, null, null);
@@ -34,24 +53,37 @@ namespace NetBpm.Workflow.Execution
 
         public IProcessInstance StartProcessInstance(long processDefinitionId, IDictionary attributeValues, string transitionName, Relations relations)
         {
-            IProcessInstance processInstance = null;
+            ProcessInstanceImpl processInstance = null;
             IOrganisationService organisationService = null;
            
             using (ISession session = NHibernateHelper.OpenSession())
             {
                 DbSession nhSession = new DbSession(session);
                 organisationService = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
-                //ProcessDefinitionImpl processDefinition = processDefinitionService.GetProcessDefinition(processDefinitionId);
-                //ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
-                //delegateService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
-                //logRepository.Add(new Log(){})
-                //processInstance.StartState().CheckAccess(attributeValues)
-                //delegateService.RunActionsForEvent(EventType.BEFORE_PERFORM_OF_ACTIVITY, startState.Id, executionContext,dbSession);
-                //TransitionService.GetTransiation(name,processInstance.StartState())
-                //TransitionService.processTransition()
+                ProcessDefinitionImpl processDefinition = myProcessDefinitionService.GetProcessDefinition(processDefinitionId, nhSession);
+                processInstance = new ProcessInstanceImpl(ActorId,processDefinition);
+                processInstanceRepository.Save(processInstance,nhSession);//到這裏應該存了ProcessInstance,RootFlow
+                processDefinition.StartState.CheckAccess(attributeValues);
+
+                attributeService = new AttributeService(session);
+                attributeService.StoreAttributeValue(attributeValues);//儲存傳入的欄位值
+                attributeService.StoreRole(((ActivityStateImpl)processDefinition.StartState).ActorRoleName,ActorId);
+
+                //flow的node推進到下一關卡
+                //flow的actor=解析出來的actor.Id
+                transitionService = new TransitionService(session);
+                TransitionImpl transitionTo = transitionService.GetTransition(transitionName, processDefinition.StartState,nhSession);
+                transitionService.ProcessTransition(transitionTo, (FlowImpl)processInstance.RootFlow, nhSession);
+
+                session.Flush();
             }
 
             return processInstance;
+        }
+
+        public String ActorId
+        {
+            get { return Thread.CurrentPrincipal.Identity.Name; }
         }
     }
 }

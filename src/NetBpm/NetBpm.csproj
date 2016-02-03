@@ -357,6 +357,7 @@
     <Compile Include="Workflow\Delegation\AbstractConfigurable.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Delegation\ActorExpressionResolverService.cs" />
     <Compile Include="Workflow\Delegation\ClassLoader\IClassLoader.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -500,6 +501,8 @@
     <Compile Include="Workflow\Delegation\ITaskContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workflow\Execution\AttributeService.cs" />
+    <Compile Include="Workflow\Execution\TransitionService.cs" />
     <Compile Include="Workflow\Execution\_IProcessExecutionApplicationService.cs" />
     <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
     <Compile Include="Workflow\Execution\_ProcessInstanceRepository.cs" />

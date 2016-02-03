@@ -97,7 +97,6 @@ namespace NetBpm.Workflow.Execution.Impl
 			FlowImpl rootFlow = (FlowImpl) processInstance.RootFlow;
 
             ExecutionContextImpl executionContext = new ExecutionContextImpl(authenticatedActorId, rootFlow, dbSession, organisationComponent);
-            MyExecutionContext myExecutionContext = new MyExecutionContext();
 
 			// save the process instance to allow hibernate queries    
 			dbSession.Save(processInstance);
