@@ -1,5 +1,6 @@
 ﻿using log4net;
 using NetBpm.Util.DB;
+using NetBpm.Workflow.Execution.Impl;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,5 +36,12 @@ namespace NetBpm.Workflow.Execution
         }
 
 
+
+        public FlowImpl GetFlow(long flowId,DbSession dbSession)
+        {
+            FlowImpl flow = (FlowImpl)dbSession.Load(typeof(FlowImpl), flowId);
+
+            return flow;
+        }
     }
 }

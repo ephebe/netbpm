@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
     <Compile Include="HelloWorld1NewTest.cs" />
+    <Compile Include="HelloWorld3NewTest.cs" />
     <Compile Include="HelloWorld3Test.cs" />
     <Compile Include="ConfigurationFactory.cs" />
     <Compile Include="DefinitionTest.cs" />

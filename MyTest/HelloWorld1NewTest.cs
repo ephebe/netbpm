@@ -2,6 +2,7 @@
 using NetBpm.Workflow.Definition;
 using NetBpm.Workflow.Definition.Impl;
 using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Execution.Impl;
 using NetBpm.Workflow.Organisation;
 using NUnit.Framework;
 using System;
@@ -63,7 +64,7 @@ namespace MyTest
         }
 
         [Test]
-        public void StartTest()
+        public void StartProcessTest()
         {
             IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
@@ -91,6 +92,37 @@ namespace MyTest
                  select *from [dbo].[NBPM_LOG]
                  select *from [dbo].[NBPM_LOGDETAIL]
                  */
+            }
+            catch (ExecutionException e)
+            {
+                Assert.Fail("ExcecutionException while starting a new holiday request: " + e.Message);
+            }
+            finally
+            {
+                //      loginUtil.logout();
+            }
+        }
+
+        [Test]
+        public void ProcessActivityTest()
+        {
+            Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+
+            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
+
+            try
+            {
+                var taskLists = processExecutionApplicationService.GetTaskList("ae");
+                IList flows = null;
+                foreach (IFlow task in taskLists)
+                {
+                    //跑完進入End State
+                    flows = processExecutionApplicationService.PerformActivity(task.Id);
+                }
+
+                Assert.AreEqual(1, flows.Count);
+                //跳到EndState
+                Assert.AreEqual(2, ((FlowImpl)flows[0]).Node.Id);
             }
             catch (ExecutionException e)
             {

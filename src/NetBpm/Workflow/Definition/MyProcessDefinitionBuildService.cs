@@ -81,6 +81,14 @@ namespace NetBpm.Workflow.Definition
             processBlock.Attributes = new ListSet();
             processBlock.ChildBlocks = new ListSet();
 
+            IEnumerator iterAttr = xmlElement.GetChildElements("attribute").GetEnumerator();
+            while (iterAttr.MoveNext())
+            {
+                AttributeImpl attribute = new AttributeImpl();
+                this.attribute((XmlElement)iterAttr.Current, attribute, processBlock);
+                processBlock.Attributes.Add(attribute);
+            }
+
             IEnumerator iter = nodeElement.GetChildElements("activity-state").GetEnumerator();
             while (iter.MoveNext())
             {
@@ -90,7 +98,18 @@ namespace NetBpm.Workflow.Definition
                 processBlock.Nodes.Add(activityState);
             }
 
-            this.definitionObject(nodeElement, processBlock);
+            this.definitionObject(nodeElement, processBlock, processBlock);
+        }
+
+        private void attribute(XmlElement attributeElement, AttributeImpl attribute, ProcessBlockImpl processBlock) 
+        {
+            attribute.InitialValue = attributeElement.GetProperty("initial-value");
+            attribute.ProcessDefinition = processBlock as IProcessDefinition;
+            DelegationImpl delegation = new DelegationImpl();
+            attribute.SerializerDelegation = delegation;
+            delegation.ProcessDefinition = processBlock as IProcessDefinition;
+            this.definitionObject(attributeElement, attribute, processBlock);
+            this.delegation<AttributeImpl>(attributeElement, (DelegationImpl)attribute.SerializerDelegation);
         }
 
         private void activityState(XmlElement nodeElement, ActivityStateImpl activityState, ProcessBlockImpl processBlock)
@@ -126,11 +145,11 @@ namespace NetBpm.Workflow.Definition
                 transition.ProcessDefinition = processBlock as IProcessDefinition;
                 transition.From = node;
                 this.unresolveTransitions.Add(transition);
-                this.transition(transitionElement,transition);
+                this.transition(transitionElement, transition, processBlock);
                 node.LeavingTransitions.Add(transition);
             }
 
-            this.definitionObject(nodeElement, node);
+            this.definitionObject(nodeElement, node, processBlock);
         }
 
         private void delegation<T>(XmlElement nodeElement,DelegationImpl delegation) 
@@ -139,7 +158,7 @@ namespace NetBpm.Workflow.Definition
             if (delegatingObjectClass == typeof(AttributeImpl))
             {
                 String type = nodeElement.GetProperty("type");
-                if ((Object)type != null)
+                if (string.IsNullOrEmpty(type) == false)
                 {
                     delegation.ClassName = ((String)DelegationImpl.attributeTypes[type]);
                     string suportedTypes = "supported types: ";
@@ -150,7 +169,7 @@ namespace NetBpm.Workflow.Definition
                 }
                 else
                 {
-                    delegation.ClassName = xmlElement.GetProperty("serializer");
+                    delegation.ClassName = nodeElement.GetProperty("serializer");
                 }
             }
             else if (delegatingObjectClass == typeof(FieldImpl))
@@ -179,16 +198,34 @@ namespace NetBpm.Workflow.Definition
             delegation.Configuration = configurationXml.ToString();
         }
 
-        private void transition(XmlElement transitionElement, UnresolveTransition transition) 
+        private void transition(XmlElement transitionElement, UnresolveTransition transition, ProcessBlockImpl processBlock) 
         {
             transition.XmlValue = transitionElement.GetProperty("to");
-            this.definitionObject(transitionElement, transition);
+            this.definitionObject(transitionElement, transition, processBlock);
         }
 
-        private void definitionObject(XmlElement nodeElement, DefinitionObjectImpl definitionObject)
+        private void definitionObject(XmlElement definitionObjectElement, DefinitionObjectImpl definitionObject, ProcessBlockImpl processBlock)
         {
-            definitionObject.Name = nodeElement.GetProperty("name");
-            definitionObject.Description = nodeElement.GetProperty("description");
+            definitionObject.Name = definitionObjectElement.GetProperty("name");
+            definitionObject.Description = definitionObjectElement.GetProperty("description");
+
+            IEnumerator iter = definitionObjectElement.GetChildElements("action").GetEnumerator();
+            while (iter.MoveNext())
+            {
+                XmlElement actionElement = (XmlElement)iter.Current;
+                ActionImpl action = new ActionImpl();
+                action.DefinitionObjectId = definitionObject.Id;
+                this.action(actionElement, action, processBlock);
+            }
+        }
+
+        private void action(XmlElement actionElement, ActionImpl actionImpl, ProcessBlockImpl processBlock) 
+        {
+            actionImpl.EventType = EventTypeHelper.fromText(actionElement.GetAttribute("event"));
+            DelegationImpl delegation = new DelegationImpl();
+            delegation.ProcessDefinition = processBlock as IProcessDefinition;
+            actionImpl.ActionDelegation = delegation;
+            this.delegation<ActionImpl>(actionElement, delegation);
         }
     }
 }

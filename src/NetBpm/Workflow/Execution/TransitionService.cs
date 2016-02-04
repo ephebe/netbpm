@@ -29,14 +29,14 @@ namespace NetBpm.Workflow.Execution
             return transitionRepository.GetTransition(transitionName, (StateImpl)state, dbSession);
         }
 
-        public void ProcessTransition(TransitionImpl transition, FlowImpl flow, DbSession nhSession)
+        public void ProcessTransition(TransitionImpl transition, FlowImpl flow, DbSession dbSession)
         {
             NodeImpl destination = (NodeImpl)transition.To;
             flow.Node = destination;
 
             if (destination is ActivityStateImpl)
             {
-                ProcessActivityState((ActivityStateImpl)destination, flow, nhSession);
+                ProcessActivityState((ActivityStateImpl)destination, flow, dbSession);
             }
             else if (destination is ProcessStateImpl)
             {
@@ -56,7 +56,7 @@ namespace NetBpm.Workflow.Execution
             }
             else if (destination is EndStateImpl)
             {
-                //ProcessEndState((EndStateImpl)destination, executionContext, dbSession);
+                ProcessEndState((EndStateImpl)destination, flow,dbSession);
             }
             else
             {
@@ -107,6 +107,13 @@ namespace NetBpm.Workflow.Execution
 
             // the client of performActivity wants to be Informed of the people in charge of the process
             //executionContext.AssignedFlows.Add(flow);
+        }
+
+        private void ProcessEndState(EndStateImpl endState, FlowImpl flow,DbSession dbSession)
+        {
+            flow.ActorId = null;
+            flow.End = DateTime.Now;
+            flow.Node = endState; 
         }
 
         public virtual Object GetAttribute(String name)

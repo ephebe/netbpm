@@ -1,19 +1,18 @@
-﻿using System;
+﻿using NetBpm.Workflow.Definition;
+using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Organisation;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NetBpm.Workflow.Definition;
-using NetBpm.Workflow.Execution;
-using NetBpm.Workflow.Organisation;
-using NUnit.Framework;
 
 namespace MyTest
 {
-    [TestFixture]
-    public class HelloWorld3Test : BaseTest
+    public class HelloWorld3NewTest : BaseTest
     {
         [Test]
         public void DeployTest()
@@ -22,31 +21,25 @@ namespace MyTest
             FileStream fstream = parFile.OpenRead();
             byte[] b = new byte[parFile.Length];
             fstream.Read(b, 0, (int)parFile.Length);
-            processDefinitionService.DeployProcessArchive(b);
 
-            /*
-             select * from [dbo].[NBPM_PROCESSBLOCK];
-             select * from [dbo].[NBPM_NODE];
-             select * from [dbo].[NBPM_TRANSITION];
-             select * from [dbo].[NBPM_ACTION]
-             select * from [dbo].[NBPM_ATTRIBUTE];
-             select * from [dbo].[NBPM_DELEGATION];
-             */
+            MyProcessDefinitionService service = new MyProcessDefinitionService();
+            //事實上，Action根本沒存進去
+            service.DeployProcessArchive(b);
         }
 
         [Test]
-        public void StartTest()
+        public void StartProcessTest()
         {
             IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+
+            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
 
             try
             {
                 IDictionary attributeValues = new Hashtable();
 
-                IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 3");
-
-                processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
+                processInstance = processExecutionApplicationService.StartProcessInstance(1L, attributeValues);
                 //這時已經在First State
                 Assert.IsNotNull(processInstance);
             }
@@ -61,20 +54,22 @@ namespace MyTest
         }
 
         [Test]
-        public void TransitionFirstTest()
+        public void ProcessActivityTest()
         {
-            IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+
+            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
 
             try
             {
-                var taskLists = executionComponent.GetTaskList("ae");
-
+                var taskLists = processExecutionApplicationService.GetTaskList("ae");
+                IList flows = null;
                 foreach (IFlow task in taskLists)
                 {
-                    //跑完會執行HelloWorldAction，再進入EndState
-                    executionComponent.PerformActivity(task.Id);
+                    //跑完進入End State,因為
+                    flows = processExecutionApplicationService.PerformActivity(task.Id);
                 }
+
             }
             catch (ExecutionException e)
             {

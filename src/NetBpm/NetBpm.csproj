@@ -503,7 +503,6 @@
     </Compile>
     <Compile Include="Workflow\Execution\AttributeService.cs" />
     <Compile Include="Workflow\Execution\TransitionService.cs" />
-    <Compile Include="Workflow\Execution\_IProcessExecutionApplicationService.cs" />
     <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
     <Compile Include="Workflow\Execution\_ProcessInstanceRepository.cs" />
     <Compile Include="Workflow\Execution\_FieldRepository.cs" />
