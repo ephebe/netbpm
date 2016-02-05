@@ -1,24 +1,24 @@
-﻿using System;
+﻿using NetBpm.Workflow.Definition;
+using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Organisation;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NetBpm.Workflow.Definition;
-using NetBpm.Workflow.Execution;
-using NetBpm.Workflow.Organisation;
-using NUnit.Framework;
-using NetBpm.Workflow.Definition.Attr;
 
 namespace MyTest
 {
-    public class HelloWorld4Test : BaseTest
+    [TestFixture]
+    public class attributeTest : BaseTest
     {
         [Test]
         public void DeployTest()
         {
-            FileInfo parFile = new FileInfo("ExamplePar/helloworld4.par");
+            FileInfo parFile = new FileInfo("ExamplePar/attributetest.par");
             FileStream fstream = parFile.OpenRead();
             byte[] b = new byte[parFile.Length];
             fstream.Read(b, 0, (int)parFile.Length);
@@ -26,7 +26,7 @@ namespace MyTest
         }
 
         [Test]
-        public void StartTest()
+        public void StartProcessTest()
         {
             IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
@@ -34,12 +34,28 @@ namespace MyTest
             try
             {
                 IDictionary attributeValues = new Hashtable();
+                attributeValues.Add("field not accessible", "");
+                attributeValues.Add("field read only", "");
+                attributeValues.Add("field write only", "");
+                attributeValues.Add("field write only required", "a");
+                attributeValues.Add("field read write", "");
+                attributeValues.Add("field read write required", "b");
 
-                IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 4");
+                IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("attribute test");
 
                 processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
-                //這時已經在First State
+
                 Assert.IsNotNull(processInstance);
+                Assert.IsNotNull(processInstance.RootFlow);
+
+                /*
+                 select *from [dbo].[NBPM_PROCESSINSTANCE]
+                 select *from [dbo].[NBPM_FLOW]
+                 select *from [dbo].[NBPM_LOG]
+                 select *from [dbo].[NBPM_LOGDETAIL]
+                 select * from [dbo].[NBPM_ATTRIBUTE];
+                 select * from [dbo].[NBPM_ATTRIBUTEINSTANCE]
+                 */
             }
             catch (ExecutionException e)
             {
@@ -54,7 +70,6 @@ namespace MyTest
         [Test]
         public void ProcessActivityTest()
         {
-            IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
             try
@@ -62,15 +77,15 @@ namespace MyTest
                 var taskLists = executionComponent.GetTaskList("ae");
 
                 IDictionary attributeValues = new Hashtable();
-                //對應NetBpm.Workflow.Delegation.Impl.Serializer.EvaluationSerializer，否則無法存入[Attribute]
-                //也對應NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision，才會判斷是否轉到另一關卡，沒給只會一直在Decision
-                attributeValues.Add("evaluation result", Evaluation.APPROVE);
+                attributeValues.Add("field not accessible", "");
+                attributeValues.Add("field read only", "");
+                attributeValues.Add("field write only", "");
+                attributeValues.Add("field write only required", "a");
+                attributeValues.Add("field read write", "");
+                attributeValues.Add("field read write required", "b");
+
                 foreach (IFlow task in taskLists)
                 {
-                    //先驗證是否為processInitiator
-                    //執行進入Decision前，有一Action
-                    //檢查傳入的參數是否為approve
-                    //是就跑到結束
                     executionComponent.PerformActivity(task.Id, attributeValues);
                 }
             }

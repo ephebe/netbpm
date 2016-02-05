@@ -1,45 +1,67 @@
-﻿using System;
+﻿using NetBpm.Workflow.Definition;
+using NetBpm.Workflow.Definition.Attr;
+using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Organisation;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NetBpm.Workflow.Definition;
-using NetBpm.Workflow.Execution;
-using NetBpm.Workflow.Organisation;
-using NUnit.Framework;
-using NetBpm.Workflow.Definition.Attr;
 
 namespace MyTest
 {
-    public class HelloWorld4Test : BaseTest
+    [TestFixture]
+    public class HolidayTest : BaseTest
     {
         [Test]
         public void DeployTest()
         {
-            FileInfo parFile = new FileInfo("ExamplePar/helloworld4.par");
+            FileInfo parFile = new FileInfo("ExamplePar/holiday.par");
             FileStream fstream = parFile.OpenRead();
             byte[] b = new byte[parFile.Length];
             fstream.Read(b, 0, (int)parFile.Length);
             processDefinitionService.DeployProcessArchive(b);
+
+            /*
+             select * from [dbo].[NBPM_PROCESSBLOCK];
+             select * from [dbo].[NBPM_NODE];
+             select * from [dbo].[NBPM_TRANSITION];
+             select * from [dbo].[NBPM_ACTION]
+             select * from [dbo].[NBPM_ATTRIBUTE];
+             select * from [dbo].[NBPM_DELEGATION];
+             */
         }
 
         [Test]
-        public void StartTest()
+        public void StartProcessTest()
         {
             IProcessInstance processInstance = null;
-            Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
+            Thread.CurrentPrincipal = new PrincipalUserAdapter("af");
 
             try
             {
                 IDictionary attributeValues = new Hashtable();
+                attributeValues.Add("start date", new DateTime(2016,3,1));
+                attributeValues.Add("end date", new DateTime(2016, 3, 2));
 
-                IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Hello world 4");
+                IProcessDefinition booaction = processDefinitionService.GetProcessDefinition("Holiday request");
 
                 processInstance = executionComponent.StartProcessInstance(booaction.Id, attributeValues);
-                //這時已經在First State
+
                 Assert.IsNotNull(processInstance);
+                Assert.IsNotNull(processInstance.RootFlow);
+
+                /*
+                 select *from [dbo].[NBPM_PROCESSINSTANCE]
+                 select *from [dbo].[NBPM_FLOW]
+                 select *from [dbo].[NBPM_LOG]
+                 select *from [dbo].[NBPM_LOGDETAIL]
+                 select * from [dbo].[NBPM_ATTRIBUTE];
+                 select * from [dbo].[NBPM_ATTRIBUTEINSTANCE]
+                 */
             }
             catch (ExecutionException e)
             {
@@ -54,23 +76,19 @@ namespace MyTest
         [Test]
         public void ProcessActivityTest()
         {
-            IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
             try
             {
+                //af申請的，ae是af的主管，登入者要換成ae
                 var taskLists = executionComponent.GetTaskList("ae");
 
                 IDictionary attributeValues = new Hashtable();
-                //對應NetBpm.Workflow.Delegation.Impl.Serializer.EvaluationSerializer，否則無法存入[Attribute]
-                //也對應NetBpm.Workflow.Delegation.Impl.Decision.EvaluationDecision，才會判斷是否轉到另一關卡，沒給只會一直在Decision
                 attributeValues.Add("evaluation result", Evaluation.APPROVE);
+
                 foreach (IFlow task in taskLists)
                 {
-                    //先驗證是否為processInitiator
-                    //執行進入Decision前，有一Action
-                    //檢查傳入的參數是否為approve
-                    //是就跑到結束
+                    //出現一個無法處理的錯誤
                     executionComponent.PerformActivity(task.Id, attributeValues);
                 }
             }
