@@ -33,7 +33,7 @@ namespace MyTest
             IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
-            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
+            ProcessExecutionService processExecutionApplicationService = new ProcessExecutionService();
 
             try
             {
@@ -58,7 +58,7 @@ namespace MyTest
         {
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
-            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
+            ProcessExecutionService processExecutionApplicationService = new ProcessExecutionService();
 
             try
             {

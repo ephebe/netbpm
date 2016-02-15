@@ -11,94 +11,133 @@ using System.Text;
 
 namespace NetBpm.Workflow.Definition
 {
-    public class MyProcessDefinitionBuildService
+    public class MyProcessDefinitionBuilder
     {
         private XmlElement xmlElement = null;
-        private IList<UnresolveTransition> unresolveTransitions = null;
+        private IDictionary<ReferencableObject, IDictionary<string, object>> referencableObjects = null;
+        private IList<UnresolvedReference> unresolvedReferences = null;
 
-        public MyProcessDefinitionBuildService(XmlElement xmlElement) 
+        private ProcessDefinitionImpl ProcessDefinition { get; set; }
+
+        public MyProcessDefinitionBuilder(XmlElement xmlElement) 
         {
             this.xmlElement = xmlElement;
-            unresolveTransitions = new List<UnresolveTransition>();
+            referencableObjects = new Dictionary<ReferencableObject, IDictionary<string, object>>();
+            unresolvedReferences = new List<UnresolvedReference>();
         }
 
         public ProcessDefinitionImpl BuildProcessDefinition() 
         {
-            ProcessDefinitionImpl processDefinition = definition();
-            processDefinition.StartState = start(processDefinition);
-            processDefinition.EndState = end(processDefinition);
-            processDefinition.Nodes.Add(processDefinition.StartState);
-            processDefinition.Nodes.Add(processDefinition.EndState);
+            ProcessDefinition = new ProcessDefinitionImpl();
+            this.definition();
+            ProcessDefinition.StartState = start();
+            ProcessDefinition.EndState = end();
+            ProcessDefinition.Nodes.Add(ProcessDefinition.StartState);
+            ProcessDefinition.Nodes.Add(ProcessDefinition.EndState);
 
-            foreach(var transition in unresolveTransitions)
-            {
-                var enumer = processDefinition.Nodes.GetEnumerator();
-                while(enumer.MoveNext())
-                {
-                    INode node = (enumer.Current as INode);
-                    if(transition.XmlValue == node.Name)
-                    {
-                        transition.To = node;
-                        break;
-                    }
-                }
-            }
+            resolveReferences();
 
-            return processDefinition;
+            return ProcessDefinition;
         }
 
-        private ProcessDefinitionImpl definition() 
+        private void definition() 
         {
-            ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
-            processDefinition.ProcessDefinition = processDefinition;
-            this.processBlock(xmlElement, processDefinition);
-            return processDefinition;
+            ProcessDefinition.ProcessDefinition = ProcessDefinition;
+            this.processBlock(xmlElement, ProcessDefinition);
         }
 
-        private StartStateImpl start(ProcessDefinitionImpl processDefinition) 
+        private StartStateImpl start() 
         {
             XmlElement startElement = xmlElement.GetChildElement("start-state");
             StartStateImpl startState = new StartStateImpl();
-            startState.ProcessDefinition = processDefinition;
-            this.activityState(startElement, startState, processDefinition);
+            startState.ProcessDefinition = ProcessDefinition;
+            this.activityState(startElement, startState, ProcessDefinition);
 
             return startState;
         }
 
-        private EndStateImpl end(ProcessDefinitionImpl processDefinition) 
+        private EndStateImpl end() 
         {
             XmlElement endElement = xmlElement.GetChildElement("end-state");
             EndStateImpl endState = new EndStateImpl();
-            endState.ProcessDefinition = processDefinition;
-            this.state(endElement, endState, processDefinition);
+            endState.ProcessDefinition = ProcessDefinition;
+            this.state(endElement, endState, ProcessDefinition);
 
             return endState;
         }
 
-        private void processBlock(XmlElement nodeElement, ProcessBlockImpl processBlock) 
+        private void processBlock(XmlElement nodeElement, ProcessBlockImpl currentProcessBlock) 
         {
-            processBlock.Nodes = new ListSet();
-            processBlock.Attributes = new ListSet();
-            processBlock.ChildBlocks = new ListSet();
+            currentProcessBlock.Nodes = new ListSet();
+            currentProcessBlock.Attributes = new ListSet();
+            currentProcessBlock.ChildBlocks = new ListSet();
 
             IEnumerator iterAttr = xmlElement.GetChildElements("attribute").GetEnumerator();
             while (iterAttr.MoveNext())
             {
                 AttributeImpl attribute = new AttributeImpl();
-                this.attribute((XmlElement)iterAttr.Current, attribute, processBlock);
-                processBlock.Attributes.Add(attribute);
+                this.attribute((XmlElement)iterAttr.Current, attribute, currentProcessBlock);
+                currentProcessBlock.Attributes.Add(attribute);
             }
 
-            IEnumerator iter = nodeElement.GetChildElements("activity-state").GetEnumerator();
-            while (iter.MoveNext())
+            IEnumerator iterActivityState = nodeElement.GetChildElements("activity-state").GetEnumerator();
+            while (iterActivityState.MoveNext())
             {
                 ActivityStateImpl activityState = new ActivityStateImpl();
-                activityState.ProcessDefinition = processBlock as IProcessDefinition;
-                this.activityState((XmlElement)iter.Current, activityState, processBlock);
-                processBlock.Nodes.Add(activityState);
+                activityState.ProcessDefinition = currentProcessBlock as IProcessDefinition;
+                this.activityState((XmlElement)iterActivityState.Current, activityState, currentProcessBlock);
+                currentProcessBlock.Nodes.Add(activityState);
             }
 
-            this.definitionObject(nodeElement, processBlock, processBlock);
+            IEnumerator iterConcurrent = nodeElement.GetChildElements("concurrent-block").GetEnumerator();
+            while (iterConcurrent.MoveNext())
+            {
+                ConcurrentBlockImpl concurrentBlock = new ConcurrentBlockImpl();
+                currentProcessBlock.ChildBlocks.Add(concurrentBlock);
+                this.concurrentBlock((XmlElement)iterConcurrent.Current, concurrentBlock, currentProcessBlock);
+            }
+
+            this.definitionObject(nodeElement, currentProcessBlock, currentProcessBlock);
+        }
+
+        private void concurrentBlock(XmlElement concurrentElement, ConcurrentBlockImpl concurrentBlock, ProcessBlockImpl currentProcessBlock)
+        {
+            concurrentBlock.ParentBlock = currentProcessBlock;
+            concurrentBlock.ProcessDefinition = ProcessDefinition;
+            this.processBlock(concurrentElement, concurrentBlock);
+
+            JoinImpl joinImpl = concurrentBlock.CreateJoin();
+            ForkImpl forkImpl = concurrentBlock.CreateFork();
+
+            XmlElement joinElement = concurrentElement.GetChildElement("join");
+            this.join(joinElement, joinImpl, concurrentBlock);
+            XmlElement forkElement = concurrentElement.GetChildElement("fork");
+            this.fork(forkElement, forkImpl, concurrentBlock);
+
+            this.addReferencableObject(joinImpl.Name, currentProcessBlock, typeof(INode), joinImpl);
+            this.addReferencableObject(forkImpl.Name, currentProcessBlock, typeof(INode), forkElement);
+        }
+
+        private void join(XmlElement joinElement,JoinImpl joinImpl, ProcessBlockImpl currentProcessBlock) 
+        {
+            this.node(joinElement, joinImpl, currentProcessBlock);
+
+            if ((Object)joinElement.GetAttribute("handler") != null)
+            {
+                joinImpl.JoinDelegation = new DelegationImpl();
+                this.delegation<JoinImpl>(joinElement, joinImpl.JoinDelegation);
+            }
+        }
+
+        private void fork(XmlElement forkElement, ForkImpl forkImpl, ProcessBlockImpl currentProcessBlock)
+        {
+            this.node(forkElement, forkImpl, currentProcessBlock);
+
+            if ((Object)forkElement.GetAttribute("handler") != null)
+            {
+                forkImpl.ForkDelegation = new DelegationImpl();
+                this.delegation<ForkImpl>(forkElement, forkImpl.ForkDelegation);
+            }
         }
 
         private void attribute(XmlElement attributeElement, AttributeImpl attribute, ProcessBlockImpl processBlock) 
@@ -141,15 +180,18 @@ namespace NetBpm.Workflow.Definition
             while (iter.MoveNext())
             {
                 XmlElement transitionElement = (XmlElement)iter.Current;
-                UnresolveTransition transition = new UnresolveTransition();
-                transition.ProcessDefinition = processBlock as IProcessDefinition;
+                TransitionImpl transition = new TransitionImpl();
+                transition.ProcessDefinition = ProcessDefinition;
                 transition.From = node;
-                this.unresolveTransitions.Add(transition);
                 this.transition(transitionElement, transition, processBlock);
                 node.LeavingTransitions.Add(transition);
             }
 
+         
             this.definitionObject(nodeElement, node, processBlock);
+
+            //把所有的Node加到集合中
+            this.addReferencableObject(node.Name, processBlock, typeof(INode), node);
         }
 
         private void delegation<T>(XmlElement nodeElement,DelegationImpl delegation) 
@@ -198,14 +240,16 @@ namespace NetBpm.Workflow.Definition
             delegation.Configuration = configurationXml.ToString();
         }
 
-        private void transition(XmlElement transitionElement, UnresolveTransition transition, ProcessBlockImpl processBlock) 
+        private void transition(XmlElement transitionElement, TransitionImpl transition, ProcessBlockImpl processBlock) 
         {
-            transition.XmlValue = transitionElement.GetProperty("to");
             this.definitionObject(transitionElement, transition, processBlock);
+
+            this.addUnresolvedReference(this, transitionElement.GetProperty("to"), processBlock.ParentBlock, "to", typeof(INode));
         }
 
         private void definitionObject(XmlElement definitionObjectElement, DefinitionObjectImpl definitionObject, ProcessBlockImpl processBlock)
         {
+            definitionObject.Actions = new ArrayList();
             definitionObject.Name = definitionObjectElement.GetProperty("name");
             definitionObject.Description = definitionObjectElement.GetProperty("description");
 
@@ -215,17 +259,97 @@ namespace NetBpm.Workflow.Definition
                 XmlElement actionElement = (XmlElement)iter.Current;
                 ActionImpl action = new ActionImpl();
                 action.DefinitionObjectId = definitionObject.Id;
-                this.action(actionElement, action, processBlock);
+                this.action(actionElement, action);
+                definitionObject.Actions.Add(action);
             }
         }
 
-        private void action(XmlElement actionElement, ActionImpl actionImpl, ProcessBlockImpl processBlock) 
+        private void action(XmlElement actionElement, ActionImpl actionImpl) 
         {
             actionImpl.EventType = EventTypeHelper.fromText(actionElement.GetAttribute("event"));
             DelegationImpl delegation = new DelegationImpl();
-            delegation.ProcessDefinition = processBlock as IProcessDefinition;
+            delegation.ProcessDefinition = ProcessDefinition;
             actionImpl.ActionDelegation = delegation;
             this.delegation<ActionImpl>(actionElement, delegation);
+        }
+
+        private void addReferencableObject(String name, ProcessBlockImpl scope, Type type, Object referencableObject)
+        {
+            ReferencableObject referencableObjectScope = new ReferencableObject(scope, type);
+            if (referencableObjects.ContainsKey(referencableObjectScope) == false)
+            {
+                referencableObjects[referencableObjectScope] = new Dictionary<string, object>();
+            }
+
+            var referenceObjectsByScope = this.referencableObjects[referencableObjectScope];
+            referenceObjectsByScope.Add(name, referencableObject);
+        }
+
+        public void addUnresolvedReference(Object referencingObject, String destinationName, ProcessBlockImpl destinationScope, String property, Type destinationType)
+        {
+            unresolvedReferences.Add(new UnresolvedReference(referencingObject, destinationName, destinationScope, property, destinationType));
+        }
+
+        private void resolveReferences()
+        {
+            IEnumerator iter = unresolvedReferences.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                UnresolvedReference unresolvedReference = (UnresolvedReference)iter.Current;
+
+                Object referencingObject = unresolvedReference.ReferencingObject;
+                String referenceDestinationName = unresolvedReference.DestinationName;
+                ProcessBlockImpl scope = unresolvedReference.DestinationScope;
+                String property = unresolvedReference.Property;
+
+                Object referencedObject = FindInScope(unresolvedReference, unresolvedReference.DestinationScope);
+                if (referencedObject == null)
+                {
+                    //AddError("failed to deploy process archive : couldn't resolve " + property + "=\"" + referenceDestinationName + "\" from " + referencingObject + " in scope " + scope);
+                }
+                else
+                {
+                    if (referencingObject is TransitionImpl)
+                    {
+                        if (property.Equals("to"))
+                        {
+                            TransitionImpl transition = (TransitionImpl)referencingObject;
+                            transition.To = (NodeImpl)referencedObject;
+                        }
+                    }
+                    if (referencingObject is FieldImpl)
+                    {
+                        if (property.Equals("attribute"))
+                        {
+                            FieldImpl field = (FieldImpl)referencingObject;
+                            field.Attribute = (AttributeImpl)referencedObject;
+                        }
+                    }
+                }
+            }
+        }
+
+        private Object FindInScope(UnresolvedReference unresolvedReference, ProcessBlockImpl scope)
+        {
+            Object referencedObject = null;
+
+            if (scope != null)
+            {
+                ReferencableObject referenceType = new ReferencableObject(scope, unresolvedReference.DestinationType);
+
+                if ((referencableObjects.ContainsKey(referenceType) == true))
+                {
+                    IDictionary referencables = (IDictionary)referencableObjects[referenceType];
+                    if (referencables != null && referencables.Contains(unresolvedReference.DestinationName))
+                        referencedObject = referencables[unresolvedReference.DestinationName];
+                }
+                else
+                {
+                    referencedObject = FindInScope(unresolvedReference, scope.ParentBlock);
+                }
+            }
+
+            return referencedObject;
         }
     }
 }

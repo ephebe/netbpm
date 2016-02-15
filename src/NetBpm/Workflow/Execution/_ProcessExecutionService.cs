@@ -18,7 +18,7 @@ using NetBpm.Workflow.Organisation;
 
 namespace NetBpm.Workflow.Execution
 {
-    public class ProcessExecutionApplicationService
+    public class ProcessExecutionService
     {
         private MyProcessDefinitionService myProcessDefinitionService = null;
         private DelegationService delegateService = null;
@@ -29,7 +29,7 @@ namespace NetBpm.Workflow.Execution
         private TaskRepository taskRepository = null;
         private FlowRepository flowRepository = null; 
 
-        public ProcessExecutionApplicationService() 
+        public ProcessExecutionService() 
         {
             myProcessDefinitionService = new MyProcessDefinitionService();
             delegateService = new DelegationService();
@@ -52,6 +52,9 @@ namespace NetBpm.Workflow.Execution
                 ProcessDefinitionImpl processDefinition = myProcessDefinitionService.GetProcessDefinition(processDefinitionId, nhSession);
                 processInstance = new ProcessInstanceImpl(ActorId,processDefinition);
                 processInstanceRepository.Save(processInstance,nhSession);//到這裏應該存了ProcessInstance,RootFlow
+
+                ExecutionContext executionContext = new ExecutionContext();
+                //logRepository.CreateLog();
                 processDefinition.StartState.CheckAccess(attributeValues);
 
                 attributeService = new AttributeService(session);

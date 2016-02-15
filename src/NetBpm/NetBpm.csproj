@@ -503,7 +503,8 @@
     </Compile>
     <Compile Include="Workflow\Execution\AttributeService.cs" />
     <Compile Include="Workflow\Execution\TransitionService.cs" />
-    <Compile Include="Workflow\Execution\_ProcessExecutionApplicationService.cs" />
+    <Compile Include="Workflow\Execution\_ExecutionContext.cs" />
+    <Compile Include="Workflow\Execution\_ProcessExecutionService.cs" />
     <Compile Include="Workflow\Execution\_ProcessInstanceRepository.cs" />
     <Compile Include="Workflow\Execution\_FieldRepository.cs" />
     <Compile Include="Workflow\Execution\_TaskRepository.cs" />
@@ -704,6 +705,7 @@
   <ItemGroup>
     <Folder Include="Infrastructure\" />
     <Folder Include="Workflow\Definition\EComp\" />
+    <Folder Include="Workflow\Execution\ContextTraits\" />
     <Folder Include="Workflow\Organisation\EComp\Impl\" />
     <Folder Include="Workflow\Organisation\Impl\" />
   </ItemGroup>

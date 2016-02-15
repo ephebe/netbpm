@@ -21,8 +21,8 @@ namespace MyTest
         [Test]
         public void BuildProcessDefinitionTest()
         {
-            MyProcessDefinitionBuildService service = new MyProcessDefinitionBuildService(helloWorld1());
-            ProcessDefinitionImpl processDefinition = service.BuildProcessDefinition();
+            MyProcessDefinitionBuilder builder = new MyProcessDefinitionBuilder(helloWorld1());
+            ProcessDefinitionImpl processDefinition = builder.BuildProcessDefinition();
 
             Assert.AreEqual("Hello world 1", processDefinition.Name);
             Assert.AreEqual("This is the simples process.", processDefinition.Description);
@@ -70,13 +70,13 @@ namespace MyTest
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
             MyProcessDefinitionService myProcessDefinitionService = new MyProcessDefinitionService();
-            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
+            ProcessExecutionService processExecutionService = new ProcessExecutionService();
 
             try
             {
                 IDictionary attributeValues = new Hashtable();
 
-                processInstance = processExecutionApplicationService.StartProcessInstance(1L, attributeValues);
+                processInstance = processExecutionService.StartProcessInstance(1L, attributeValues);
 
                 //這時已經在First State
                 Assert.IsNotNull(processInstance);
@@ -108,16 +108,16 @@ namespace MyTest
         {
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
-            ProcessExecutionApplicationService processExecutionApplicationService = new ProcessExecutionApplicationService();
+            ProcessExecutionService processExecutionService = new ProcessExecutionService();
 
             try
             {
-                var taskLists = processExecutionApplicationService.GetTaskList("ae");
+                var taskLists = processExecutionService.GetTaskList("ae");
                 IList flows = null;
                 foreach (IFlow task in taskLists)
                 {
                     //跑完進入End State
-                    flows = processExecutionApplicationService.PerformActivity(task.Id);
+                    flows = processExecutionService.PerformActivity(task.Id);
                 }
 
                 Assert.AreEqual(1, flows.Count);

@@ -26,12 +26,13 @@ namespace MyTest
             processDefinitionService.DeployProcessArchive(b);
 
             /*
-             select * from [dbo].[NBPM_PROCESSBLOCK];
-             select * from [dbo].[NBPM_NODE];
-             select * from [dbo].[NBPM_TRANSITION];
-             select * from [dbo].[NBPM_ACTION]
-             select * from [dbo].[NBPM_ATTRIBUTE];
-             select * from [dbo].[NBPM_DELEGATION];
+             select * from [dbo].[NBPM_PROCESSBLOCK]; --2
+             select * from [dbo].[NBPM_NODE];  --8
+             select * from [dbo].[NBPM_TRANSITION]; --8
+             select * from [dbo].[NBPM_ACTION] --1
+             select * from [dbo].[NBPM_ATTRIBUTE]; --7
+             select * from [dbo].[NBPM_DELEGATION]; --8
+             select * from [dbo].[NBPM_FIELD]; --7
              */
         }
 

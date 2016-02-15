@@ -101,6 +101,7 @@
     <Compile Include="HelloWorld1Test.cs" />
     <Compile Include="HelloWorld4Test.cs" />
     <Compile Include="HelloWorldAction.cs" />
+    <Compile Include="HolidayNewTest.cs" />
     <Compile Include="HolidayTest.cs" />
     <Compile Include="OrgansationTest.cs" />
     <Compile Include="ProcessDefinitionImplTest.cs" />

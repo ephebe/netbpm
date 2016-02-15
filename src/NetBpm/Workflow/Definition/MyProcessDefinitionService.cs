@@ -30,8 +30,8 @@ namespace NetBpm.Workflow.Definition
         {
             ParFile parFile = new ParFile(processArchiveBytes);
 
-            MyProcessDefinitionBuildService buildService = new MyProcessDefinitionBuildService(parFile.ProcessDefinition);
-            ProcessDefinitionImpl processDefinition = buildService.BuildProcessDefinition();
+            MyProcessDefinitionBuilder builder = new MyProcessDefinitionBuilder(parFile.ProcessDefinition);
+            ProcessDefinitionImpl processDefinition = builder.BuildProcessDefinition();
 
             using (ISession session = NHibernateHelper.OpenSession())
             {

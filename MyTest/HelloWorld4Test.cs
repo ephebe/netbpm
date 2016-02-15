@@ -54,7 +54,6 @@ namespace MyTest
         [Test]
         public void ProcessActivityTest()
         {
-            IProcessInstance processInstance = null;
             Thread.CurrentPrincipal = new PrincipalUserAdapter("ae");
 
             try
