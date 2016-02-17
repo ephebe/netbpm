@@ -24,6 +24,7 @@ namespace NetBpm.Workflow.Execution
         private DelegationService delegateService = null;
         private TransitionService transitionService = null;
         private AttributeService attributeService = null;
+        private IOrganisationService organisationService = null;
         private TransitionRepository transitionRepository = null;
         private ProcessInstanceRepository processInstanceRepository = null;
         private TaskRepository taskRepository = null;
@@ -33,6 +34,7 @@ namespace NetBpm.Workflow.Execution
         {
             myProcessDefinitionService = new MyProcessDefinitionService();
             delegateService = new DelegationService();
+            organisationService = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
 
             taskRepository = TaskRepository.Instance;
             transitionRepository = TransitionRepository.Instance;
@@ -47,27 +49,30 @@ namespace NetBpm.Workflow.Execution
            
             using (ISession session = NHibernateHelper.OpenSession())
             {
-                DbSession nhSession = new DbSession(session);
-                organisationService = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
-                ProcessDefinitionImpl processDefinition = myProcessDefinitionService.GetProcessDefinition(processDefinitionId, nhSession);
-                processInstance = new ProcessInstanceImpl(ActorId,processDefinition);
-                processInstanceRepository.Save(processInstance,nhSession);//到這裏應該存了ProcessInstance,RootFlow
+                using (var tran = session.BeginTransaction()) 
+                {
+                    DbSession dbSession = new DbSession(session);
+                    ProcessDefinitionImpl processDefinition = myProcessDefinitionService.GetProcessDefinition(processDefinitionId, dbSession);
+                    processInstance = new ProcessInstanceImpl(ActorId, processDefinition);
+                    processInstanceRepository.Save(processInstance, dbSession);//到這裏應該存了ProcessInstance,RootFlow
 
-                ExecutionContext executionContext = new ExecutionContext();
-                //logRepository.CreateLog();
-                processDefinition.StartState.CheckAccess(attributeValues);
+                    ExecutionContext executionContext = new ExecutionContext();
+                    //logRepository.CreateLog();
+                    processDefinition.StartState.CheckAccess(attributeValues);
 
-                attributeService = new AttributeService(session);
-                attributeService.StoreAttributeValue(attributeValues);//儲存傳入的欄位值
-                attributeService.StoreRole(((ActivityStateImpl)processDefinition.StartState).ActorRoleName,ActorId);
+                    attributeService = new AttributeService((FlowImpl)processInstance.RootFlow, dbSession);
+                    attributeService.StoreAttributeValue(attributeValues);//儲存傳入的欄位值
+                    attributeService.StoreRole(organisationService.FindActorById(ActorId), (ActivityStateImpl)processDefinition.StartState);
 
-                //flow的node推進到下一關卡
-                //flow的actor=解析出來的actor.Id
-                transitionService = new TransitionService(session);
-                TransitionImpl transitionTo = transitionService.GetTransition(transitionName, processDefinition.StartState,nhSession);
-                transitionService.ProcessTransition(transitionTo, (FlowImpl)processInstance.RootFlow, nhSession);
+                    //flow的node推進到下一關卡
+                    //flow的actor=解析出來的actor.Id
+                    transitionService = new TransitionService(ActorId, dbSession);
+                    TransitionImpl transitionTo = transitionService.GetTransition(transitionName, processDefinition.StartState, dbSession);
+                    transitionService.ProcessTransition(transitionTo, (FlowImpl)processInstance.RootFlow, dbSession);
 
-                session.Flush();
+                    session.Flush();
+                    tran.Commit();
+                }
             }
 
             return processInstance;
@@ -87,8 +92,7 @@ namespace NetBpm.Workflow.Execution
                 using (ISession session = NHibernateHelper.OpenSession())
                 {
                     DbSession dbSession = new DbSession(session);
-                    organisationComponent = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
-                    IActor actor = organisationComponent.FindActorById(actorId);
+                    IActor actor = organisationService.FindActorById(actorId);
                     taskLists = taskRepository.FindTasks(actorId, dbSession);
                 }
             }
@@ -107,24 +111,24 @@ namespace NetBpm.Workflow.Execution
             }
 
             IList flows = null;
-            IOrganisationService organisationComponent = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
             try
             {
                 using (ISession session = NHibernateHelper.OpenSession())
                 {
                     DbSession dbSession = new DbSession(session);
-                    organisationComponent = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
                     FlowImpl flow = flowRepository.GetFlow(flowId,dbSession);
                     ActivityStateImpl activityState = (ActivityStateImpl)flow.Node;
 
-                    attributeService = new AttributeService(session);
+                    ExecutionContext executionContext = new ExecutionContext();
+                    activityState.CheckAccess(attributeValues);
+
+                    attributeService = new AttributeService(flow,dbSession);
                     attributeService.StoreAttributeValue(attributeValues);
 
-                    transitionService = new TransitionService(session);
+                    transitionService = new TransitionService(ActorId, dbSession);
                     TransitionImpl transitionTo = transitionService.GetTransition(transitionName, activityState, dbSession);
                     transitionService.ProcessTransition(transitionTo, flow, dbSession);
 
-                    ServiceLocator.Instance.Release(organisationComponent);
                     session.Flush();
                 }
             }
@@ -138,7 +142,7 @@ namespace NetBpm.Workflow.Execution
             }
             finally
             {
-                ServiceLocator.Instance.Release(organisationComponent);
+                //ServiceLocator.Instance.Release(organisationComponent);
             }
             return flows;
         }

@@ -15,13 +15,17 @@ namespace NetBpm.Workflow.Execution
     public class TransitionService
     {
         private TransitionRepository transitionRepository = TransitionRepository.Instance;
-        private NHibernate.ISession session;
+        private AttributeRepository attributeRepository = AttributeRepository.Instance;
+        private DbSession session;
         private DelegationService delegationService = null;
+        private ActorExpressionResolverService actorExpressionResolverService = null;
 
-        public TransitionService(NHibernate.ISession session)
+        public TransitionService(string previousActorId,DbSession session)
         {
             // TODO: Complete member initialization
             this.session = session;
+            delegationService = new DelegationService();
+            actorExpressionResolverService = new ActorExpressionResolverService(previousActorId);
         }
 
         public TransitionImpl GetTransition(string transitionName, IState state, DbSession dbSession)
@@ -44,7 +48,7 @@ namespace NetBpm.Workflow.Execution
             }
             else if (destination is DecisionImpl)
             {
-                //ProcessDecision((DecisionImpl)destination, executionContext, dbSession);
+                ProcessDecision((DecisionImpl)destination, flow, dbSession);
             }
             else if (destination is ForkImpl)
             {
@@ -68,13 +72,16 @@ namespace NetBpm.Workflow.Execution
         {
             String actorId = null;
             String role = activityState.ActorRoleName;
-            delegationService = new DelegationService();
+          
             DelegationImpl assignmentDelegation = activityState.AssignmentDelegation;
 
             if (assignmentDelegation != null)
             {
-                // delegate the assignment of the activity-state
-                actorId = delegationService.DelegateAssignment(activityState.AssignmentDelegation);
+                var delegateParameters = delegationService.ParseConfiguration(activityState.AssignmentDelegation);
+                actorExpressionResolverService.CurrentScope = flow;
+                actorExpressionResolverService.DbSession = dbSession;
+                actorId = actorExpressionResolverService.ResolveArgument(delegateParameters["expression"].ToString()).Id;
+
                 if ((Object)actorId == null)
                 {
                     throw new SystemException("invalid process definition : assigner of activity-state '" + activityState.Name + "' returned null instead of a valid actorId");
@@ -84,7 +91,11 @@ namespace NetBpm.Workflow.Execution
             {
                 if ((Object)role != null)
                 {
-                    IActor actor = (IActor)this.GetAttribute(role);
+                    IActor actor = null;
+                    var attr = attributeRepository.FindAttributeInstanceInScope(role, flow, dbSession);
+                    if (attr != null)
+                        actor = (IActor)attr.GetValue();
+
                     if (actor == null)
                     {
                         throw new SystemException("invalid process definition : activity-state must be assigned to role '" + role + "' but that attribute instance is null");
@@ -116,15 +127,15 @@ namespace NetBpm.Workflow.Execution
             flow.Node = endState; 
         }
 
-        public virtual Object GetAttribute(String name)
+        public void ProcessDecision(DecisionImpl decision, FlowImpl flow, DbSession dbSession)
         {
-            //AttributeInstanceImpl attributeInstance = FindAttributeInstanceInScope(name);
-            //if (attributeInstance != null)
-            //{
-            //    // attribute might not be available (a warning should have been logged previosly)
-            //    return attributeInstance.GetValue();
-            //}
-            return null;
+            //var delegateParameters = delegationService.ParseConfiguration(decision.DecisionDelegation);
+            
+            //// delegate the decision 
+            //TransitionImpl selectedTransition = delegationHelper.DelegateDecision(decision.DecisionDelegation, executionContext);
+
+            //// process the selected transition
+            //ProcessTransition(selectedTransition, flow, dbSession);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using NetBpm.Util.DB;
 using NetBpm.Workflow.Execution.Impl;
+using NHibernate.Mapping;
 using NHibernate.Type;
 using System;
 using System.Collections;
@@ -31,12 +32,56 @@ namespace NetBpm.Workflow.Execution
             "where ai.Scope = f.id " + "  and ai.Attribute.Name = ? " +
             "  and f.id = ? ";
 
-        public IList FindAttributeInstanceByName(string attributeName,long scopeId,DbSession dbSession) 
+        public const String queryFindAttribute = "select a" +
+            "from a in class NetBpm.Workflow.Definition.Impl.AttributeImpl" + 
+            "where a.name = ? and a.Scope = ?";
+
+        public IList FindAttributeByName(string attributeName, long processBlockId, DbSession dbSession)
         {
-            Object[] values = new Object[] { attributeName, scopeId };
+            throw new NotImplementedException();
+        }
+
+        public IList FindAttributeInstanceByName(string attributeName,long flowId,DbSession dbSession) 
+        {
+            Object[] values = new Object[] { attributeName, flowId };
             IType[] types = new IType[] { DbType.STRING, DbType.LONG };
 
-            return dbSession.Find(queryFindAttributeInstanceByName, values, types);
+            IList attributes = dbSession.Find(queryFindAttributeInstanceByName, values, types);
+        
+            return attributes;
+
+        }
+
+        public AttributeInstanceImpl FindAttributeInstanceInScope(String attributeName, FlowImpl scope,DbSession dbSession)
+        {
+            AttributeInstanceImpl attributeInstance = null;
+
+            while (attributeInstance == null)
+            {
+                IList attributes = this.FindAttributeInstanceByName(attributeName, scope.Id, dbSession);
+                IEnumerator iter = attributes.GetEnumerator();
+                if (iter.MoveNext())
+                {
+                    attributeInstance = (AttributeInstanceImpl)iter.Current;
+                    if (iter.MoveNext())
+                    {
+                        throw new NetBpm.Util.DB.DbException("duplicate value");
+                    }
+                }
+                else
+                {
+                    if (!scope.IsRootFlow())
+                    {
+                        scope = (FlowImpl)scope.Parent;
+                    }
+                    else
+                    {
+                        log.Warn("couldn't find attribute-instance '" + attributeName + "' in scope of flow '" + scope + "'");
+                        break;
+                    }
+                }
+            }
+            return attributeInstance;
         }
     }
 }

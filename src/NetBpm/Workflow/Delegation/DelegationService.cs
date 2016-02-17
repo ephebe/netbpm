@@ -30,20 +30,20 @@ namespace NetBpm.Workflow.Delegation
         
         }
 
-        public String DelegateAssignment(DelegationImpl delegation)
-        {
-            String actorId = null;
+        //public String DelegateAssignment(DelegationImpl delegation)
+        //{
+        //    String actorId = null;
 
-            IAssignmentHandler assigner = (IAssignmentHandler)delegation.GetDelegate();
-            IDictionary expression = this.ParseConfiguration(delegation);
+        //    IAssignmentHandler assigner = (IAssignmentHandler)delegation.GetDelegate();
+        //    IDictionary expression = this.ParseConfiguration(delegation);
 
-            actorExpressionResolverService = new ActorExpressionResolverService();
-            actorId = actorExpressionResolverService.ResolveArgument(expression["expression"].ToString()).Id;            
+        //    actorExpressionResolverService = new ActorExpressionResolverService();
+        //    actorId = actorExpressionResolverService.ResolveArgument(expression["expression"].ToString()).Id;            
 
-            return actorId;
-        }
+        //    return actorId;
+        //}
 
-        private IDictionary ParseConfiguration(DelegationImpl delegationImpl)
+        public IDictionary ParseConfiguration(DelegationImpl delegationImpl)
         {
             IDictionary parameters = new Hashtable();
             try

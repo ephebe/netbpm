@@ -27,11 +27,11 @@ namespace MyTest
 
             /*
              select * from [dbo].[NBPM_PROCESSBLOCK]; --2
-             select * from [dbo].[NBPM_NODE];  --8
-             select * from [dbo].[NBPM_TRANSITION]; --8
+             select * from [dbo].[NBPM_NODE];  --9
+             select * from [dbo].[NBPM_TRANSITION]; --10
              select * from [dbo].[NBPM_ACTION] --1
              select * from [dbo].[NBPM_ATTRIBUTE]; --7
-             select * from [dbo].[NBPM_DELEGATION]; --8
+             select * from [dbo].[NBPM_DELEGATION]; --18
              select * from [dbo].[NBPM_FIELD]; --7
              */
         }
@@ -56,12 +56,11 @@ namespace MyTest
                 Assert.IsNotNull(processInstance.RootFlow);
 
                 /*
-                 select *from [dbo].[NBPM_PROCESSINSTANCE]
-                 select *from [dbo].[NBPM_FLOW]
-                 select *from [dbo].[NBPM_LOG]
-                 select *from [dbo].[NBPM_LOGDETAIL]
-                 select * from [dbo].[NBPM_ATTRIBUTE];
-                 select * from [dbo].[NBPM_ATTRIBUTEINSTANCE]
+                 select *from [dbo].[NBPM_PROCESSINSTANCE] --1
+                 select *from [dbo].[NBPM_FLOW] --1
+                 select *from [dbo].[NBPM_LOG] --3
+                 select *from [dbo].[NBPM_LOGDETAIL] --6
+                 select * from [dbo].[NBPM_ATTRIBUTEINSTANCE] --7
                  */
             }
             catch (ExecutionException e)
@@ -89,9 +88,17 @@ namespace MyTest
 
                 foreach (IFlow task in taskLists)
                 {
-                    //出現一個無法處理的錯誤
+                    //出現一個無法處理的錯誤，要關掉Transition才能處理，𢟿疑是隔離級別變了
                     executionComponent.PerformActivity(task.Id, attributeValues);
                 }
+
+                /*
+                 select *from [dbo].[NBPM_PROCESSINSTANCE] --1
+                 select *from [dbo].[NBPM_FLOW] --1
+                 select *from [dbo].[NBPM_LOG] --7
+                 select *from [dbo].[NBPM_LOGDETAIL] --13
+                 select * from [dbo].[NBPM_ATTRIBUTEINSTANCE] --7
+                 */
             }
             catch (ExecutionException e)
             {

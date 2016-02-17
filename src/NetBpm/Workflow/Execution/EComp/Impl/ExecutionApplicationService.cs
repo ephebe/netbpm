@@ -178,25 +178,25 @@ namespace NetBpm.Workflow.Execution.EComp.Impl
 			return activityForm;
 		}
 
-		[Transaction(TransactionMode.Requires)]
+		//[Transaction(TransactionMode.Requires)]
 		public virtual IList PerformActivity(Int64 flowId)
 		{
 			return PerformActivity(flowId, null, null, null);
 		}
 
-		[Transaction(TransactionMode.Requires)]
+		//[Transaction(TransactionMode.Requires)]
 		public virtual IList PerformActivity(Int64 flowId, IDictionary attributeValues)
 		{
 			return PerformActivity(flowId, attributeValues, null, null);
 		}
 
-		[Transaction(TransactionMode.Requires)]
+		//[Transaction(TransactionMode.Requires)]
 		public virtual IList PerformActivity(Int64 flowId, IDictionary attributeValues, String transitionName)
 		{
 			return PerformActivity(flowId, attributeValues, transitionName, null);
 		}
 
-		[Transaction(TransactionMode.Requires)]
+		//[Transaction(TransactionMode.Requires)]
 		public virtual IList PerformActivity(Int64 flowId, IDictionary attributeValues, String transitionName, Relations relations)
 		{
 			IList flows = null;

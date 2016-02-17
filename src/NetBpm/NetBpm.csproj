@@ -501,7 +501,7 @@
     <Compile Include="Workflow\Delegation\ITaskContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Workflow\Execution\AttributeService.cs" />
+    <Compile Include="Workflow\Execution\_AttributeService.cs" />
     <Compile Include="Workflow\Execution\TransitionService.cs" />
     <Compile Include="Workflow\Execution\_ExecutionContext.cs" />
     <Compile Include="Workflow\Execution\_ProcessExecutionService.cs" />

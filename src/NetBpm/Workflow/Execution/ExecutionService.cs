@@ -278,6 +278,8 @@ namespace NetBpm.Workflow.Execution.Impl
             delegationService.RunActionsForEvent(EventType.PERFORM_OF_ACTIVITY, activityState.Id, executionContext,dbSession);
 
 			// from here on, we consider the actor as being the previous actor
+            //因為繼續往下跑，ActorId就有可能轉換成下一關卡的處理人員
+            //所以previousActorId就是現在的登入人員
 			executionContext.SetActorAsPrevious();
 
 			// select and process the transition

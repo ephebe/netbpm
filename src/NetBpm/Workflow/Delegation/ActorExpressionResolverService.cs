@@ -1,4 +1,9 @@
-﻿using NetBpm.Workflow.Organisation;
+﻿using NetBpm.Util.Client;
+using NetBpm.Util.DB;
+using NetBpm.Workflow.Execution;
+using NetBpm.Workflow.Execution.Impl;
+using NetBpm.Workflow.Organisation;
+using NetBpm.Workflow.Organisation.EComp;
 using NetBpm.Workflow.Organisation.Impl;
 using NHibernate.Util;
 using System;
@@ -13,6 +18,18 @@ namespace NetBpm.Workflow.Delegation
     public class ActorExpressionResolverService
     {
         private static Type[] RESOLVE_METHOD_ARGUMENT_TYPES = new Type[] { typeof(IActor), typeof(String[]) };
+        private IOrganisationService organizationService = null;
+        private AttributeRepository attributeRepository = AttributeRepository.Instance;
+
+        public string PreviousActorId { get; set; }
+        public FlowImpl CurrentScope { get; set; }
+        public DbSession DbSession { get; set; }
+
+        public ActorExpressionResolverService(string previousActorId) 
+        {
+            PreviousActorId = previousActorId;
+            organizationService = (IOrganisationService)ServiceLocator.Instance.GetService(typeof(IOrganisationService));
+        }
 
         public IActor ResolveArgument(String expression)
         {
@@ -113,7 +130,7 @@ namespace NetBpm.Workflow.Delegation
         {
             if (parameters.Length != 0)
                 throw new SystemException("argument previousActor expects exactly zero parameters instead of " + parameters.Length);
-            IActor actor = null;// executionContext.GetPreviousActor();
+            IActor actor = organizationService.FindActorById(PreviousActorId);
             if (actor == null)
                 throw new SystemException("argument previousActor could not be resolve because there is no previous actor");
             return actor;
@@ -135,7 +152,7 @@ namespace NetBpm.Workflow.Delegation
             IActor actor = null;
             try
             {
-                actor = null;// executionContext.GetOrganisationComponent().FindActorById(parameters[0]);
+                actor = organizationService.FindActorById(parameters[0]);
             }
             catch (OrganisationRuntimeException e)
             {
@@ -157,7 +174,7 @@ namespace NetBpm.Workflow.Delegation
                 IGroup group = null;
                 try
                 {
-                    group = null;// executionContext.GetOrganisationComponent().FindGroupById(groupId);
+                    group = organizationService.FindGroupById(groupId);
                 }
                 catch (OrganisationRuntimeException e)
                 {
@@ -177,7 +194,7 @@ namespace NetBpm.Workflow.Delegation
 
                 try
                 {
-                    group = null;// executionContext.GetOrganisationComponent().FindGroupByMembership(resolvedActor.Id, membershipType);
+                    group = organizationService.FindGroupByMembership(resolvedActor.Id, membershipType);
                 }
                 catch (InvalidCastException e)
                 {
@@ -203,7 +220,9 @@ namespace NetBpm.Workflow.Delegation
             {
                 try
                 {
-                    actor = null;// (IActor)executionContext.GetAttribute(parameters[0]);
+                    var attributeInstance = attributeRepository.FindAttributeInstanceInScope(parameters[0], CurrentScope, DbSession);
+                    actor = (IActor)attributeInstance.GetValue();
+                    throw new NotImplementedException();
                 }
                 catch (InvalidCastException e)
                 {
@@ -216,7 +235,7 @@ namespace NetBpm.Workflow.Delegation
 
                 try
                 {
-                    IList users = null;// executionContext.GetOrganisationComponent().FindUsersByGroupAndRole(resolvedActor.Id, roleName);
+                    IList users = organizationService.FindUsersByGroupAndRole(resolvedActor.Id, roleName);
                     if (users.Count < 1)
                         throw new SystemException("no users have role " + roleName + " for group " + resolvedActor.Id);
                     actor = (IUser)users[0];

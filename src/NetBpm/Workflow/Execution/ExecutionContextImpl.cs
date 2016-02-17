@@ -331,7 +331,7 @@ namespace NetBpm.Workflow.Execution.Impl
 			_flow.Children.Add(subFlow);
 
 			// save it 
-			_dbSession.Save(subFlow);
+			_dbSession.SaveOrUpdate(subFlow);
 
 			// store the attributeValues
 			this._flow = subFlow;
