@@ -1,8 +1,10 @@
 ﻿using log4net;
+using NetBpm.Util.Client;
 using NetBpm.Util.DB;
 using NetBpm.Util.Xml;
 using NetBpm.Workflow.Definition;
 using NetBpm.Workflow.Definition.Impl;
+using NetBpm.Workflow.Delegation.ClassLoader;
 using NetBpm.Workflow.Delegation.Impl;
 using NetBpm.Workflow.Execution.Impl;
 using NHibernate.Type;
@@ -42,6 +44,29 @@ namespace NetBpm.Workflow.Delegation
 
         //    return actorId;
         //}
+
+        public Object GetDelegate(DelegationImpl delegationImpl)
+        {
+            Object delegateClass = null;
+            IClassLoader classLoader = null;
+            try
+            {
+                classLoader = (IClassLoader)ServiceLocator.Instance.GetService(typeof(IClassLoader));
+                delegateClass = classLoader.CreateObject(delegationImpl);
+            }
+            finally
+            {
+                ServiceLocator.Instance.Release(classLoader);
+            }
+            // configure class
+            if (delegateClass is IConfigurable)
+            {
+                IConfigurable configurable = (IConfigurable)delegateClass;
+                IDictionary parameters = ParseConfiguration(delegationImpl);
+                configurable.SetConfiguration(parameters);
+            }
+            return delegateClass;
+        }
 
         public IDictionary ParseConfiguration(DelegationImpl delegationImpl)
         {

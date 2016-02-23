@@ -124,6 +124,123 @@ namespace NetBpm.Workflow.Delegation.Impl
 			_configuration = configurationXml.ToString();
 		}
 
+        public IDictionary ParseConfiguration()
+        {
+            IDictionary parameters = new Hashtable();
+            try
+            {
+                String configuration = this.Configuration;
+                if ((Object)configuration != null)
+                {
+                    XmlParser xmlParser = new XmlParser(configuration);
+                    xmlParser.Validation = false;
+                    XmlElement configurationXmlElement = xmlParser.Parse();
+                    IList parameterXmlElements = configurationXmlElement.GetChildElements("parameter");
+                    IEnumerator iter = parameterXmlElements.GetEnumerator();
+                    while (iter.MoveNext())
+                    {
+                        XmlElement parameterXmlElement = (XmlElement)iter.Current;
+
+                        String name = parameterXmlElement.GetProperty("name");
+                        if ((Object)name == null)
+                        {
+                            throw new SystemException("invalid delegation-configuration : " + configurationXmlElement);
+                        }
+
+                        parameters[name] = GetObject(parameterXmlElement);
+                    }
+                }
+            }
+            catch (Exception t)
+            {
+                log.Error("can't parse configuration : ", t);
+                throw new SystemException("can't parse configuration : " + t.Message);
+            }
+
+            return parameters;
+        }
+
+        private Object GetObject(XmlElement xmlElement)
+        {
+            Object object_Renamed = null;
+
+            String className = xmlElement.GetProperty("class");
+
+            if (((Object)className == null) || ("java.lang.String".Equals(className)))
+            {
+                object_Renamed = GetText(xmlElement);
+            }
+            else if ("java.util.List".Equals(className))
+            {
+                object_Renamed = GetList(xmlElement);
+            }
+            else if ("java.util.Map".Equals(className))
+            {
+                object_Renamed = GetMap(xmlElement);
+            }
+            else
+            {
+                log.Error("Error getting object->@portme");
+                //@portme
+                /*				try
+                                {
+                                    Type clazz = Type.GetType(className);
+                                    System.Reflection.ConstructorInfo constructor = clazz.GetConstructor(constructorArgumentTypes);
+                                    object_Renamed = constructor.newInstance(new Object[]{xmlElement.getContentString()});
+                                }
+                                catch (System.Exception t)
+                                {
+                                    log.Error("Error getting object", t);
+                                }*/
+            }
+            return object_Renamed;
+        }
+
+        private String GetText(XmlElement xmlElement)
+        {
+            return xmlElement.GetContentString().Trim();
+        }
+
+        private IList GetList(XmlElement xmlElement)
+        {
+            IList list = new ArrayList();
+
+            IList elementXmlElements = xmlElement.GetChildElements("element");
+            IEnumerator iter = elementXmlElements.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                list.Add(GetObject((XmlElement)iter.Current));
+            }
+
+            return list;
+        }
+
+        private IDictionary GetMap(XmlElement xmlElement)
+        {
+            IDictionary map = new Hashtable();
+
+            IList elementXmlElements = xmlElement.GetChildElements("entry");
+            IEnumerator iter = elementXmlElements.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                XmlElement entryXmlElement = (XmlElement)iter.Current;
+
+                // get the key      
+                XmlElement key = entryXmlElement.GetChildElement("key");
+                if (key == null)
+                    throw new SystemException("an <entry> must contain exactly one <key> sub-element");
+
+                // get the value
+                XmlElement valueObject = entryXmlElement.GetChildElement("value");
+                if (valueObject == null)
+                    throw new SystemException("an <entry> must contain exactly one <value> sub-element");
+
+                map[GetObject(key)] = GetObject(valueObject);
+            }
+
+            return map;
+        }
+
 		public override String ToString()
 		{
 			return "delegation[" + _id + "|" + _className + "|" + _processDefinition.Id + "]";

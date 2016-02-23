@@ -19,5 +19,17 @@ namespace NetBpm.Workflow.Delegation.Impl.Decision
 
 			return transitionName;
 		}
+
+        public String Decide(string attributeValue)
+        {
+            String transitionName = "disapprove";
+
+            if (attributeValue == Evaluation.APPROVE.ToString())
+            {
+                transitionName = "approve";
+            }
+
+            return transitionName;
+        }
 	}
 }

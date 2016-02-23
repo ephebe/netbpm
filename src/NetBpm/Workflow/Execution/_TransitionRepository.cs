@@ -1,6 +1,7 @@
 ﻿using Iesi.Collections;
 using log4net;
 using NetBpm.Util.DB;
+using NetBpm.Workflow.Definition;
 using NetBpm.Workflow.Definition.Impl;
 using NHibernate.Type;
 using System;
@@ -35,27 +36,31 @@ namespace NetBpm.Workflow.Execution
 
         /* package private */
 
-        internal virtual TransitionImpl GetTransition(String transitionName, StateImpl state, DbSession dbSession)
+        internal virtual TransitionImpl GetTransition(String transitionName, INode node, DbSession dbSession)
         {
             TransitionImpl transition = null;
             if ((Object)transitionName != null)
             {
-                Object[] values = new Object[] { transitionName, state.Id };
+                Object[] values = new Object[] { transitionName, node.Id };
                 IType[] types = new IType[] { DbType.STRING, DbType.LONG };
                 transition = (TransitionImpl)dbSession.FindOne(queryFindTransitionByName, values, types);
             }
             else
             {
-                ISet leavingTransitions = state.LeavingTransitions;
-                if (leavingTransitions.Count == 1)
+                if(node is IState)
                 {
-                    IEnumerator transEnum = leavingTransitions.GetEnumerator();
-                    transEnum.MoveNext();
-                    transition = (TransitionImpl)transEnum.Current;
-                }
-                else
-                {
-                    throw new SystemException("no transitionName was specified : this is only allowed if the state (" + state.Name + ") has exactly 1 leaving transition (" + leavingTransitions.Count + ")");
+                    IState state = node as IState;
+                    ISet leavingTransitions = state.LeavingTransitions;
+                    if (leavingTransitions.Count == 1)
+                    {
+                        IEnumerator transEnum = leavingTransitions.GetEnumerator();
+                        transEnum.MoveNext();
+                        transition = (TransitionImpl)transEnum.Current;
+                    }
+                    else
+                    {
+                        throw new SystemException("no transitionName was specified : this is only allowed if the state (" + state.Name + ") has exactly 1 leaving transition (" + leavingTransitions.Count + ")");
+                    }
                 }
             }
             return transition;
