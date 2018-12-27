@@ -124,7 +124,7 @@ namespace NetBpm.Workflow.Delegation.Impl
 			_configuration = configurationXml.ToString();
 		}
 
-        public IDictionary ParseConfiguration()
+        public virtual IDictionary ParseConfiguration()
         {
             IDictionary parameters = new Hashtable();
             try

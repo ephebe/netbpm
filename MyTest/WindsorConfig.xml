@@ -42,7 +42,7 @@
         <settings>
           <item key="connection.provider">NHibernate.Connection.DriverConnectionProvider</item>
           <item key="connection.driver_class">NHibernate.Driver.SqlClientDriver</item>
-          <item key="connection.connection_string">Server=DESKTOPPC\SQLEXPRESS;Database=NetBPM;User Id=sa;Password=sa</item>
+          <item key="connection.connection_string">Server=HUGO\SQLEXPRESS;Database=NetBPM2;User Id=sa;Password=123456</item>
           <item key="dialect">NHibernate.Dialect.MsSql2005Dialect</item>
           <item key="proxyfactory.factory_class">NHibernate.ByteCode.LinFu.ProxyFactoryFactory, NHibernate.ByteCode.LinFu</item>
         </settings>

@@ -91,6 +91,7 @@
     <Compile Include="attributeTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="booactionTest.cs" />
+    <Compile Include="HelloWorld0Test.cs" />
     <Compile Include="HelloWorld1NewTest.cs" />
     <Compile Include="HelloWorld3NewTest.cs" />
     <Compile Include="HelloWorld3Test.cs" />
@@ -133,6 +134,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="ExamplePar\attributetest.par">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ExamplePar\helloworld0.par">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ExamplePar\helloworld1.par">

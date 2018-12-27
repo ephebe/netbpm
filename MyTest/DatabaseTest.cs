@@ -21,13 +21,13 @@ namespace MyTest
             new SchemaExport(cfg).Execute(true, true, false);
 
             /*
-             Insert into NBPM_ACTOR(id,subclass) values('myTeam','Group')
+                 Insert into NBPM_ACTOR(id,subclass) values('myTeam','Group')
              Insert into NBPM_ACTOR(id,subclass) values('ae','User')
-             Insert into NBPM_ACTOR(id,subclass) values('af','User')
 			 Insert into NBPM_ACTOR(id,subclass) values('ag','User')
+			 Insert into NBPM_ACTOR(id,subclass) values('af','User')
              Insert into NBPM_MEMBERSHIP(id,role,type_,user_,group_) values(1,null,'hierarchy','af','myTeam')
-             Insert into NBPM_MEMBERSHIP(id,role,type_,user_,group_) values(2,'boss',null,'ae','myTeam')
-			 Insert into NBPM_MEMBERSHIP(id,role,type_,user_,group_) values(3,'hr-responsible',null,'ag','myTeam')
+             Insert into NBPM_MEMBERSHIP(id,role,type_,user_,group_) values(2,'boss','hierarchy','ae','myTeam')
+			 Insert into NBPM_MEMBERSHIP(id,role,type_,user_,group_) values(3,'hr-responsible','hierarchy','ag','myTeam')
              */
         }
     }

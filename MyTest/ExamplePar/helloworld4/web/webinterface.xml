@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<web-interface>
+
+  <image name="web/helloworld4.gif" mime-type="image/gif" width="170" height="227" />
+
+  <!-- ================ -->
+  <!-- == ACTIVITIES == -->
+  <!-- ================ -->
+  <activity-state name="start">
+    <image-coordinates>
+      <x1>35</x1>
+      <y1>0</y1>
+      <x2>57</x2>
+      <y2>21</y2>
+    </image-coordinates>
+  </activity-state>
+
+  <activity-state name="first activity state">
+    <image-coordinates>
+      <x1>0</x1>
+      <y1>51</y1>
+      <x2>98</x2>
+      <y2>78</y2>
+    </image-coordinates>
+    <field attribute="evaluation result">
+      <name>Evaluation result</name>
+      <description>This input field allows you to put a value in the 'evaluation result' attribute.</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.EvaluationInput, NetBpm" />
+    </field>
+    <field attribute="the text attrib">
+      <name>The text attribute</name>
+      <description>This input field allows you to put a value in the 'the text attrib' attribute.</description>
+      <htmlformatter class="NetBpm.Workflow.Delegation.Impl.Htmlformatter.TextInput, NetBpm" />
+    </field>
+  </activity-state>
+  
+</web-interface>
